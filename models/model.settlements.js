@@ -8,20 +8,21 @@ module.exports = (sequelize, DataTypes) => {
     */
     static associate(models) {
       this.belongsTo(models.Schedule,{
-        foreignKey:"schedule_id"
+        foreignKey:"schedule_id",
+        targetKey:"id"
       });
       this.belongsTo(models.User,{
         foreignKey:"sender_id",
-        targetKey:"user_id"
+        targetKey:"id"
       });
       this.belongsTo(models.User,{
         foreignKey:"receiver_id",
-        targetKey:"user_id"
+        targetKey:"id"
       });
     }
   };
   Settlement.init({
-    settlement_id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue:DataTypes.UUIDV4,
       primaryKey:true,

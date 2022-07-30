@@ -8,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.Receipt,{
         foreignKey:"receipt_id",
-        as:"item_receipt_id"
+        targetKey:"id"
       })
     }
   };
   ItemList.init({
-    item_id:{
+    id:{
       type:DataTypes.UUID,
       defaultValue:DataTypes.UUIDV4,
       primaryKey:true,

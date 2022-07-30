@@ -11,28 +11,28 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.hasMany(models.Schedule,{
         foreignKey:"owner_id",
-        sourceKey:"user_id",
+        sourceKey:"id",
       });
       this.hasMany(models.Participant,{
         foreignKey:"participant_id",
-        sourceKey:"user_id"
+        sourceKey:"id"
       });
       this.hasMany(models.Receipt,{
         foreignKey:"poster_id",
-        sourceKey:"user_id"
+        sourceKey:"id"
       });
       this.hasMany(models.Settlement,{
         foreignKey:"sender_id",
-        sourceKey:"user_id"
+        sourceKey:"id"
       });
       this.hasMany(models.Settlement,{
         foreignKey:"receiver_id",
-        sourceKey:"user_id"
+        sourceKey:"id"
       });
     }
   };
   User.init({
-    user_id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue:DataTypes.UUIDV4,
       primaryKey:true,

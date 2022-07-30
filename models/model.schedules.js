@@ -10,18 +10,20 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.User,{
         foreignKey:"owner_id",
-        targetKey:"user_id",
+        targetKey:"id",
       });
       this.hasMany(models.Participant,{
         foreignKey:"schedule_id",
+        sourceKey:"id"
       });
       this.hasMany(models.Receipt,{
         foreignKey:"schedule_id",
+        sourceKey:"id"
       });
     }
   };
   Schedule.init({
-    schedule_id: {
+    id: {
       type: DataTypes.UUID,
       defaultValue:DataTypes.UUIDV4,
       primaryKey:true,
