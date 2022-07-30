@@ -2,8 +2,12 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Schedule extends Model {
+    /*
+      User와 N:1
+      Participant와 1:N
+      Receipt와 1:N
+     */
     static associate(models) {
-      // define association here
       this.belongsTo(models.User,{
         foreignKey:"owner_id",
         targetKey:"user_id",
@@ -18,32 +22,36 @@ module.exports = (sequelize, DataTypes) => {
   };
   Schedule.init({
     schedule_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement:true,
+      type: DataTypes.UUID,
+      defaultValue:DataTypes.UUIDV4,
       primaryKey:true,
       comment:"스케줄 식별번호"
     },
     schedule_name:{
       type: DataTypes.STRING,
-      comment:"일정 이름"
+      comment:"일정 이름",
+      //정규표현식 작성 추가할것
     },
     owner_id:{
-      type:DataTypes.INTEGER,
+      type:DataTypes.UUID,
       comment:"일정 소유자(제작자)"
     },
     completeAt:{
-      type:DataTypes.STRING,
+      type:DataTypes.DATE,
       allowNull:true,
       defaultValue:null,
       comment:"정산 마감시각"
+      //정규표현식 작성 추가할것
     },
     startAt:{
-      type:DataTypes.STRING,
+      type:DataTypes.DATE,
+      allowNull:true,
       defaultValue:null,
       comment:"일정 시작시간"
     },
     endAt:{
-      type:DataTypes.STRING,
+      type:DataTypes.DATE,
+      allowNull:true,
       defaultValue:null,
       comment:"일정 종료시간"
     },

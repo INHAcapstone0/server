@@ -33,29 +33,36 @@ module.exports = (sequelize, DataTypes) => {
   };
   User.init({
     user_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement:true,
+      type: DataTypes.UUID,
+      defaultValue:DataTypes.UUIDV4,
       primaryKey:true,
       comment:"유저 식별번호"
     },
     user_email:{
-      type: DataTypes.CHAR(20),
+      type: DataTypes.STRING,
       unique:true,
+      validate:{
+        isEmail:true,
+      },
       comment:"이메일"
+      //정규표현식 작성 추가할것
     },
     user_pw: {
       type: DataTypes.STRING,
-      comment:"비밀번호(해싱된 32자리 string)"
+      comment:"비밀번호(해싱된 32자리 string), md5로 해싱"
+      //정규표현식 작성 추가할것
     },
     user_name:{
       type:DataTypes.STRING,
       unique:true,
       comment:"유저 이름"
+      //정규표현식 작성 추가할것
     },
     login_failed_cnt:{
       type: DataTypes.INTEGER,
       defaultValue:0,
       comment:"로그인 실패 횟수"
+      //constraint 추가(5 이하의 숫자)
     },
     is_locked:{
       type:DataTypes.BOOLEAN,

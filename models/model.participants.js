@@ -2,6 +2,10 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Participant extends Model {
+    /*
+      User와 N:1
+      Schedule과 N:1
+     */
     static associate(models) {
       this.belongsTo(models.User,{
         foreignKey:"participant_id",
@@ -14,14 +18,13 @@ module.exports = (sequelize, DataTypes) => {
   };
   Participant.init({
     participant_id:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       comment:"참여자 ID"
     },
     schedule_id:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       comment:"참여 일정 ID"
     }
-
   },
   {
     sequelize,

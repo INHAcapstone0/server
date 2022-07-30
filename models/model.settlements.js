@@ -2,6 +2,10 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Settlement extends Model {
+    /*
+      User와 N:m
+      Schedule과 N:1
+    */
     static associate(models) {
       this.belongsTo(models.Schedule,{
         foreignKey:"schedule_id"
@@ -18,21 +22,21 @@ module.exports = (sequelize, DataTypes) => {
   };
   Settlement.init({
     settlement_id: {
-      type: DataTypes.INTEGER,
-      autoIncrement:true,
+      type: DataTypes.UUID,
+      defaultValue:DataTypes.UUIDV4,
       primaryKey:true,
       comment:"정산 내역 식별번호"
     },
     schedule_id:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       comment:"정산 대상 스케줄 ID"
     },
     sender_id:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       comment:"정산액 입금자"
     },
     receiver_id:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       comment:"정산액 수급자"
     },
     is_paid: {
@@ -41,7 +45,8 @@ module.exports = (sequelize, DataTypes) => {
       comment:"정산 여부"
     },
     due_date:{
-      type:DataTypes.STRING,
+      type:DataTypes.DATE,
+      allowNull:true,
       comment:"정산 마감일"
     }
   },
