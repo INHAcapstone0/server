@@ -5,46 +5,55 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       this.belongsTo(models.User,{
-        foreignKey:"id",
-        as:"owner_id"
-      }),
+        foreignKey:"owner_id",
+        targetKey:"user_id",
+      });
       this.hasMany(models.Participant,{
-        foreignKey:"id",
-        as:"schedule_id"
-      })
+        foreignKey:"schedule_id",
+      });
+      this.hasMany(models.Receipt,{
+        foreignKey:"schedule_id",
+      });
     }
   };
   Schedule.init({
-    id: {
+    schedule_id: {
       type: DataTypes.INTEGER,
       autoIncrement:true,
-      primaryKey:true
+      primaryKey:true,
+      comment:"스케줄 식별번호"
     },
     schedule_name:{
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      comment:"일정 이름"
     },
     owner_id:{
-      type:DataTypes.INTEGER
+      type:DataTypes.INTEGER,
+      comment:"일정 소유자(제작자)"
     },
     completeAt:{
       type:DataTypes.STRING,
-      defaultValue:null
+      allowNull:true,
+      defaultValue:null,
+      comment:"정산 마감시각"
     },
-    startFrom:{
+    startAt:{
       type:DataTypes.STRING,
-      defaultValue:null
+      defaultValue:null,
+      comment:"일정 시작시간"
     },
-    endTo:{
+    endAt:{
       type:DataTypes.STRING,
-      defaultValue:null
+      defaultValue:null,
+      comment:"일정 종료시간"
     },
   },
   {
     sequelize,
     modelName:"Schedule",
     tableName:"Schedules",
-    timestamps:true,
-    paranoid:true
+    timestamps:true, // createAt, updateAt field 활성화
+    paranoid:true // timestamps 활성화 시 사용 가능, deleteAt 옵션 on
   });
   
   return Schedule;

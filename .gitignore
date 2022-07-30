@@ -1,2 +1,4 @@
 /node_modules
 db_config.js
+.env
+/sql

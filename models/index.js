@@ -22,7 +22,8 @@ fs
   .filter(file => {
     return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
   })
-  .forEach(file => {
+  .forEach(file => { 
+    // 모델 작성 시 receipts처럼 단수 표현을 쓰면 이 지점에서 오류 발생, 원인 파악 아직 안됨
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });

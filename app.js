@@ -1,6 +1,6 @@
+const {PORT,CORSPORT}=require('./db_config');
 const express=require('express');
 const app=express();
-const PORT= process.env.PORT || 8001;
 const cors=require('cors'); // 프론트 서버와의 연결 시 사용
 const bodyParser = require('body-parser');
 
@@ -10,7 +10,7 @@ app.get('/', function(req, res){
 
 // 프론트서버와 연결 시 사용
 var corsOptions={
-    origin:"http://localhost:8081"
+    origin:`http://localhost:${CORSPORT}`
 };
 app.use(cors(corsOptions))
 
