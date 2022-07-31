@@ -55,6 +55,7 @@ exports.findOne = (req, res) => {
 			res.send(data);
 		})
 		.catch(err => {
+      console.log(err);
 			res.status(500).send({
 				message: err.message || "Error retrieving user with user_id=" + user_id
 			});
@@ -90,8 +91,8 @@ exports.update = (req, res) => {
 //params:user_id
 exports.delete = (req, res) => {
   const {user_id} = req.params;
-
-  Tutorial.destroy({
+  console.log(user_id);
+  User.destroy({
     where: { id: user_id }
   })
     .then(num => {
@@ -107,7 +108,7 @@ exports.delete = (req, res) => {
     })
     .catch(err => {
       res.status(500).send({
-        message: "Could not delete user with id=" + _user
+        message: "Could not delete user with id=" + user_id
       });
     });
 };

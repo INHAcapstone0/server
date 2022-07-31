@@ -3,3 +3,4 @@ db_config.js
 .env
 /sql
 test.js
+/config

@@ -7,5 +7,5 @@ module.exports=(app)=>{
 
     router.get('/', participants.findAll);
 
-    app.use("/api/participant", router);
+    app.use("/participants", router);
 }

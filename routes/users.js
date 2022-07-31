@@ -6,5 +6,8 @@ module.exports = (app) => {
 
     router.get('/', User.findAll);
 
+    router.get("/:user_id", User.findOne);
+
+    router.delete('/:user_id',User.delete);
     app.use("/users", router);
 }

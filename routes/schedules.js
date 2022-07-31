@@ -6,5 +6,5 @@ module.exports=(app)=>{
 
     router.get('/', schedules.findAll);
 
-    app.use("/api/schedule", router);
+    app.use("/schedules", router);
 }

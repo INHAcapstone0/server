@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"schedule_id",
         sourceKey:"id"
       });
+      this.hasMany(models.Settlement,{
+        foreignKey:"schedule_id",
+        sourceKey:"id"
+      });
     }
   };
   Schedule.init({
