@@ -1,10 +1,31 @@
-module.exports=(app)=>{
-    const schedules=require('../controllers/controller.schedules');
-    var router=require('express').Router();
+const Schedule = require('../controllers/controller.schedules');
+var router = require('express').Router();
 
-    router.post('/', schedules.create);
+module.exports = (app) => {
+	//body:schedule_name, owner_id, startAt, endAt
+	router.post('/', Schedule.create);
 
-    router.get('/', schedules.findAll);
+	//no params
+	router.get('/', Schedule.findAll);
 
-    app.use("/schedules", router);
+	//queryString : name
+	router.get('/schedule-name', Schedule.findAllByScheduleName);
+
+	//queryString : id
+	router.get('/owner', Schedule.findAllByOwnerId);
+
+	//params:schedule_id
+	router.get("/:schedule_id", Schedule.findOne);
+
+	//params:schedule_id
+	//body:schedule_name,owner_id, startAt, endAt
+	router.put('/:schedule_id', Schedule.update)
+
+	//params:schedule_id
+	router.delete('/:schedule_id', Schedule.delete);
+
+	//no params
+	router.delete('/', Schedule.deleteAll)
+
+	app.use("/schedules", router);
 }

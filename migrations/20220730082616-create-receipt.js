@@ -43,7 +43,7 @@ module.exports = {
         //constraints 추가 (최대 길이 지정해야 함)
       },
       payDate:{
-        type:Sequelize.STRING,
+        type:Sequelize.DATE,
         allowNull:true,
         comment:"구매 일자"
         // trigger 등으로 보완해야 할 필드

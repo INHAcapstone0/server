@@ -1,5 +1,5 @@
-> npx sequelize-cli db:migrate  //migrate
-> npx sequelize-cli db:migrate:undo  //undo migrate
+npx sequelize-cli db:migrate  //migrate
+> npx sequelize-cli db:migrate:undo:all  //undo migrate
 > npx sequelize-cli db:seed:all // 모든 seed 실행
 > npx sequelize-cli db:seed:all --debug // Debuggingd을 포함해서 모든 seed 실행
 > npx sequelize-cli db:seed:undo // undo seeder

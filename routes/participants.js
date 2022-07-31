@@ -1,11 +1,20 @@
+const Participant = require('../controllers/controller.participants');
+var router = require('express').Router();
 
-module.exports=(app)=>{
-    const participants=require('../controllers/controller.participants');
-    var router=require('express').Router();
+module.exports = (app) => {
+    router.post('/', Participant.create);
 
-    router.post('/', participants.create);
+    router.get('/', Participant.findAll);
+    
+    //queryString
+    router.get("/schedule_id", Participant.findByScheduleId);
 
-    router.get('/', participants.findAll);
+    //queryString
+    router.get("/participant_id", Participant.findByParticipantId);
 
+    router.delete('/:participant_id',Participant.deleteByParticipantId);
+
+    router.delete('/:schedule_id', Participant.deleteByScheduleId)
+    
     app.use("/participants", router);
 }

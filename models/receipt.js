@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"schedule_id",
         targetKey:"id"
       });
-      this.hasMany(models.ItemList,{
+      this.hasMany(models.Item,{
         foreignKey:"receipt_id",
         sourceKey:"id"
       })
@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
       //constraints 추가 (최대 길이 지정해야 함)
     },
     payDate:{
-      type:DataTypes.STRING,
+      type:DataTypes.DATE,
       allowNull:true,
       comment:"구매 일자"
       // trigger 등으로 보완해야 할 필드
