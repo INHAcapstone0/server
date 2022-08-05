@@ -1,5 +1,6 @@
 
-const {PORT,CORSPORT}=require('./db_config');
+require('dotenv').config();
+const {PORT,CORSPORT}=process.env;
 const express=require('express');
 const app=express();
 const cors=require('cors'); // 프론트 서버와의 연결 시 사용
