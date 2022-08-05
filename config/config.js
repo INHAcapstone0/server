@@ -6,7 +6,7 @@ const development = {
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_DATABASE,
   host: env.MYSQL_HOST,
-  dialect: env.MYSQL_DIALECT,
+  dialect: env.MYSQL_DIALECT || "mysql",
   port: env.MYSQL_PORT,
   uri: env.URI
 };
@@ -16,8 +16,9 @@ const production = {
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_DATABASE,
   host: env.MYSQL_HOST,
-  dialect: env.MYSQL_DIALECT,
-  port: env.MYSQL_PORT
+  dialect: env.MYSQL_DIALECT||"mysql",
+  port: env.MYSQL_PORT,
+  uri: env.URI
 };
 
 const test = {
@@ -25,8 +26,8 @@ const test = {
   password: env.MYSQL_PASSWORD,
   database: env.MYSQL_DATABASE,
   host: env.MYSQL_HOST,
-  dialect: env.MYSQL_DIALECT,
-  port: env.MYSQL_PORT
+  dialect: env.MYSQL_DIALECT || "mysql",
+  port: env.MYSQL_PORT 
 };
 
 module.exports = { development, production, test };

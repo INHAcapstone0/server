@@ -1,5 +1,6 @@
 'use strict';
 
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
@@ -10,9 +11,9 @@ const db = {};
 
 console.log(env);
 let sequelize;
-if (env=="test"){
+if (env=="development"){
   sequelize= new Sequelize(config.database, config.username, config.password, config);
-}else{
+}else if (env=="production"){
   sequelize= new Sequelize(config.uri);
 }
 // const sequelize= new Sequelize(config.database, config.username, config.password, config);

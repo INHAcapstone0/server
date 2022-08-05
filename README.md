@@ -1,4 +1,4 @@
-테스트 환경 시작 시 NODE_ENV="test" nodemon app
+테스트 환경 시작 시 cross-env NODE_ENV=test
 
 npx sequelize-cli db:migrate  //migrate
 > npx sequelize-cli db:migrate:undo:all  //undo migrate
