@@ -11,7 +11,7 @@ const development = {
 };
 
 const production = {
-  use_env_variable: env.URI,
+  use_env_variable: "URI",
   "dialect": "mysql"
 };
 
