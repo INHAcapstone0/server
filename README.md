@@ -1,3 +1,5 @@
+테스트 환경 시작 시 NODE_ENV="test" nodemon app
+
 npx sequelize-cli db:migrate  //migrate
 > npx sequelize-cli db:migrate:undo:all  //undo migrate
 > npx sequelize-cli db:seed:all // 모든 seed 실행
