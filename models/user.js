@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
-      comment:"비밀번호(해싱된 32자리 string), md5로 해싱"
+      comment:"비밀번호(해싱된 32자리 string), bcrypt로 해싱"
       //정규표현식 작성 추가할것
     },
     name:{

@@ -1,4 +1,5 @@
 require('dotenv').config();
+require('express-async-errors');
 const PORT=process.env.PORT || 8002
 const express = require('express');
 const app = express();
