@@ -30,5 +30,5 @@ module.exports = (app) => {
 	//no params
 	// router.delete('/', deleteAll)
 
-	app.use("/users", authenticateUser, router);
+	app.use("/users", router);
 }

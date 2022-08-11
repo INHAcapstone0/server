@@ -9,24 +9,20 @@ module.exports = (app) => {
 	//no params
 	router.get('/', Schedule.getAllSchedules);
 
-	//queryString : name
-	router.get('/schedule-name', Schedule.findAllByScheduleName);
-
-	//queryString : id
-	router.get('/owner', Schedule.findAllByOwnerId);
-
 	//params:schedule_id
-	router.get("/:schedule_id", Schedule.findOne);
+	router.get("/:id", Schedule.getSchedule);
 
 	//params:schedule_id
 	//body:schedule_name,owner_id, startAt, endAt
-	router.put('/:schedule_id', Schedule.update)
+	router.patch('/:id', Schedule.updateSchedule)
 
+	router.put('/restore/:id', Schedule.restoreSchedule);
 	//params:schedule_id
-	router.delete('/:schedule_id', Schedule.delete);
+
+	router.delete('/:id', Schedule.deleteSchedule);
 
 	//no params
 	// router.delete('/', Schedule.deleteAll)
 
-	app.use("/schedules", authenticateUser, router);
+	app.use("/schedules", router);
 }

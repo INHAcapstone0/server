@@ -14,20 +14,16 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"owner_id"
       });
       this.hasMany(models.Participant,{
-        foreignKey:"participant_id",
-        sourceKey:"id"
+        foreignKey:"participant_id"
       });
       this.hasMany(models.Receipt,{
-        foreignKey:"poster_id",
-        sourceKey:"id"
+        foreignKey:"poster_id"
       });
       this.hasMany(models.Settlement,{
-        foreignKey:"sender_id",
-        sourceKey:"id"
+        foreignKey:"sender_id"
       });
       this.hasMany(models.Settlement,{
-        foreignKey:"receiver_id",
-        sourceKey:"id"
+        foreignKey:"receiver_id"
       });
     }
   };
@@ -74,7 +70,12 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     modelName:"User",
     timestamps:true, // createdAt, updatedAt 활성화
-    paranoid:true // timestamps 활성화 시 사용 가능, deletedAt field 활성화
+    paranoid:true, // timestamps 활성화 시 사용 가능, deletedAt field 활성화
+    // hooks:{
+    //   beforeBulkUpdate: async(user)=>{
+    //     console.log('awfewafawe')
+    //   }
+    // }
   });
   return User;
 };
