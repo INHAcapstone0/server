@@ -1,4 +1,4 @@
-const Schedule = require('../controllers/controller.schedules');
+const Schedule = require('../controllers/schedules');
 var router = require('express').Router();
 
 module.exports = (app) => {

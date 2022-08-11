@@ -30,7 +30,6 @@ module.exports = (sequelize, DataTypes) => {
   {
     sequelize,
     modelName:"Participant",
-    tableName:"Participants",
     timestamps:true, // createAt, updateAt field 활성화
   });
   

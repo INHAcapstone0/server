@@ -1,13 +1,11 @@
-const User = require('../controllers/controller.users');
+const User = require('../controllers/users');
 var router = require('express').Router();
+const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
 
-	//body:user_email, user_pw, user_name
-	router.post('/', User.create);
-
 	//queryString:name
-	router.get('/', User.findAllByName);
+	router.get('/', User.getUsers);
 
 	//params:user_id
 	router.get("/:user_id", User.findOne);
@@ -25,5 +23,5 @@ module.exports = (app) => {
 	//no params
 	router.delete('/', User.deleteAll)
 
-	app.use("/users", router);
+	app.use("/users", authenticateUser, router);
 }

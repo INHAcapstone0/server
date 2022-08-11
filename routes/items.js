@@ -1,4 +1,4 @@
-const Item = require('../controllers/controller.items');
+const Item = require('../controllers/items');
 var router = require('express').Router();
 
 module.exports = (app) => {

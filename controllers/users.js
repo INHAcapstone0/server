@@ -1,51 +1,24 @@
 const db = require('../models');
+const { StatusCodes } = require('http-status-codes')
+const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
 const User = db.User;
 const Op = db.Sequelize.Op;
-const md5 = require('md5');
 
-
-exports.create = (req, res) => {
-  const { user_email, user_pw, user_name } = req.body;
-
-  if (!user_email || !user_pw || !user_name) {
-    res.status(400).send({
-      message: "Content cannot be empty!"
-    });
-    return;
-  }
-
-  const user = {
-    user_email: user_email,
-    user_pw: md5(user_pw),
-    user_name: user_name,
-  };
-
-  User.create(user)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      console.log(err.errors[0].message);
-      res.status(500).send({
-        message: err.errors[0].message || "Some error occured while creating user."
-      });
-    });
-}
-
-exports.findAllByName = (req, res) => {
+exports.getUsers = async (req, res) => {
   const { name } = req.query;
 
-  const condition = name ? { user_name: { [Op.like]: `%${name}%` } } : null;
+  console.log(name)
+  const condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
+  
+  const users= await User.findAll({ where: condition })
 
-  User.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while finding users."
-      });
-    })
+  if(!users){
+    throw new NotFoundError('유저가 존재하지 않습니다.')
+  }
+
+  delete users.password
+  
+  res.status(StatusCodes.OK).json(users)
 };
 
 exports.findOne = (req, res) => {
@@ -65,9 +38,6 @@ exports.findOne = (req, res) => {
 
 exports.update = (req, res) => {
   const { user_id } = req.params;
-  if (req.body.user_pw) {
-    req.body.user_pw = md5(req.body.user_pw);
-  }
 
   User.update(req.body, {
     where: { id: user_id }

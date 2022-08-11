@@ -1,4 +1,4 @@
-const Receipt = require('../controllers/controller.receipts');
+const Receipt = require('../controllers/receipts');
 var router = require('express').Router();
 
 module.exports = (app) => {
@@ -20,5 +20,5 @@ module.exports = (app) => {
 
 	router.delete('/', Receipt.deleteAll)
 
-	app.use("/participants", router);
+	app.use("/receipts", router);
 }

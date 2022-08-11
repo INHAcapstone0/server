@@ -1,4 +1,4 @@
-const Participant = require('../controllers/controller.participants');
+const Participant = require('../controllers/participants');
 var router = require('express').Router();
 
 module.exports = (app) => {

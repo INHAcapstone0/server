@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /*
@@ -38,7 +39,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey:true,
       comment:"유저 식별번호"
     },
-    user_email:{
+    email:{
       type: DataTypes.STRING,
       unique:true,
       validate:{
@@ -47,12 +48,12 @@ module.exports = (sequelize, DataTypes) => {
       comment:"이메일"
       //정규표현식 작성 추가할것
     },
-    user_pw: {
+    password: {
       type: DataTypes.STRING,
       comment:"비밀번호(해싱된 32자리 string), md5로 해싱"
       //정규표현식 작성 추가할것
     },
-    user_name:{
+    name:{
       type:DataTypes.STRING,
       unique:true,
       comment:"유저 이름"
@@ -72,7 +73,6 @@ module.exports = (sequelize, DataTypes) => {
   },
   {
     sequelize,
-    tableName:"Users",
     modelName:"User",
     timestamps:true, // createdAt, updatedAt field 활성화
     paranoid:true // timestamps 활성화 시 사용 가능, deletedAt field 활성화

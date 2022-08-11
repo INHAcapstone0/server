@@ -56,8 +56,8 @@ exports.create = async (req, res) => {
     memo: memo,
   }
 
-  Recipt.create(receipt)
-    .then(data => {
+  Receipt.create(receipt)
+    .then(data => {ß
       res.send(data);
     })
     .catch(err => {
