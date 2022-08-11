@@ -1,4 +1,5 @@
-const {login, register, checkEmail, checkName}=require('../controllers/auth')
+const {login, register, checkEmail, checkName, refresh}=require('../controllers/auth')
+
 var router = require('express').Router();
 
 module.exports = (app) => {
@@ -10,6 +11,8 @@ module.exports = (app) => {
 	router.get('/check/email', checkEmail)
 
 	router.get('/check/name', checkName)
+
+	router.get('/refresh', refresh)
 
 	app.use("/auth", router);
 }

@@ -1,4 +1,4 @@
-const { verify } = require('../util/jwt-utils');
+const { verify } = require('../utils/jwt-util');
 const { UnauthenticatedError } = require('../errors')
 
 const auth = (req, res, next) => {

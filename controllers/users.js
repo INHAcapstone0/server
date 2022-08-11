@@ -3,127 +3,92 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
 const User = db.User;
 const Op = db.Sequelize.Op;
+const {isValidPassword, hashPassword}=require('../lib/modules');
+// const { promisify } = require('util');
 
-exports.getUsers = async (req, res) => {
+exports.getAllUsers = async (req, res) => {
   const { name } = req.query;
-
-  console.log(name)
   const condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
-  
-  const users= await User.findAll({ where: condition })
 
-  if(!users){
+  const users = await User.findAll({ where: condition })
+  if (!users) {
     throw new NotFoundError('유저가 존재하지 않습니다.')
   }
-
+  // password 필드 제거 후 user에게 리턴
   delete users.password
-  
+
   res.status(StatusCodes.OK).json(users)
 };
 
-exports.findOne = (req, res) => {
-  const { user_id } = req.params;
+exports.getUser = async (req, res) => {
+  const { id } = req.params;
 
-  User.findByPk(user_id)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: err.message || "Error retrieving user with user_id=" + user_id
-      });
-    });
+  const user = await User.findByPk(id)
+  
+  if(!user){
+    throw new NotFoundError('유저가 존재하지 않습니다.')
+  }
+
+  res.status(StatusCodes.OK).json(user)
 };
 
-exports.update = (req, res) => {
-  const { user_id } = req.params;
-
-  User.update(req.body, {
-    where: { id: user_id }
+exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  
+  if(req.body&&req.body.password){
+    if (!isValidPassword(req.body.password)) {
+      throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리로 입력하세요.');
+    }
+    req.body.password= await hashPassword(req.body.password);
+    // promisify 사용 안됨. 나중에 고치기
+    // req.body.password = await promisify(hashPassword)(req.body.password);
+  }
+  
+  const result = await User.update(req.body, {
+    where: { id: id }
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "A user was updated successfully."
-        });
-      } else {
-        res.send({
-          message: `Cannot update user with user_id=${user_id}. Maybe user was not found or req.body is empty!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.errors[0].message ||"Error updating user."
-      });
-    });
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`${result}명의 유저가 업데이트되었습니다.` })
+  }else{
+    throw new NotFoundError('업데이트할 유저가 존재하지 않습니다.')
+  }
 };
 
-exports.restore = (req, res) => {
-  const { user_id } = req.params;
+exports.restoreUser = async (req, res) => { // 삭제된 유저 복구
+  const { id } = req.params;
 
-  User.restore({ where: { id: user_id }
+  if(!id){
+    throw new BadRequestError('유저 id를 입력해주세요.');
+  }
+
+  const result = await User.restore({
+    where: { id }
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "Successfully restore the user."
-        });
-      } else {
-        res.send({
-          message: `Cannot restore user with user_id=${user_id}. Maybe user was not found.`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Error on restoring user."
-      })
-    });
+
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`유저가 성공적으로 복구되었습니다..` })
+  }else{
+    throw new NotFoundError('복구할 유저가 존재하지 않습니다.')
+  }
 }
 
-exports.delete = (req, res) => {
-  const { user_id } = req.params;
+exports.deleteUser = async (req, res) => {
+  const { id } = req.params;
 
-  User.destroy({
-    where: { id: user_id },
+  if(!id){
+    throw new BadRequestError('유저 id를 입력해주세요.');
+  }
+
+  const result = await User.destroy({
+    where: { id }
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "A user was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete user with id=${user_id}. Maybe user was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message||"Could not delete user with id=" + user_id
-      });
-    });
+
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`유저가 성공적으로 삭제되었습니다.` })
+  }else{
+    throw new NotFoundError('삭제할 유저가 존재하지 않습니다.')
+  }
 };
-
-exports.deleteAll = (req, res) => {
-  User.destroy({
-    where: {},
-    truncate: false
-  })
-    .then(nums => {
-      res.send({ message: `${nums} users were deleted successfully!` });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all tutorials."
-      });
-    });
-};
-
-
 
 
 

@@ -1,103 +1,85 @@
-const db = require('../models');
 const { toDate, isValidDate } = require('../lib/modules');
-const { Schedule, User } = db;
+const db = require('../models');
+const { StatusCodes } = require('http-status-codes')
+const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
+const User = db.User;
+const Schedule = db.Schedule;
 const Op = db.Sequelize.Op;
 
 //추후에 기간 중복에 대한 유효성 검증할 것
-exports.create = async (req, res) => {
+exports.createSchedule = async (req, res) => {
   let {
-    schedule_name,
+    name,
     owner_id,
     startAt, // yyyymmddhhmmss
     endAt // yyyymmddhhmmss
   } = req.body;
 
-  if (!(schedule_name && owner_id && startAt && endAt)) {
-    res.status(400).send({
-      message: "Content cannot be empty!"
-    });
-    return;
+  if (!name || !owner_id || !startAt || !endAt) {
+    throw new BadRequestError('모든 값을 입력해주세요.')
   }
 
-  startAt = toDate(startAt);
-  endAt = toDate(endAt);
-
-  if (!(isValidDate(startAt) && isValidDate(endAt))) {
-    res.status(400).send({
-      message: "일정 시작일과 종료일을 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요."
-    });
-    return;
-  } else if (startAt >= endAt) {
-    res.status(400).send({
-      message: "일정 종료시간을 일정 시작시간 이후의 날짜로 입력하세요."
-    });
-    return;
+  req.body.startAt = toDate(req.body.startAt);
+  req.body.endAt = toDate(req.body.endAt);
+  
+  if (!isValidDate(req.body.startAt) && !isValidDate(req.body.endAt)) {
+    throw new BadRequestError('일정 시작일과 종료일을 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+  } else if (req.body.startAt >= req.body.endAt) {
+    throw new BadRequestError('일정 종료시간을 일정 시작시간 이후의 날짜로 입력하세요.')
   }
 
-  var user = await User.findByPk(owner_id)
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured."
-      });
-      return null;
-    });
-
+  const user = await User.findByPk(owner_id)
   if (!user) {
-    res.status(400).send({
-      message: "Owner ID 정보가 존재하지 않습니다."
-    });
-    return;
+    throw new NotFoundError('소유자 id를 가진 유저가 존재하지 않습니다.')
   }
 
-  await Schedule.findAll({
-    where: {
-      schedule_name: schedule_name,
-      owner_id: owner_id,
-      startAt: startAt,
-      endAt: endAt,
-    }
-  })
-    .then(data => {
-      if (data.length!=0) {
-        res.status(400).send({
-          message: "중복된 기간의 같은 이름의 스케줄이 존재합니다."
-        });
-        return;
-      } else {
-        const schedule = {
-          schedule_name: schedule_name,
-          owner_id: owner_id,
-          startAt: startAt,
-          endAt: endAt,
-        }
-        Schedule.create(schedule)
-          .then(data => {
-            res.send(data);
-          })
-          .catch(err => {
-            res.status(500).send({
-              message: err.message || "Some error occured while creating schedule."
-            });
-          });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while creating schedule."
-      });
-    });
+  // 중복된 스케줄이 존재하면 created를 반환
+  const [schedule, created] = await Schedule.findOrCreate({
+    where: { owner_id, name },
+    defaults: req.body
+  });
+  
+  if(!created){
+    throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
+  }
+
+  res.status(StatusCodes.CREATED).json(schedule)
 }
 
-exports.findAll = (req, res) => {
-  Schedule.findAll()
-    .then(data => {
-      res.send(data);
+exports.getAllSchedules = async(req, res) => {
+  const {owner_name, owner_id, name }=req.query;
+  const condition={}
+  let schedules;
+
+  // owner_name으로 조회할 때
+  if(owner_name){
+    condition.name= { [Op.like]: `%${owner_name}%` };
+    schedules= await Schedule.findAll({
+      where:{
+        '$User.name$':{[Op.like]:`%${owner_name}%`}
+      },
+      include: [{
+        model: User,
+        attributes:[]
+      }],
+      attributes:['name']
     })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while finding users."
-      });
-    })
+  }else{
+    if(owner_id){
+      condition.owner_id=owner_id
+    }
+    if(name){
+      condition.name= { [Op.like]: `%${name}%` };
+    }
+    schedules= await Schedule.findAll({
+      where:condition
+    });
+  }
+  if(!schedules.length){
+    throw new NotFoundError('스케줄이 존재하지 않습니다.')
+  }
+  res.status(StatusCodes.OK).json(schedules);
+  // owner_name없이 조회할 때
 };
 
 exports.findAllByScheduleName = (req, res) => {

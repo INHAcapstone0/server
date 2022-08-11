@@ -1,3 +1,9 @@
+초기 세팅
+>> .env파일 메인단에 추가
+>> mysql
+grant all privileges on *.* to root@localhost;
+flush privileges;
+
 테스트 환경 시작 시 cross-env NODE_ENV=test
 
 heroku에서 migration 작업 진행 시 앞에 heroku run 붙이기

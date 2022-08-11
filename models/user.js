@@ -11,8 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.hasMany(models.Schedule,{
-        foreignKey:"owner_id",
-        sourceKey:"id",
+        foreignKey:"owner_id"
       });
       this.hasMany(models.Participant,{
         foreignKey:"participant_id",
@@ -46,24 +45,24 @@ module.exports = (sequelize, DataTypes) => {
         isEmail:true,
       },
       comment:"이메일"
-      //정규표현식 작성 추가할것
     },
     password: {
       type: DataTypes.STRING,
       comment:"비밀번호(해싱된 32자리 string), bcrypt로 해싱"
-      //정규표현식 작성 추가할것
     },
     name:{
       type:DataTypes.STRING,
       unique:true,
-      comment:"유저 이름"
+      comment:"유저 이름, 특수문자 제외 2자 이상 10자 이하"
       //정규표현식 작성 추가할것
     },
     login_failed_cnt:{
       type: DataTypes.INTEGER,
       defaultValue:0,
-      comment:"로그인 실패 횟수"
-      //constraint 추가(5 이하의 숫자)
+      comment:"로그인 실패 횟수",
+      validate:{
+        max:5
+      }
     },
     is_locked:{
       type:DataTypes.BOOLEAN,
@@ -74,7 +73,7 @@ module.exports = (sequelize, DataTypes) => {
   {
     sequelize,
     modelName:"User",
-    timestamps:true, // createdAt, updatedAt field 활성화
+    timestamps:true, // createdAt, updatedAt 활성화
     paranoid:true // timestamps 활성화 시 사용 가능, deletedAt field 활성화
   });
   return User;

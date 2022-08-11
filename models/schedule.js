@@ -9,8 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       this.belongsTo(models.User,{
-        foreignKey:"owner_id",
-        targetKey:"id",
+        foreignKey: "owner_id",
+        allowNull: false,
+        constraints: true,
+        onDelete: 'cascade'
       });
       this.hasMany(models.Participant,{
         foreignKey:"schedule_id",
@@ -33,20 +35,9 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey:true,
       comment:"스케줄 식별번호"
     },
-    schedule_name:{
+    name:{
       type: DataTypes.STRING,
       comment:"일정 이름",
-      //정규표현식 작성 추가할것
-    },
-    owner_id:{
-      type:DataTypes.UUID,
-      comment:"일정 소유자(제작자)"
-    },
-    completeAt:{
-      type:DataTypes.DATE,
-      allowNull:true,
-      defaultValue:null,
-      comment:"정산 마감시각"
       //정규표현식 작성 추가할것
     },
     startAt:{
@@ -59,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.DATE,
       allowNull:true,
       defaultValue:null,
-      comment:"일정 종료시간"
+      comment:"일정 종료시간(또는 정산 시작시간)"
     },
   },
   {
