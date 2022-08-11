@@ -16,6 +16,8 @@ const errorHandlerMiddleware=require('./middleware/error-handler')
 // app.use(cors(corsOptions))
 
 //router 추가하기
+app.use(express.json())
+
 fs
 .readdirSync(__dirname + "/routes")
 .forEach(data => {
@@ -24,8 +26,6 @@ fs
 
 app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
-
-app.use(express.json())
 
 const start= async()=>{
   try {
