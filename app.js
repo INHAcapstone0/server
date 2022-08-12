@@ -6,6 +6,7 @@ const app = express();
 const fs = require('fs');
 const notFoundMiddleware=require('./middleware/not-found')
 const errorHandlerMiddleware=require('./middleware/error-handler')
+const cors=require('cors')
 
 // const cors=require('cors'); // 프론트 서버와의 연결 시 사용
 
@@ -17,6 +18,7 @@ const errorHandlerMiddleware=require('./middleware/error-handler')
 
 //router 추가하기
 app.use(express.json())
+app.use(cors())
 
 fs
 .readdirSync(__dirname + "/routes")
