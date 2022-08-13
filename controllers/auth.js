@@ -43,7 +43,7 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
   let { email, password, name } = req.body;
-  var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[$@!%*#?&])[a-z0-9$@!%*#?&]{8,}$");
+  var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[$@^!%*#?&])[a-z0-9$@^!%*#?&]{8,}$");
   if (!checkPassword.test(password)) {
     throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리로 입력하세요.');
   }
