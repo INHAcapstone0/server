@@ -1,4 +1,10 @@
-const {login, register, checkEmail, checkName, refresh}=require('../controllers/auth')
+const {
+	login, 
+	register, 
+	checkEmail, 
+	checkName, 
+	refresh
+}=require('../controllers/auth')
 
 var router = require('express').Router();
 

@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Items', {
+    await queryInterface.createTable('items', {
       id:{
         type:Sequelize.UUID,
         defaultValue:Sequelize.UUIDV4,
@@ -12,26 +12,32 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"영수증 ID",
         references: {
-          model: 'Receipts',
+          model: 'receipts',
           key: 'id'
         },
       },
-      item_name:{
+      name:{
         type:Sequelize.STRING,
+        default:'무제',
         comment:"물픔(또는 구매내역) 이름"
-        //정규 표현식 추가
       },
-      item_quantity:{
+      quantity:{
         type:Sequelize.INTEGER,
         defaultValue:1,
-        comment:"물품 수량"
-        //constraints 추가
+        comment:"물품 수량",
+        validate:{ // 최대 100개 한도
+          min:0,
+          max:100
+        }
       },
-      item_price:{
+      price:{
         type:Sequelize.INTEGER,
         defaultValue:0,
-        comment:"물품 단가"
-        //constraints 추가
+        comment:"물품 단가",
+        validate:{ // 최대 200만원 한도
+          min:0,
+          max:2000000
+        }
       },
       createdAt: {
         allowNull: false,
@@ -48,6 +54,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Items');
+    await queryInterface.dropTable('items');
   }
 };

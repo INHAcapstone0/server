@@ -1,17 +1,17 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
+const { BadRequestError, NotFoundError } = require('../errors')
 const User = db.User;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../lib/modules');
-// const { promisify } = require('util');
 
 exports.getAllUsers = async (req, res) => {
   const { name } = req.query;
   const condition = name ? { name: { [Op.like]: `%${name}%` } } : null;
 
-  const users = await User.findAll({ where: condition })
-  if (!users) {
+  const users = await User.findAll({})
+  
+  if (!users.length) {
     throw new NotFoundError('유저가 존재하지 않습니다.')
   }
   // password 필드 제거 후 user에게 리턴

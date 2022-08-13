@@ -1,24 +1,26 @@
-const Item = require('../controllers/items');
+const {
+	createItem,
+	restoreItem,
+	updateItem,
+	deleteItem,
+	getAllItems,
+	getItem,
+} = require('../controllers/items');
 var router = require('express').Router();
+const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
-	//body:user_email, user_pw, user_name
-	router.post('/', Item.create);
+	router.post('/', createItem)
 
-	//no params
-	router.get('/', Item.findAll);
+	router.get('/', getAllItems)
 
-	//params:
-	router.get('/:item_id', Item.findOne);
+	router.get('/:id', getItem)
 
-	//queryString
-	router.get("/name", Item.findByItemName);
+	router.patch('/:id', updateItem)
 
-	router.put("/:item_id", Item.update);
+	router.put('/restore/:id', restoreItem)
 
-	router.delete('/:item_id', Item.delete);
+	router.delete('/:id', deleteItem)
 
-	router.delete('/', Item.deleteAll)
-
-	app.use("/items", router);
+	app.use('/items', authenticateUser, router)
 }

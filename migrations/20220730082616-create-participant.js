@@ -1,12 +1,12 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Participants', {
+    await queryInterface.createTable('participants', {
       participant_id:{
         type: Sequelize.UUID,
         comment:"참여자 ID",
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
       },
@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"참여 일정 ID",
         references: {
-          model: 'Schedules',
+          model: 'schedules',
           key: 'id'
         },
       },
@@ -33,6 +33,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Participants');
+    await queryInterface.dropTable('participants');
   }
 };

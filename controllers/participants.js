@@ -1,166 +1,83 @@
 const db = require('../models');
-const {Participant,User,Schedule} = db;
-
+const { StatusCodes } = require('http-status-codes')
+const { BadRequestError, NotFoundError } = require('../errors')
+const Participant = db.Participant;
 const Op = db.Sequelize.Op;
 
-exports.create = async (req, res) => {
-	const { schedule_id, participant_id } = req.body;
+exports.createParticipant=async(req, res)=>{
+  const {participant_id, schedule_id}=req.body
 
-	if (!schedule_id || !participant_id) {
-		res.status(400).send({
-			message: "Content cannot be empty!"
-		});
-		return;
-	}
+  if(!participant_id || !schedule_id){
+    throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.')
+  }
 
-  //schedule_id, participant_id가 테이블에 존재하는지 확인
-  await User.findByPk(participant_id)
-    .then(data=>{
-      if(data.length==0){
-        res.status(400).send({
-          message: "참여자 ID 정보가 존재하지 않습니다."
-        });
-        return;
-      }
-    })
-    .then(()=>{
-      Schedule.findByPk(schedule_id)
-        .then(data=>{
-          if(data.length==0){
-            res.status(400).send({
-              message: "스케줄 ID 정보가 존재하지 않습니다."
-            });
-            return;
-          }
-        })
-    })
-    .catch(err=>{
-      console.log(err);
-      res.status(500).send({
-				message: err.message || "Some error occured."
-			});
-      return;
-    })
+  const [participant, created] = await Participant.findOrCreate({
+    where: { participant_id, schedule_id },
+    defaults: req.body
+  })
 
-	const participant = {
-		schedule_id: schedule_id,
-		participant_id: participant_id,
-	};
+  if(!created){
+    throw new BadRequestError('중복된 참여자 정보가 존재합니다.')
+  }
 
-	Participant.create(participant)
-		.then(data => {
-			res.send(data);
-		})
-		.catch(err => {
-			res.status(500).send({
-				message: err.message || "Some error occured while creating participant."
-			});
-		});
+  res.status(StatusCodes.CREATED).json(participant)
 }
 
-exports.findAll = (req, res) => {
-	Participant.findAll()
-		.then(data => {
-			res.send(data);
-		})
-		.catch(err => {
-			res.status(500).send({
-				message: err.message || "Some error occured while finding participants."
-			});
-		})
-};
+exports.getAllParticipants = async (req, res) => {
+  const {participant_id, schedule_id}= req.query;
+  let condition={}
 
-//queryString : schedule_id
-exports.findByScheduleId = (req, res) => {
-	const  {schedule_id} = req.query;
-  
-	Participant.findAll({ schedule_id:schedule_id })
-		.then(data => {
-			res.send(data);
-		})
-		.catch(err => {
-			res.status(500).send({
-				message: err.message || "Some error occured while finding participants."
-			});
-		})
-};
+  if(participant_id){
+    condition.participant_id=participant_id
+  }
+  if(schedule_id){
+    condition.schedule_id=schedule_id
+  }
 
-exports.findByParticipantId = (req, res) => {
-	const  {participant_id} = req.query;
-  
-	Participant.findAll({ participant_id:participant_id })
-		.then(data => {
-			res.send(data);
-		})
-		.catch(err => {
-			res.status(500).send({
-				message: err.message || "Some error occured while finding participants."
-			});
-		})
-};
-
-//params:participant_id
-exports.deleteByParticipantId = (req, res) => {
-  const {participant_id} = req.params;
-  
-  Participant.destroy({
-    where: { participant_id: participant_id }
+  const participants= await Participant.findAll({
+    where:condition
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "A participant was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete participant with id=${participant_id}. Maybe participant was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete participant with id=" + participant_id
-      });
-    });
-};
-exports.deleteByScheduleId = (req, res) => {
-  const {participant_id: schedule_id} = req.params;
-  
-  Participant.destroy({
-    where: { schedule_id: schedule_id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "A participant was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete participant with id=${schedule_id}. Maybe participant was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: "Could not delete participant with id=" + schedule_id
-      });
-    });
+
+  if(!participants.length){
+    throw new NotFoundError('참여자 정보가 존재하지 않습니다.')
+  }
+  res.status(StatusCodes.OK).json(participants)
 };
 
-exports.deleteAll = (req, res) => {
-  Participant.destroy({
-    where: {},
-    truncate: false
+exports.restoreParticipant = async (req, res) => { // 삭제된 유저 복구
+  const {participant_id, schedule_id}= req.body;
+
+  if(!participant_id || !schedule_id){
+    throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.');
+  }
+
+  const result = await Participant.restore({
+    where: { participant_id, schedule_id }
   })
-    .then(nums => {
-      res.send({ message: `${nums} participants were deleted successfully!` });
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all participants."
-      });
-    });
+
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`참여자 정보가 성공적으로 복구되었습니다.` })
+  }else{
+    throw new NotFoundError('복구할 유저가 존재하지 않습니다.')
+  }
+}
+
+exports.deleteParticipant = async (req, res) => {
+  const {participant_id, schedule_id}= req.body;
+
+  if(!participant_id || !schedule_id){
+    throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.');
+  }
+
+  const result = await Participant.destroy({
+    where: { participant_id, schedule_id }
+  })
+
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`참여자 정보가 성공적으로 삭제되었습니다.` })
+  }else{
+    throw new NotFoundError('삭제할 참여자 정보가 존재하지 않습니다.')
+  }
 };
 
 

@@ -1,24 +1,26 @@
-const Receipt = require('../controllers/receipts');
+const {
+	createReceipt,
+	getAllReceipts,
+	getReceipt,
+	updateReceipt,
+	restoreReceipt,
+	deleteReceipt,
+} = require('../controllers/receipts');
 var router = require('express').Router();
+const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
-	router.post('/', Receipt.create);
+	router.post('/', createReceipt)
 
-	router.get('/', Receipt.findAll);
+	router.get('/', getAllReceipts)
 
-	router.get('/:receipt_id', Receipt.findOne);
+	router.get('/:id', getReceipt)
 
-	//queryString
-	router.get("/schedule_id", Receipt.findByScheduleId);
+	router.patch('/:id', updateReceipt)
 
-	//queryString
-	router.get("/poster_id", Receipt.findByPosterId);
+	router.put('/restore/:id', restoreReceipt)
 
-	router.put("/:receipt_id", Receipt.update);
+	router.delete('/:id', deleteReceipt)
 
-	router.delete('/:poster_id', Receipt.delete);
-
-	router.delete('/', Receipt.deleteAll)
-
-	app.use("/receipts", router);
+	app.use('/receipts', authenticateUser, router)
 }

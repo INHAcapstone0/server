@@ -1,5 +1,5 @@
 'use strict';
-const md5 = require('md5');
+const bcrypt = require('bcrypt')
 const { v4: uuidV4} = require('uuid')
 
 module.exports = {
@@ -17,12 +17,16 @@ module.exports = {
       'b19b0334-4553-4b55-b4e8-5afa58aa958b',
       'c510ef47-1239-466e-98fc-e60f4413137a'
     ];
+    const salt = await bcrypt.genSalt(10);
+
     for(let i = 0; i < 10; i++){
+      let password = `rlathfals${i}#`
+      password = await bcrypt.hash(password, salt)
       let obj = {
         id:sampleIds[i], //나중에 랜덤한 UUID값으로 바꿀것 ->id:uuidV4()
-        user_email: "test" + i + "@example.com",
-        user_name: "testUser" + i,
-        user_pw: md5("1234"),
+        email: "test" + i + "@example.com",
+        name: "testUser" + i,
+        password: password,
         createdAt:new Date(),
         updatedAt:new Date(),
       };
@@ -39,11 +43,10 @@ module.exports = {
     for(let i = 0; i < 10; i++){
       let obj = {
         id:uuidV4(),
-        schedule_name: "testSchedule" + i,
+        name: "testSchedule" + i,
         owner_id:userIds[0][Math.floor(Math.random() * 10)].id,
         startAt:new Date(),
         endAt:new Date(),
-        completeAt:new Date(),
         createdAt:new Date(),
         updatedAt:new Date(),
       };

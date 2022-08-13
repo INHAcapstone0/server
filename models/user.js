@@ -71,11 +71,6 @@ module.exports = (sequelize, DataTypes) => {
     modelName:"User",
     timestamps:true, // createdAt, updatedAt 활성화
     paranoid:true, // timestamps 활성화 시 사용 가능, deletedAt field 활성화
-    // hooks:{
-    //   beforeBulkUpdate: async(user)=>{
-    //     console.log('awfewafawe')
-    //   }
-    // }
   });
   return User;
 };

@@ -1,5 +1,7 @@
 'use strict';
 const { Model } = require('sequelize');
+const {BadRequestError}=require('../errors/')
+
 module.exports = (sequelize, DataTypes) => {
   class Receipt extends Model {
     static associate(models) {
@@ -8,66 +10,71 @@ module.exports = (sequelize, DataTypes) => {
         User와 N:1
         ItemList와 1:N
       */
-      this.belongsTo(models.User,{
-        foreignKey:"poster_id",
-        targetKey:"id"
+      this.belongsTo(models.User, {
+        foreignKey: "poster_id"
       });
-      this.belongsTo(models.Schedule,{
-        foreignKey:"schedule_id",
-        targetKey:"id"
+      this.belongsTo(models.Schedule, {
+        foreignKey: "schedule_id"
       });
-      this.hasMany(models.Item,{
-        foreignKey:"receipt_id",
-        sourceKey:"id"
+      this.hasMany(models.Item, {
+        foreignKey: "receipt_id"
       })
     }
   };
   Receipt.init({
-    id:{
-      type:DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4,
-      primaryKey:true,
-      comment:"영수증 식별번호"
-    },
-    schedule_id:{
+    id: {
       type: DataTypes.UUID,
-      comment:"영수증 소속 일정 ID"
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+      comment: "영수증 식별번호"
     },
-    poster_id:{
-      type:DataTypes.UUID,
-      comment:"영수증 게시자 ID"
+    schedule_id: {
+      type: DataTypes.UUID,
+      comment: "영수증 소속 일정 ID"
     },
-    total_price:{
-      type:DataTypes.INTEGER,
-      defaultValue:0,
-      comment:"총 결제금액"
-      //constraints 추가 (최대 금액 지정해야 함)
+    poster_id: {
+      type: DataTypes.UUID,
+      comment: "영수증 게시자 ID"
     },
-    place_of_payment:{
-      type:DataTypes.STRING,
-      allowNull:true,
-      comment:"구매처(또는 상호명)"
-      //constraints 추가 (최대 길이 지정해야 함)
+    total_price: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 0,
+      comment: "총 결제금액",
+      validate: { // 1000만원 한도
+        min: 0,
+        max: 10000000
+      }
     },
-    memo:{
-      type:DataTypes.STRING,
-      allowNull:true,
-      comment:"기타 사항"
-      //constraints 추가 (최대 길이 지정해야 함)
+    place_of_payment: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: "구매처(또는 상호명)"
     },
-    payDate:{
-      type:DataTypes.DATE,
-      allowNull:true,
-      comment:"구매 일자"
-      // trigger 등으로 보완해야 할 필드
+    memo: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: "기타 사항"
+    },
+    payDate: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: "구매 일자"
     }
   },
-  {
-    sequelize,
-    modelName:"Receipt",
-    timestamps:true, // createAt, updateAt field 활성화
-    paranoid:true // timestamps 활성화 시 사용 가능, deleteAt field 활성화
-  });
-  
+    {
+      sequelize,
+      modelName: "Receipt",
+      timestamps: true, // createAt, updateAt field 활성화
+      paranoid: true, // timestamps 활성화 시 사용 가능, deleteAt field 활성화
+      hooks: {
+        beforeUpdate: async (reciept) => {
+          // validate recheck
+          if (reciept.total_price<0 || reciept.total_price>10000000){
+            throw new BadRequestError('총 금액은 0원~10000000원 사이값으로 지정하세요.')
+          }
+        }
+      }
+    });
+
   return Receipt;
 };

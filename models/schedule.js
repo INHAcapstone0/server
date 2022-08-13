@@ -1,6 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const { BadRequestError } = require('../errors')
 module.exports = (sequelize, DataTypes) => {
   class Schedule extends Model {
     /*
@@ -16,16 +15,13 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'cascade'
       });
       this.hasMany(models.Participant,{
-        foreignKey:"schedule_id",
-        sourceKey:"id"
+        foreignKey:"schedule_id"
       });
       this.hasMany(models.Receipt,{
-        foreignKey:"schedule_id",
-        sourceKey:"id"
+        foreignKey:"schedule_id"
       });
       this.hasMany(models.Settlement,{
-        foreignKey:"schedule_id",
-        sourceKey:"id"
+        foreignKey:"schedule_id"
       });
     }
   };
@@ -38,8 +34,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     name:{
       type: DataTypes.STRING,
-      comment:"일정 이름",
-      //정규표현식 작성 추가할것
+      comment:"일정 이름"
     },
     startAt:{
       type:DataTypes.DATE,
@@ -60,8 +55,5 @@ module.exports = (sequelize, DataTypes) => {
     timestamps:true, // createAt, updateAt field 활성화
     paranoid:true, // timestamps 활성화 시 사용 가능, deleteAt 옵션 on
   })
-
-  
-
   return Schedule;
 };

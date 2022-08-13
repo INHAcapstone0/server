@@ -8,16 +8,13 @@ module.exports = (sequelize, DataTypes) => {
     */
     static associate(models) {
       this.belongsTo(models.Schedule,{
-        foreignKey:"schedule_id",
-        targetKey:"id"
+        foreignKey:"schedule_id"
       });
       this.belongsTo(models.User,{
-        foreignKey:"sender_id",
-        targetKey:"id"
+        foreignKey:"sender_id"
       });
       this.belongsTo(models.User,{
-        foreignKey:"receiver_id",
-        targetKey:"id"
+        foreignKey:"receiver_id"
       });
     }
   };
@@ -39,6 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     receiver_id:{
       type: DataTypes.UUID,
       comment:"정산액 수급자"
+    },
+    amount:{
+      type: DataTypes.DOUBLE,
+      comment:"정산 금액"
     },
     is_paid: {
       type: DataTypes.BOOLEAN,

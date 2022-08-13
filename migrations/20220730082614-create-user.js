@@ -2,38 +2,38 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('users', {
       id: {
         type: Sequelize.UUID,
         defaultValue:Sequelize.UUIDV4,
         primaryKey:true,
         comment:"유저 식별번호"
       },
-      user_email:{
+      email:{
         type: Sequelize.STRING,
         unique:true,
         validate:{
           isEmail:true,
         },
         comment:"이메일"
-        //정규표현식 작성 추가할것
       },
-      user_pw: {
+      password: {
         type: Sequelize.STRING,
-        comment:"비밀번호(해싱된 32자리 string), md5로 해싱"
-        //정규표현식 작성 추가할것
+        comment:"비밀번호(해싱된 32자리 string), bcrypt로 해싱"
       },
-      user_name:{
+      name:{
         type:Sequelize.STRING,
         unique:true,
-        comment:"유저 이름"
+        comment:"유저 이름, 특수문자 제외 2자 이상 10자 이하"
         //정규표현식 작성 추가할것
       },
       login_failed_cnt:{
         type: Sequelize.INTEGER,
         defaultValue:0,
-        comment:"로그인 실패 횟수"
-        //constraint 추가(5 이하의 숫자)
+        comment:"로그인 실패 횟수",
+        validate:{
+          max:5
+        }
       },
       is_locked:{
         type:Sequelize.BOOLEAN,
@@ -55,6 +55,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Users');
+    await queryInterface.dropTable('users');
   }
 };

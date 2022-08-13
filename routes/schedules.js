@@ -1,28 +1,32 @@
-const Schedule = require('../controllers/schedules');
+const {
+	createSchedule,
+	getAllSchedules,
+	getSchedule,
+	updateSchedule,
+	restoreSchedule,
+	deleteSchedule
+} = require('../controllers/schedules');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
 	//body:schedule_name, owner_id, startAt, endAt
-	router.post('/', Schedule.createSchedule);
+	router.post('/', createSchedule);
 
 	//no params
-	router.get('/', Schedule.getAllSchedules);
+	router.get('/', getAllSchedules);
 
 	//params:schedule_id
-	router.get("/:id", Schedule.getSchedule);
+	router.get("/:id", getSchedule);
 
 	//params:schedule_id
 	//body:schedule_name,owner_id, startAt, endAt
-	router.patch('/:id', Schedule.updateSchedule)
+	router.patch('/:id', updateSchedule)
 
-	router.put('/restore/:id', Schedule.restoreSchedule);
+	router.put('/restore/:id', restoreSchedule);
 	//params:schedule_id
 
-	router.delete('/:id', Schedule.deleteSchedule);
+	router.delete('/:id', deleteSchedule);
 
-	//no params
-	// router.delete('/', Schedule.deleteAll)
-
-	app.use("/schedules", router);
+	app.use("/schedules", authenticateUser, router);
 }

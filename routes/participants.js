@@ -1,20 +1,20 @@
-const Participant = require('../controllers/participants');
+const {
+    createParticipant,
+    getAllParticipants,
+    restoreParticipant,
+    deleteParticipant,
+} =require('../controllers/participants');
 var router = require('express').Router();
+const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
-    router.post('/', Participant.create);
+    router.post('/',createParticipant)
 
-    router.get('/', Participant.findAll);
-    
-    //queryString
-    router.get("/schedule_id", Participant.findByScheduleId);
+    router.get('/', getAllParticipants)
 
-    //queryString
-    router.get("/participant_id", Participant.findByParticipantId);
+    router.post('/restore', restoreParticipant)
 
-    router.delete('/:participant_id',Participant.deleteByParticipantId);
+    router.delete('/',deleteParticipant)
 
-    router.delete('/:schedule_id', Participant.deleteByScheduleId)
-    
-    app.use("/participants", router);
+	app.use("/participants", authenticateUser, router);
 }

@@ -1,198 +1,135 @@
+const { toDate, isValidDate } = require('../lib/modules');
 const db = require('../models');
-const { toDate } = require('../lib/modules');
-const { Receipt, Schedule, User } = db;
+const { StatusCodes } = require('http-status-codes')
+const { BadRequestError, NotFoundError } = require('../errors')
+const Receipt = db.Receipt;
 const Op = db.Sequelize.Op;
 
-exports.create = async (req, res) => {
-  const {
+exports.createReceipt = async (req, res) => {
+  let {
     schedule_id,
     poster_id,
-    total_price,
-    place_of_payment,
-    memo
   } = req.body;
 
-  if (!(schedule_id && poster_id)) {
-    res.status(400).send({
-      message: "Content cannot be empty!"
-    });
-    return;
+  if (!schedule_id || !poster_id) {
+    throw new BadRequestError('스케줄 id와 poster id를 필수로 입력해야 합니다.')
   }
 
-  //schedule_id, poster_id가 테이블에 존재하는지 확인
-  await User.findByPk(poster_id)
-    .then(data => {
-      if (data.length == 0) {
-        res.status(400).send({
-          message: "영수증 게시자 ID 정보가 존재하지 않습니다."
-        });
-        return;
-      }
-    })
-    .then(() => {
-      Schedule.findByPk(schedule_id)
-        .then(data => {
-          if (data.length == 0) {
-            res.status(400).send({
-              message: "스케줄 ID 정보가 존재하지 않습니다."
-            });
-            return;
-          }
-        })
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: err.message || "Some error occured."
-      });
-      return;
-    })
-
-  const receipt = {
-    schedule_id: schedule_id,
-    poster_id: poster_id,
-    total_price: total_price,
-    place_of_payment: place_of_payment,
-    memo: memo,
+  if (req.body.payDate) {
+    req.body.payDate = toDate(req.body.payDate);
   }
 
-  Receipt.create(receipt)
-    .then(data => {ß
-      res.send(data);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: err.message || "Some error occured while creating receipt."
-      });
-    });
+  if (!isValidDate(req.body.payDate)) {
+    throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+  }
+
+  const receipt = await Receipt.create(req.body);
+
+  res.status(StatusCodes.CREATED).json(receipt)
 }
 
-exports.findAll = (req, res) => {
-  Recipt.findAll()
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while finding receipt."
-      });
-    })
+exports.getAllReceipts = async (req, res) => {
+  const { schedule_id, poster_id, place_of_payment, max_total_price, min_total_price } = req.query;
+  let condition = {}
+
+  if (schedule_id) {
+    condition.schedule_id = schedule_id
+  }
+  if (poster_id) {
+    condition.schedule_id = poster_id
+  }
+  if (place_of_payment) {
+    condition.schedule_id = { [Op.like]: `%${place_of_payment}%` }
+  }
+
+  let min = 0,
+    max = 10000000
+  if (max_total_price) {
+    max = Math.max(max, max_total_price)
+  } if (min_total_price) {
+    min = Math.min(min, min_total_price)
+  }
+
+  condition.total_price = { [Op.between]: [min, max] }
+
+  const receipts = await Receipt.findAll({ where: condition })
+  if (!receipts.length) {
+    throw new NotFoundError('영수증이 존재하지 않습니다.')
+  }
+
+  res.status(StatusCodes.OK).json(receipts)
 };
 
-//queryString : schedule_id
-exports.findByScheduleId = (req, res) => {
-  const { schedule_id } = req.query;
+exports.getReceipt = async (req, res) => {
+  const { id } = req.params;
 
-  Receipt.findAll({ schedule_id: schedule_id })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while finding receipts."
-      });
-    })
+  const receipt = await Receipt.findByPk(id)
+
+  if (!receipt) {
+    throw new NotFoundError('영수증이 존재하지 않습니다.')
+  }
+
+  res.status(StatusCodes.OK).json(receipt)
 };
 
-//queryString : poster_id
-exports.findByPosterId = (req, res) => {
-  const { poster_id } = req.query;
+exports.updateReceipt = async (req, res) => {
+  const { id } = req.params;
+  const { total_price, place_of_payment, memo, payDate } = req.body;
 
-  Receipt.findAll({ poster_id: poster_id })
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message: err.message || "Some error occured while finding receipts."
-      });
-    })
-};
+  if (payDate) {
+    payDate = toDate(payDate);
+  }
 
-//params: receipt_id
-exports.findOne = (req, res) => {
-  const { receipt_id } = req.params;
-  Receipt.findByPk(receipt_id)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: err.message || "Error retrieving user with receipt_id=" + receipt_id
-      });
-    });
-};
+  if (!isValidDate(payDate)) {
+    throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+  }
 
-//params: receipt_id
-exports.update = (req, res) => {
-  const { receipt_id } = req.params;
-
-  Receipt.update(req.body, {
-    where: { id: receipt_id }
+  const result = await Receipt.update({
+    total_price, place_of_payment, memo, payDate
+  }, {
+    where: { id }
   })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "스케줄이 수정되었습니다."
-        });
-      } else {
-        res.send({
-          message: `schedule_id가 ${receipt_id}인 스케줄을 찾을 수 없습니다.` +
-            "req.body가 비어 있는지 체크하세요."
-        });
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: "Error updating Receipt with id=" + receipt_id
-      });
-    });
+  if (result == 1) {
+    res.status(StatusCodes.OK).json({ msg: `영수증이 성공적으로 업데이트되었습니다.` })
+  } else {
+    throw new NotFoundError('업데이트할 영수증이 존재하지 않습니다.')
+  }
 };
 
-//params:receipt_id
-exports.delete = (req, res) => {
-  const { receipt_id } = req.params;
+exports.restoreReceipt = async (req, res) => {
+  const { id } = req.params;
 
-  Receipt.destroy({
-    where: { id: receipt_id }
-  })
-    .then(num => {
-      if (num == 1) {
-        res.send({
-          message: "A Receipt was deleted successfully!"
-        });
-      } else {
-        res.send({
-          message: `Cannot delete receipt with id=${receipt_id}. Maybe schedule was not found!`
-        });
-      }
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message: "Could not delete receipt with id=" + receipt_id
-      });
-    });
-};
+  if (!id) {
+    throw new BadRequestError('영수증 id를 입력해주세요.');
+  }
 
-exports.deleteAll = (req, res) => {
-  Receipt.destroy({
-    where: {},
-    truncate: false
+  const result = await Receipt.restore({
+    where: { id }
   })
-    .then(nums => {
-      res.send({ message: `${nums} receipts were deleted successfully!` });
-    })
-    .catch(err => {
-      console.log(err);
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while removing all receipts."
-      });
-    });
+
+  if (result == 1) {
+    res.status(StatusCodes.OK).json({ msg: `영수증이 성공적으로 복구되었습니다..` })
+  } else {
+    throw new NotFoundError('복구할 영수증이 존재하지 않습니다.')
+  }
+}
+
+exports.deleteReceipt = async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new BadRequestError('영수증 id를 입력해주세요.');
+  }
+
+  const result = await Receipt.destroy({
+    where: { id }
+  })
+
+  if (result == 1) {
+    res.status(StatusCodes.OK).json({ msg: `영수증이 성공적으로 삭제되었습니다.` })
+  } else {
+    throw new NotFoundError('삭제할 영수증이 존재하지 않습니다.')
+  }
 };
 
 

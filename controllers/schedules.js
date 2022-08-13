@@ -1,7 +1,7 @@
 const { toDate, isValidDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, UnauthenticatedError, NotFoundError } = require('../errors')
+const { BadRequestError, NotFoundError } = require('../errors')
 const User = db.User;
 const Schedule = db.Schedule;
 const Op = db.Sequelize.Op;
@@ -48,7 +48,7 @@ exports.createSchedule = async (req, res) => {
 
 exports.getAllSchedules = async(req, res) => {
   const {owner_name, name, owner_id}=req.query;
-  const condition={}
+  let condition={}
   let schedules;
 
   // owner_name과 id으로 조회할 때
@@ -61,7 +61,7 @@ exports.getAllSchedules = async(req, res) => {
     }
     schedules= await Schedule.findAll({
       include: [{
-        model: Schedule,
+        model: User,
         where:condition,
         attributes:[] // join한 객체 숨기기
       }],

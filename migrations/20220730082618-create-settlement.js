@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Settlements', {
+    await queryInterface.createTable('settlements', {
       id: {
         type: Sequelize.UUID,
         defaultValue:Sequelize.UUIDV4,
@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"정산 대상 스케줄 ID",
         references: {
-          model: 'Schedules',
+          model: 'schedules',
           key: 'id'
         },
       },
@@ -20,7 +20,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"정산액 입금자",
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
       },
@@ -28,9 +28,13 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"정산액 수급자",
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
+      },
+      amount:{
+        type: Sequelize.DOUBLE,
+        comment:"정산 금액"
       },
       is_paid: {
         type: Sequelize.BOOLEAN,
@@ -57,6 +61,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Settlements');
+    await queryInterface.dropTable('settlements');
   }
 };

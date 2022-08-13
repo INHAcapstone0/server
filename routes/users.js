@@ -1,4 +1,3 @@
-const User = require('../controllers/users');
 const {
 	getAllUsers,
 	getUser,
@@ -27,8 +26,5 @@ module.exports = (app) => {
 	//params:user_id
 	router.delete('/:id', deleteUser);
 
-	//no params
-	// router.delete('/', deleteAll)
-
-	app.use("/users", router);
+	app.use("/users",authenticateUser, router);
 }

@@ -7,8 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     */
     static associate(models) {
       this.belongsTo(models.Receipt,{
-        foreignKey:"receipt_id",
-        targetKey:"id"
+        foreignKey:"receipt_id"
       })
     }
   };
@@ -23,29 +22,43 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       comment:"영수증 ID"
     },
-    item_name:{
+    name:{
       type:DataTypes.STRING,
+      default:'무제',
       comment:"물픔(또는 구매내역) 이름"
-      //정규 표현식 추가
     },
-    item_quantity:{
+    quantity:{
       type:DataTypes.INTEGER,
       defaultValue:1,
-      comment:"물품 수량"
-      //constraints 추가
+      comment:"물품 수량",
+      validate:{ // 최대 100개 한도
+        min:0,
+        max:100
+      }
     },
-    item_price:{
+    price:{
       type:DataTypes.INTEGER,
       defaultValue:0,
-      comment:"물품 단가"
-      //constraints 추가
+      comment:"물품 단가",
+      validate:{ // 최대 200만원 한도
+        min:0,
+        max:2000000
+      }
     }
   },
   {
     sequelize,
     modelName:"Item",
     timestamps:true, // createAt, updateAt field 활성화
-    paranoid:true // timestamps 활성화 시 사용 가능, deleteAt field 활성화
+    paranoid:true, // timestamps 활성화 시 사용 가능, deleteAt field 활성화
+    hooks:{
+      beforeCreate:async(item)=>{
+        // validation check
+      },
+      beforeUpdate:async(item)=>{
+        // validation check
+      },
+    }
   });
   
   return Item;

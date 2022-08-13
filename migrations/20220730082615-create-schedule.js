@@ -1,32 +1,24 @@
 'use strict';
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Schedules', {
+    await queryInterface.createTable('schedules', {
       id: {
         type: Sequelize.UUID,
         defaultValue:Sequelize.UUIDV4,
         primaryKey:true,
         comment:"스케줄 식별번호"
       },
-      schedule_name:{
-        type: Sequelize.STRING,
-        comment:"일정 이름",
-        //정규표현식 작성 추가할것
-      },
       owner_id:{  
         type:Sequelize.UUID,
         references: {
-          model: 'Users',
+          model: 'users',
           key: 'id'
         },
         comment:"일정 소유자(제작자)",
       },
-      completeAt:{
-        type:Sequelize.DATE,
-        allowNull:true,
-        defaultValue:null,
-        comment:"정산 마감시각"
-        //정규표현식 작성 추가할것
+      name:{
+        type: Sequelize.STRING,
+        comment:"일정 이름"
       },
       startAt:{
         type:Sequelize.DATE,
@@ -38,7 +30,7 @@ module.exports = {
         type:Sequelize.DATE,
         allowNull:true,
         defaultValue:null,
-        comment:"일정 종료시간"
+        comment:"일정 종료시간(또는 정산 시작시간)"
       },
       createdAt: {
         allowNull: false,
@@ -55,6 +47,10 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Schedules');
+    await queryInterface.dropTable('schedules');
   }
 };
+
+
+
+

@@ -1,45 +1,35 @@
-require('dotenv').config();
-require('express-async-errors');
-const PORT=process.env.PORT || 8002
-const express = require('express');
-const app = express();
-const fs = require('fs');
-const notFoundMiddleware=require('./middleware/not-found')
-const errorHandlerMiddleware=require('./middleware/error-handler')
-const cors=require('cors')
+require('dotenv').config()
+require('express-async-errors')
+const PORT = process.env.PORT || 8002
+const express = require('express')
+const app = express()
+const fs = require('fs')
+const notFoundMiddleware = require('./middleware/not-found')
+const errorHandlerMiddleware = require('./middleware/error-handler')
+const cors = require('cors')
 
-// const cors=require('cors'); // 프론트 서버와의 연결 시 사용
+app.use(express.json()) // json parser
+app.use(cors()) // 모든 CORS request 허용
 
-// 프론트서버와 연결 시 사용
-// var corsOptions={
-//     origin:`http://localhost:${CORSPORT}`
-// };
-// app.use(cors(corsOptions))
+// routes 내의 모든 라우터 미들웨어 등록
+fs.readdirSync(__dirname + "/routes")
+  .forEach(data => {
+    require(`./routes/${data}`)(app)
+  })
 
-//router 추가하기
-app.use(express.json())
-app.use(cors())
+app.use(notFoundMiddleware); // 라우팅 경로 올바르지 않을 때 예외 처리
 
-fs
-.readdirSync(__dirname + "/routes")
-.forEach(data => {
-  require(`./routes/${data}`)(app);
-})
+app.use(errorHandlerMiddleware) // 모든 에러처리 미들웨어
 
-app.use(notFoundMiddleware);
-app.use(errorHandlerMiddleware);
-
-const start= async()=>{
+const start = async () => {
   try {
-    const db = require('./models');
+    const db = require('./models')
     await db.sequelize.sync() //sequelize sync
-    
-    app.listen(PORT, ()=>{
-      console.log(`Server is running on http://localhost:${PORT}`);
-    })
-  } catch (error) {
-    console.log(error)
+
+    app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`))
+  } catch (err) {
+    console.log(err)
   }
 }
 
-start();
+start()
