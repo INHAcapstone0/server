@@ -20,6 +20,12 @@ module.exports = {
           key: 'id'
         },
       },
+      status: {
+        type: Sequelize.STRING,
+        defaultValue:'대기 중',
+        enum: ['대기 중', '승인', '거절'],
+        comment: "참가 요청 상태"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

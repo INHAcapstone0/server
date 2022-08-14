@@ -52,6 +52,12 @@ module.exports = (sequelize, DataTypes) => {
       comment:"유저 이름, 특수문자 제외 2자 이상 10자 이하"
       //정규표현식 작성 추가할것
     },
+    img_url:{
+      type:'VARCHAR(3000)',
+      allowNull:true,
+      comment:"유저 프로필 사진 URL 주소"
+      //정규표현식 작성 추가할것
+    },
     login_failed_cnt:{
       type: DataTypes.INTEGER,
       defaultValue:0,

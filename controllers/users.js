@@ -38,20 +38,21 @@ exports.getUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
+  let {password, name, img_url}=req.body;
   if(!id){
     throw new BadRequestError('id를 입력해주세요.')
   }
 
-  if(req.body&&req.body.password){
-    if (!isValidPassword(req.body.password)) {
+  if(password){
+    if (!isValidPassword(password)) {
       throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리로 입력하세요.');
     }
-    req.body.password= await hashPassword(req.body.password);
+    password= await hashPassword(password);
     // promisify 사용 안됨. 나중에 고치기
   }
   
-  const result = await User.update(req.body, {
-    where: { id: id }
+  const result = await User.update({password, name, img_url}, {
+    where: {id}
   })
   if(result==1){
     res.status(StatusCodes.OK).json({ msg:`유저가 성공적으로 업데이트되었습니다.` })
