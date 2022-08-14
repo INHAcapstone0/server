@@ -20,23 +20,19 @@ exports.createAlarm = async (req, res) => {
 
 exports.getAllAlarms = async (req, res) => {
   const { alarm_type , user_id } = req.query;
-  let condition = alarm_type?{ alarm_type }:null
+  let condition={}
 
-  let alarms;
-  if(user_id){
-    alarms= await Alarm.findAll({
-      include:[{
-        model: User,
-        where:{id:user_id},
-        attributes:[] // join한 객체 숨기기
-      }],
-      where:condition
-    })
-  }else{
-    alarms= await Alarm.findAll({
-      where:condition
-    })
+  if(alarm_type){
+    condition.alarm_type=alarm_type
   }
+
+  if(user_id){
+    condition.user_id=user_id
+  }
+
+  const alarms= await Alarm.findAll({
+      where:condition
+  })
 
   if (!alarms.length) {
     throw new NotFoundError('알람이 존재하지 않습니다.')
@@ -59,14 +55,13 @@ exports.getAlarm = async (req, res) => {
 
 exports.updateAlarm = async (req, res) => {
   const { id } = req.params;
-  const { checked }=req.body
 
-  if (!id || !checked) {
-    throw new BadRequestError('알람 id와 확인 여부를 필수로 입력해야 합니다.')
+  if (!id ) {
+    throw new BadRequestError('알람 id를 필수로 입력해야 합니다.')
   }
 
   const result = await Alarm.update({
-    checked
+    checked:true
   }, {
     where: { id }
   })

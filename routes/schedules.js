@@ -28,5 +28,5 @@ module.exports = (app) => {
 
 	router.delete('/:id', deleteSchedule);
 
-	app.use("/schedules", authenticateUser, router);
+	app.use("/schedules", router);
 }

@@ -23,7 +23,9 @@ exports.createItem = async (req, res) => {
     }
   }
   
-  const item = await Item.create(req.body);
+  const item = await Item.create({
+    receipt_id, quantity, price
+  });
 
   res.status(StatusCodes.CREATED).json(item)
 }

@@ -35,7 +35,9 @@ const login = async (req, res) => {
   redisClient.set(user.id, refreshToken);
 
   res.status(StatusCodes.OK).json({
-    user: user.name, data: {
+    user: user.name,
+    user_id: user.id,
+    data: {
       accessToken, refreshToken
     }
   })
@@ -45,7 +47,7 @@ const register = async (req, res) => {
   let { email, password, name } = req.body;
   var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[$@^!%*#?&])[a-z0-9$@^!%*#?&]{8,}$");
   if (!checkPassword.test(password)) {
-    throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리로 입력하세요.');
+    throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리 이상으로 입력하세요.');
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -64,15 +66,11 @@ const checkEmail = async (req, res) => {
     throw new BadRequestError('중복 확인할 이메일을 입력하세요.');
   }
   
-  const {count} = await User.findAndCountAll({
-    where: {
-      email
-    },
-    limit: 1
+  const result = await User.findOne({
+    where: {email}
   });
-  console.log(count);
-
-  if (count) { // count가 1일때 duplicated true
+  
+  if (result) { // result가 존재할 때 duplicated:true
     res.status(StatusCodes.OK).json({ duplicated: true })
   } else {
     res.status(StatusCodes.OK).json({ duplicated: false })
@@ -87,14 +85,11 @@ const checkName = async (req, res) => {
     throw new BadRequestError('중복 확인할 이름을 입력하세요.');
   }
   
-  const {count} = await User.findAndCountAll({
-    where: {
-      name
-    },
-    limit: 1
+  const result = await User.findOne({
+    where: {name}
   });
-
-  if (count) { // count가 1일때 duplicated true
+  
+  if (result) { // result가 존재할 때 duplicated:true
     res.status(StatusCodes.OK).json({ duplicated: true })
   } else {
     res.status(StatusCodes.OK).json({ duplicated: false })

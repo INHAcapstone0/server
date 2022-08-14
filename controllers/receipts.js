@@ -9,21 +9,27 @@ exports.createReceipt = async (req, res) => {
   let {
     schedule_id,
     poster_id,
+    payDate,
+    total_price,
+    memo,
+    place_of_payment
   } = req.body;
 
   if (!schedule_id || !poster_id) {
     throw new BadRequestError('스케줄 id와 poster id를 필수로 입력해야 합니다.')
   }
 
-  if (req.body.payDate) {
-    req.body.payDate = toDate(req.body.payDate);
+  if (payDate) {
+    payDate = toDate(payDate);
   }
 
-  if (!isValidDate(req.body.payDate)) {
+  if (!isValidDate(payDate)) {
     throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
   }
 
-  const receipt = await Receipt.create(req.body);
+  const receipt = await Receipt.create({
+    schedule_id,poster_id, payDate, total_price
+  });
 
   res.status(StatusCodes.CREATED).json(receipt)
 }
@@ -74,7 +80,7 @@ exports.getReceipt = async (req, res) => {
 
 exports.updateReceipt = async (req, res) => {
   const { id } = req.params;
-  const { total_price, place_of_payment, memo, payDate } = req.body;
+  let { total_price, place_of_payment, memo, payDate } = req.body;
 
   if (payDate) {
     payDate = toDate(payDate);

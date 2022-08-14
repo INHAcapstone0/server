@@ -15,7 +15,7 @@ exports.createSettlement = async (req, res) => {
   
   const [settlement, created] = await Schedule.findOrCreate({
     where: { schedule_id, sender_id,receiver_id },
-    defaults: req.body
+    defaults: {schedule_id, sender_id, receiver_id, amount}
   });
 
   if(!created){
