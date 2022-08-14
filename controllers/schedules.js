@@ -66,7 +66,7 @@ exports.getAllSchedules = async(req, res) => {
   if(owner_name){
     include.push({
       model: User,
-      where:{ [Op.like]: `%${owner_name}%` },
+      where:{ name:{[Op.like]: `%${owner_name}%`}},
       attributes:[] // join한 객체 숨기기
     })
   }

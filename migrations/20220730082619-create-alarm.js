@@ -17,8 +17,7 @@ module.exports = {
         },
       },
       alarm_type: {
-        type: Sequelize.STRING,
-        enum: ['초대', '정산', '일정 시작', '일정 종료'],
+        type: Sequelize.ENUM('초대', '정산', '일정 시작', '일정 종료'),
         comment: "알람 타입"
       },
       message: {
