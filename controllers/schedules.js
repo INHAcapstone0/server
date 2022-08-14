@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
 const User = db.User;
 const Schedule = db.Schedule;
+const Participant = db.Participant;
 const Op = db.Sequelize.Op;
 
 //추후에 기간 중복에 대한 유효성 검증할 것
@@ -47,10 +48,11 @@ exports.createSchedule = async (req, res) => {
 }
 
 exports.getAllSchedules = async(req, res) => {
-  const {owner_name, name, owner_id}=req.query;
+  const {owner_name, name, owner_id, participant_id}=req.query;
   let nested_condition={}
   let condition={}
-  let schedules;
+  let schedules
+  let include=[]
 
   if(name){
     condition.name= { [Op.like]: `%${name}%` };
@@ -62,22 +64,26 @@ exports.getAllSchedules = async(req, res) => {
 
   // owner_name으로 조회할 때
   if(owner_name){
-    if(owner_name){
-      nested_condition.name= { [Op.like]: `%${owner_name}%` };
-    }
-    schedules= await Schedule.findAll({
-      where:condition,
-      include: [{
-        model: User,
-        where:nested_condition,
-        attributes:[] // join한 객체 숨기기
-      }],
+    include.push({
+      model: User,
+      where:{ [Op.like]: `%${owner_name}%` },
+      attributes:[] // join한 객체 숨기기
     })
-  }else{
-    schedules= await Schedule.findAll({
-      where:condition
-    });
   }
+
+  if(participant_id){
+    include.push({
+      model: Participant,
+      where:{ participant_id },
+      attributes:[] // join한 객체 숨기기
+    })
+  }
+    
+  schedules= await Schedule.findAll({
+    where:condition,
+    include
+  })
+
   if(!schedules.length){
     throw new NotFoundError('스케줄이 존재하지 않습니다.')
   }
@@ -166,6 +172,5 @@ exports.deleteSchedule = async (req, res) => {
     throw new NotFoundError('삭제할 스케줄이 존재하지 않습니다.')
   }
 };
-
 
 

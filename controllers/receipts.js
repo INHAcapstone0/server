@@ -15,7 +15,7 @@ exports.createReceipt = async (req, res) => {
     place_of_payment
   } = req.body;
 
-  if (!schedule_id || !poster_id) {
+  if (!schedule_id || !poster_id ) {
     throw new BadRequestError('스케줄 id와 poster id를 필수로 입력해야 합니다.')
   }
 
@@ -28,7 +28,7 @@ exports.createReceipt = async (req, res) => {
   }
 
   const receipt = await Receipt.create({
-    schedule_id,poster_id, payDate, total_price
+    schedule_id, poster_id, payDate, total_price, memo, place_of_payment
   });
 
   res.status(StatusCodes.CREATED).json(receipt)
