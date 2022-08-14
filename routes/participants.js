@@ -16,5 +16,5 @@ module.exports = (app) => {
 
     router.delete('/',deleteParticipant)
 
-	app.use("/participants", authenticateUser, router);
+	app.use("/participants", router);
 }

@@ -26,5 +26,5 @@ module.exports = (app) => {
 	//params:user_id
 	router.delete('/:id', deleteUser);
 
-	app.use("/users",authenticateUser, router);
+	app.use("/users", router);
 }

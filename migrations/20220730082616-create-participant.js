@@ -5,6 +5,7 @@ module.exports = {
       participant_id:{
         type: Sequelize.UUID,
         comment:"참여자 ID",
+        primaryKey:true,
         references: {
           model: 'users',
           key: 'id'
@@ -13,6 +14,7 @@ module.exports = {
       schedule_id:{
         type: Sequelize.UUID,
         comment:"참여 일정 ID",
+        primaryKey:true,
         references: {
           model: 'schedules',
           key: 'id'

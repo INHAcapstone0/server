@@ -18,11 +18,13 @@ module.exports = (sequelize, DataTypes) => {
   Participant.init({
     participant_id:{
       type: DataTypes.UUID,
-      comment:"참여자 ID"
+      comment:"참여자 ID",
+      primaryKey:true
     },
     schedule_id:{
       type: DataTypes.UUID,
-      comment:"참여 일정 ID"
+      comment:"참여 일정 ID",
+      primaryKey:true
     }
   },
   {
