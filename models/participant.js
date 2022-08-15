@@ -13,6 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       this.belongsTo(models.Schedule,{
         foreignKey:"schedule_id"
       });
+      this.hasMany(models.Settlement,{
+        foreignKey:"schedule_id",
+        sourceKey:"schedule_id"
+      })
+      this.hasMany(models.Settlement,{
+        foreignKey:"sender_id",
+        sourceKey:"participant_id"
+      })
+      this.hasMany(models.Settlement,{
+        foreignKey:"receiver_id",
+        sourceKey:"participant_id"
+      })
     }
   };
   Participant.init({
@@ -37,6 +49,9 @@ module.exports = (sequelize, DataTypes) => {
     modelName:"Participant",
     timestamps:true, // createAt, updateAt field 활성화
   });
-  
+  // queryInterface.addConstraint('Users', ['firstName', 'lastName'], {
+  //   type: 'primary key',
+  //   name: 'users_pkey'
+  // });
   return Participant;
 };

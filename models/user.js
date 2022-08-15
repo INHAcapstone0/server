@@ -19,12 +19,6 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Receipt,{
         foreignKey:"poster_id"
       });
-      this.hasMany(models.Settlement,{
-        foreignKey:"sender_id"
-      });
-      this.hasMany(models.Settlement,{
-        foreignKey:"receiver_id"
-      });
     }
   };
   User.init({

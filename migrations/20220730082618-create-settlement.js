@@ -12,24 +12,24 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"정산 대상 스케줄 ID",
         references: {
-          model: 'schedules',
-          key: 'id'
+          model: 'participants',
+          key: 'schedule_id'
         },
       },
       sender_id:{
         type: Sequelize.UUID,
         comment:"정산액 입금자",
         references: {
-          model: 'users',
-          key: 'id'
+          model: 'participants',
+          key: 'participant_id'
         },
       },
       receiver_id:{
         type: Sequelize.UUID,
         comment:"정산액 수급자",
         references: {
-          model: 'users',
-          key: 'id'
+          model: 'participants',
+          key: 'participant_id'
         },
       },
       amount:{

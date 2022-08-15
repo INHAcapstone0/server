@@ -7,14 +7,17 @@ module.exports = (sequelize, DataTypes) => {
       Schedule과 N:1
     */
     static associate(models) {
-      this.belongsTo(models.Schedule,{
-        foreignKey:"schedule_id"
+      this.belongsTo(models.Participant,{
+        foreignKey:"schedule_id",
+        targetKey:"schedule_id"
       });
-      this.belongsTo(models.User,{
-        foreignKey:"sender_id"
+      this.belongsTo(models.Participant,{
+        foreignKey:"sender_id",
+        targetKey:"participant_id",
       });
-      this.belongsTo(models.User,{
-        foreignKey:"receiver_id"
+      this.belongsTo(models.Participant,{
+        foreignKey:"receiver_id",
+        targetKey:"participant_id"
       });
     }
   };
@@ -27,15 +30,27 @@ module.exports = (sequelize, DataTypes) => {
     },
     schedule_id:{
       type: DataTypes.UUID,
-      comment:"정산 대상 스케줄 ID"
+      comment:"정산 대상 스케줄 ID",
+      references: {
+        model: 'participants',
+        key: 'schedule_id'
+      },
     },
     sender_id:{
       type: DataTypes.UUID,
-      comment:"정산액 입금자"
+      comment:"정산액 입금자",
+      references: {
+        model: 'participants',
+        key: 'participant_id'
+      },
     },
     receiver_id:{
       type: DataTypes.UUID,
-      comment:"정산액 수급자"
+      comment:"정산액 수급자",
+      references: {
+        model: 'participants',
+        key: 'participant_id'
+      },
     },
     amount:{
       type: DataTypes.DOUBLE,

@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     alarm_type: {
       type: DataTypes.ENUM('초대', '정산', '일정 시작', '일정 종료'),
+      allowNull:false,
       comment: "알람 타입"
     },
     message: {

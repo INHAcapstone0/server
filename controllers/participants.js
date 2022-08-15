@@ -12,19 +12,19 @@ exports.createParticipant = async (req, res) => {
     throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.')
   }
 
-  const beforeCreate= await Participant.findAll({
-    include:[{
-      model:Schedule,
-      where:{
-        id:schedule_id,
-        owner_id:participant_id
-      }
-    }]
-  })
+  // const beforeCreate= await Participant.findAll({
+  //   include:[{
+  //     model:Schedule,
+  //     where:{
+  //       id:schedule_id,
+  //       owner_id:participant_id
+  //     }
+  //   }]
+  // })
 
-  if(beforeCreate.length){ // owner_id와 동일한 participant_id를 등록하려고 할 때 예외처리
-    throw new BadRequestError('스케줄 생성자는 참여자 정보로 생성할 수 없습니다.');
-  }
+  // if(beforeCreate.length){ // owner_id와 동일한 participant_id를 등록하려고 할 때 예외처리
+  //   throw new BadRequestError('스케줄 생성자는 참여자 정보로 생성할 수 없습니다.');
+  // }
   
   const [participant, created] = await Participant.findOrCreate({
     where: { participant_id, schedule_id },
