@@ -103,6 +103,27 @@ module.exports = {
     }
     await queryInterface.bulkInsert('users', sampleUsers, {});
 
+    let password=await bcrypt.hash(`taylor#1213`, salt)
+    let customUsers=[
+      {
+        id: 'a9306475-2465-4eac-87a4-4b8d5c6c4d5b',
+        email: "cnwish1@naver.com",
+        name: "호스트",
+        password,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id: 'a7881fe1-2145-46dc-90c2-f8659def21e4',
+        email: "cnwish2@naver.com",
+        name: "참가자",
+        password,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+  ]
+  await queryInterface.bulkInsert('users', customUsers, {});
+
     console.log('2')
     for (let i = 0; i < 5; i++) {
       let scheduleObj = {
