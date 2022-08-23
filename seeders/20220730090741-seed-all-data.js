@@ -88,7 +88,6 @@ module.exports = {
 
     const salt = await bcrypt.genSalt(10);
     
-    console.log('1')
     for (let i = 0; i < 10; i++) {
       let password = await bcrypt.hash(`rlathfals${i}#`, salt)
       let userObj = {
@@ -124,7 +123,6 @@ module.exports = {
   ]
   await queryInterface.bulkInsert('users', customUsers, {});
 
-    console.log('2')
     for (let i = 0; i < 5; i++) {
       let scheduleObj = {
         id:scheduleIds[i],
@@ -139,7 +137,6 @@ module.exports = {
     }
     await queryInterface.bulkInsert('schedules', sampleSchedules, {});
 
-    console.log('3')
     for (let i = 0; i < 10; i++) {
       let participantObj={
         participant_id: userIds[i],
