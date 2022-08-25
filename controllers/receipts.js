@@ -12,7 +12,8 @@ exports.createReceipt = async (req, res) => {
     payDate,
     total_price,
     memo,
-    place_of_payment
+    place_of_payment,
+    category
   } = req.body;
 
   if (!schedule_id || !poster_id ) {
@@ -28,7 +29,7 @@ exports.createReceipt = async (req, res) => {
   }
 
   const receipt = await Receipt.create({
-    schedule_id, poster_id, payDate, total_price, memo, place_of_payment
+    schedule_id, poster_id, payDate, total_price, memo, place_of_payment, category
   });
 
   res.status(StatusCodes.CREATED).json(receipt)
@@ -80,7 +81,7 @@ exports.getReceipt = async (req, res) => {
 
 exports.updateReceipt = async (req, res) => {
   const { id } = req.params;
-  let { total_price, place_of_payment, memo, payDate } = req.body;
+  let { total_price, place_of_payment, memo, payDate, category } = req.body;
 
   if (payDate) {
     payDate = toDate(payDate);
@@ -91,7 +92,7 @@ exports.updateReceipt = async (req, res) => {
   }
 
   const result = await Receipt.update({
-    total_price, place_of_payment, memo, payDate
+    total_price, place_of_payment, memo, payDate, category
   }, {
     where: { id }
   })
@@ -116,7 +117,7 @@ exports.uploadReceiptImage=async(req, res)=>{
   })
 
   if(result==1){
-    res.status(StatusCodes.OK).json({ msg:`영수증 내역이 성공적으로 업데이트되었습니다.` })
+    res.status(StatusCodes.OK).json({ msg:`영수증 이미지가 성공적으로 업데이트되었습니다.` })
   }else{
     throw new NotFoundError('업데이트할 영수증이 존재하지 않습니다.')
   }

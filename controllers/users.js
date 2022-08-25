@@ -75,8 +75,6 @@ exports.updateUser = async (req, res) => {
 
 exports.uploadUserImage=async(req, res)=>{
   const {id} = req.user;
-  
-  console.log(req.file.location) // 업로드한 파일 위치
 
   const img_url=req.file.location
 
