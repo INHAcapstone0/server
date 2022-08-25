@@ -102,6 +102,26 @@ exports.updateReceipt = async (req, res) => {
   }
 };
 
+exports.uploadReceiptImage=async(req, res)=>{
+  const {id} = req.params;
+
+  const img_url=req.file.location
+
+  if(!img_url){
+    throw new BadRequestError('파일 저장 중 오류가 발생했습니다.')
+  }
+
+  const result = await Receipt.update({img_url}, {
+    where: {id}
+  })
+
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`영수증 내역이 성공적으로 업데이트되었습니다.` })
+  }else{
+    throw new NotFoundError('업데이트할 영수증이 존재하지 않습니다.')
+  }
+}
+
 exports.restoreReceipt = async (req, res) => {
   const { id } = req.params;
 

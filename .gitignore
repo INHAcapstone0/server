@@ -5,3 +5,4 @@ db_config.js
 test.js
 config.json
 dump.rdb
+/config/awsconfig.json

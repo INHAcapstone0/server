@@ -4,7 +4,7 @@ const { UnauthenticatedError } = require('../errors')
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new UnauthenticatedError('Authentication invalid')
+    throw new UnauthenticatedError('인증 헤더 정보가 없거나 올바르지 않습니다.')
   }
 
   const token = authHeader.split('Bearer ')[1]; // header에서 access token을 가져옵니다.
@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
     req.user={id:payload.id, name:payload.name}
     next();
   } else { // 검증에 실패하거나 토큰이 만료되었다면 클라이언트에게 메세지를 담아서 응답합니다.
-    throw new UnauthenticatedError('올바르지 않은 인증정보입니다.')
+    throw new UnauthenticatedError('토큰 정보가 손상되었거나 만료되었습니다.')
   }
 };
 module.exports = auth

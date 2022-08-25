@@ -36,6 +36,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.UUID,
       comment: "영수증 게시자 ID"
     },
+    category: {
+      type: DataTypes.ENUM('카페', '식당', '숙박', '기타'),
+      defaultValue:'기타',
+      comment: "영수증 카테고리"
+    },
+    img_url:{
+      type:'VARCHAR(3000)',
+      allowNull:true,
+      comment:"영수증 사진 URL 주소"
+    },
     total_price: {
       type: DataTypes.DOUBLE,
       defaultValue: 0,

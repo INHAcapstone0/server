@@ -5,7 +5,9 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const User = db.User;
 const Schedule = db.Schedule;
 const Participant = db.Participant;
+const Receipt = db.Receipt;
 const Op = db.Sequelize.Op;
+const Sequelize=db.Sequelize
 
 //추후에 기간 중복에 대한 유효성 검증할 것
 exports.createSchedule = async (req, res) => {
@@ -49,10 +51,13 @@ exports.createSchedule = async (req, res) => {
 
 exports.getAllSchedules = async(req, res) => {
   const {owner_name, name, owner_id, participant_id}=req.query;
-  let nested_condition={}
   let condition={}
-  let schedules
-  let include=[]
+
+  // 스케줄에 속해 있는 모든 영수증의 total_price 합을 조회하기 위한 join
+  let include=[{
+    model:Receipt,
+    attributes:[]
+  }]
 
   if(name){
     condition.name= { [Op.like]: `%${name}%` };
@@ -78,10 +83,15 @@ exports.getAllSchedules = async(req, res) => {
       attributes:[] // join한 객체 숨기기
     })
   }
-    
-  schedules= await Schedule.findAll({
+   
+  
+  const schedules= await Schedule.findAll({
     where:condition,
-    include
+    attributes:{ // 스케줄에 속해 있는 모든 영수증의 total_price 합을 추가
+      include:[[Sequelize.fn('sum',Sequelize.col('receipts.total_price')), 'total_pay']]
+    },
+    include,
+    group:['id']
   })
 
   if(!schedules.length){
@@ -95,8 +105,18 @@ exports.getSchedule = async (req, res) => {
   if(!id){
     throw new BadRequestError('스케줄 id를 입력해주세요.');
   }
-
-  const schedule = await Schedule.findByPk(id)
+  
+  const schedule= await Schedule.findOne({
+    where:{id},
+    attributes:{ // 스케줄에 속해 있는 모든 영수증의 total_price 합을 추가
+      include:[[Sequelize.fn('sum',Sequelize.col('receipts.total_price')), 'total_pay']]
+    },
+    include:[{
+      model:Receipt,
+      attributes:[]
+    }],
+    group:['id']
+  })
 
   if(!schedule){
     throw new NotFoundError('스케줄이 존재하지 않습니다.')

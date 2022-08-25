@@ -18,7 +18,7 @@ const refresh = async (req, res) => {
 	
     // 디코딩 결과가 없으면 권한이 없음을 응답.
     if (decoded === null) {
-      throw new UnauthenticatedError('권한이 없습니다. 재로그인해주세요.')
+      throw new UnauthenticatedError('Access 토큰 정보가 손상되었습니다.')
     }
 	
     /* access token의 decoding 된 값에서 유저의 id를 가져와 refresh token을 검증합니다. */
@@ -28,13 +28,12 @@ const refresh = async (req, res) => {
     if (authResult.ok === false && authResult.message === 'jwt expired') {
       // 1. access token이 만료되고, refresh token도 만료 된 경우 => 새로 로그인해야합니다.
       if (refreshResult.ok === false) {
-        throw new UnauthenticatedError('권한이 없습니다. 재로그인해주세요.')
+        throw new UnauthenticatedError('Refresh 토큰이 만료되었습니다. 다시 로그인해주세요.')
       } else {
         // 2. access token이 만료되고, refresh token은 만료되지 않은 경우 => 새로운 access token을 발급
-        
         const user=await User.findByPk(decoded.id)
         if(!user){
-          throw new UnauthenticatedError('권한이 없습니다. 재로그인해주세요.')
+          throw new BadRequestError('토큰 내에 있는 유저 정보를 찾을 수 없습니다.')
         }
 
         const newAccessToken = sign(user);
@@ -48,10 +47,10 @@ const refresh = async (req, res) => {
       }
     } else {
       // 3. access token이 만료되지 않은경우 => refresh 할 필요가 없습니다.
-      throw new BadRequestError('Access token이 만료되지 않았습니다.')
+      throw new BadRequestError('Access 토큰이 만료되지 않았습니다.')
     }
   } else { // access token 또는 refresh token이 헤더에 없는 경우
-    throw new BadRequestError('Access token 또는 refresh token이 헤더에 존재하지 않습니다.');
+    throw new BadRequestError('Access 토큰 또는 refresh 토큰이 헤더에 존재하지 않습니다.');
   }
 };
 
