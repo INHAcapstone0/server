@@ -103,6 +103,7 @@ module.exports = {
     await queryInterface.bulkInsert('users', sampleUsers, {});
 
     let password=await bcrypt.hash(`taylor#1213`, salt)
+    let password2=await bcrypt.hash(`wjdtjrdn12#`, salt)
     let customUsers=[
       {
         id: 'a9306475-2465-4eac-87a4-4b8d5c6c4d5b',
@@ -120,6 +121,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       },
+      
+      {
+        id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        email: "root@test.com",
+        name: "관리자", 
+        password:password2,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
   ]
   await queryInterface.bulkInsert('users', customUsers, {});
 

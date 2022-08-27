@@ -10,10 +10,11 @@ const auth = (req, res, next) => {
   const token = authHeader.split('Bearer ')[1]; // header에서 access token을 가져옵니다.
   const payload = verify(token); // token을 검증합니다.
   if (payload.ok) { // token이 검증되었으면 req에 값을 세팅하고, 다음 콜백함수로 갑니다.
-    req.user={id:payload.id, name:payload.name}
-    
-    if (payload.id=='a9306475-2465-4eac-87a4-4b8d5c6c4d5b'){// 관리자 유저의 Request일 때
-      req.user.admin=true
+    req.user = { id: payload.id, name: payload.name }
+
+    if (payload.id == 'a9306475-2465-4eac-87a4-4b8d5c6c4d5b' ||
+      payload.id == 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7') {// 관리자 유저의 Request일 때
+      req.user.admin = true
     }
     next();
   } else { // 검증에 실패하거나 토큰이 만료되었다면 클라이언트에게 메세지를 담아서 응답합니다.
