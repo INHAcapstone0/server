@@ -115,7 +115,7 @@ module.exports = {
       {
         id: 'a7881fe1-2145-46dc-90c2-f8659def21e4',
         email: "cnwish2@naver.com",
-        name: "참가자",
+        name: "참가자", 
         password,
         createdAt: new Date(),
         updatedAt: new Date(),

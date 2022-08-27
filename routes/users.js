@@ -8,6 +8,7 @@ const {
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
+const {accessableToUserRequest}=require('../middleware/check-authority') // 권한 판별
 const upload=require('../middleware/upload-image')
 
 module.exports = (app) => {
@@ -16,19 +17,19 @@ module.exports = (app) => {
 	router.get('/', getAllUsers);
 
 	//params:user_id
-	router.get("/:id", getUser);
+	router.get("/:id", accessableToUserRequest, getUser);
 
 	//params:user_id
 	//body:user_pw, user_email, user_name
-	router.patch('/:id', updateUser)
+	router.patch('/:id', accessableToUserRequest, updateUser)
 
 	router.patch('/img/upload', upload.single('user-profile'), uploadUserImage)
 
 	//params:user_id
-	router.put('/restore/:id', restoreUser)
+	router.put('/restore/:id', accessableToUserRequest, restoreUser)
 
 	//params:user_id
-	router.delete('/:id', deleteUser);
+	router.delete('/:id', accessableToUserRequest, deleteUser);
 
 	app.use("/users",authenticateUser, router);
 }

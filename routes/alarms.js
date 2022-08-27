@@ -8,6 +8,7 @@ const {
 } = require('../controllers/alarms');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
+const {accessableToAlarmRequest}=require('../middleware/check-authority')
 
 module.exports = (app) => {
 	router.post('/', createAlarm)
@@ -16,7 +17,7 @@ module.exports = (app) => {
 
 	router.get('/:id', getAlarm)
 
-	router.patch('/:id', updateAlarm)
+	router.patch('/:id', accessableToAlarmRequest, updateAlarm)
 
 	router.put('/restore/:id', restoreAlarm)
 

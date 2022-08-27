@@ -2,20 +2,18 @@ const { toDate, isValidDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const User = db.User;
-const Schedule = db.Schedule;
-const Participant = db.Participant;
-const Receipt = db.Receipt;
-const Op = db.Sequelize.Op;
-const Sequelize=db.Sequelize
+const {User, Schedule, Participant, Receipt, Sequelize} = db;
+const Op = Sequelize.Op
 
 //추후에 기간 중복에 대한 유효성 검증할 것
 exports.createSchedule = async (req, res) => {
+  // participants Array 추가, 해당 옵션 사용 시 schedule을 생성할 때 participant 객체에 bulkInsert함
   let {
     name,
     owner_id,
     startAt, // yyyymmddhhmmss
-    endAt // yyyymmddhhmmss
+    endAt, // yyyymmddhhmmss
+    participants
   } = req.body;
 
   if (!name || !owner_id || !startAt || !endAt) {
@@ -44,6 +42,21 @@ exports.createSchedule = async (req, res) => {
   
   if(!created){
     throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
+  }
+
+  if(participants){
+    let participant_list=[]
+    participants.push(owner_id)
+    participants.forEach(participant=>{
+      if(participant.trim()){
+        participant_list.push({
+        participant_id:participant,
+        schedule_id:schedule.id
+      })
+      }
+    })
+
+    await Participant.bulkCreate(participant_list)
   }
 
   res.status(StatusCodes.CREATED).json(schedule)

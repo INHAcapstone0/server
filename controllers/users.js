@@ -1,6 +1,6 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, NotFoundError } = require('../errors')
+const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
 const User = db.User;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../lib/modules');
@@ -112,6 +112,10 @@ exports.restoreUser = async (req, res) => { // 삭제된 유저 복구
 }
 
 exports.deleteUser = async (req, res) => {
+  if(!req.user.admin){
+    throw new UnauthenticatedError('해당 유저를 삭제하려면 관리자 권한이 필요합니다.')
+  }
+
   const { id } = req.params;
 
   if(!id){

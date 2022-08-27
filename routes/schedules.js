@@ -8,6 +8,7 @@ const {
 } = require('../controllers/schedules');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
+const { accessableToScheduleRequest } = require('../middleware/check-authority') // 권한 판별
 
 module.exports = (app) => {
 	//body:schedule_name, owner_id, startAt, endAt
@@ -17,16 +18,16 @@ module.exports = (app) => {
 	router.get('/', getAllSchedules);
 
 	//params:schedule_id
-	router.get("/:id", getSchedule);
+	router.get("/:id", accessableToScheduleRequest, getSchedule);
 
 	//params:schedule_id
 	//body:schedule_name,owner_id, startAt, endAt
-	router.patch('/:id', updateSchedule)
+	router.patch('/:id', accessableToScheduleRequest, updateSchedule)
 
-	router.put('/restore/:id', restoreSchedule);
+	router.put('/restore/:id', accessableToScheduleRequest, restoreSchedule);
+
 	//params:schedule_id
-
-	router.delete('/:id', deleteSchedule);
+	router.delete('/:id', accessableToScheduleRequest, deleteSchedule);
 
 	app.use("/schedules",authenticateUser, router);
 }

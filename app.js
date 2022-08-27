@@ -6,10 +6,15 @@ const app = express()
 const fs = require('fs')
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
-const cors = require('cors')
 
+const cors = require('cors')
+const helmet = require('helmet')
+
+app.use(helmet()) //보안 관련 HTTP 헤더를 설정
 app.use(express.json()) // json parser
 app.use(cors()) // 모든 CORS request 허용
+
+
 
 // routes 내의 모든 라우터 미들웨어 등록
 fs.readdirSync(__dirname + "/routes")

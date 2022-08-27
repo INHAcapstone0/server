@@ -12,20 +12,6 @@ exports.createParticipant = async (req, res) => {
     throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.')
   }
 
-  // const beforeCreate= await Participant.findAll({
-  //   include:[{
-  //     model:Schedule,
-  //     where:{
-  //       id:schedule_id,
-  //       owner_id:participant_id
-  //     }
-  //   }]
-  // })
-
-  // if(beforeCreate.length){ // owner_id와 동일한 participant_id를 등록하려고 할 때 예외처리
-  //   throw new BadRequestError('스케줄 생성자는 참여자 정보로 생성할 수 없습니다.');
-  // }
-  
   const [participant, created] = await Participant.findOrCreate({
     where: { participant_id, schedule_id },
     defaults: { participant_id, schedule_id }
@@ -78,7 +64,7 @@ exports.updateParticipant = async (req, res) => {
 };
 
 exports.restoreParticipant = async (req, res) => { // 삭제된 유저 복구
-  const { participant_id, schedule_id } = req.body;
+  const { participant_id, schedule_id } = req.params;
 
   if (!participant_id || !schedule_id) {
     throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.');
@@ -96,7 +82,7 @@ exports.restoreParticipant = async (req, res) => { // 삭제된 유저 복구
 }
 
 exports.deleteParticipant = async (req, res) => {
-  const { participant_id, schedule_id } = req.body;
+  const { participant_id, schedule_id } = req.params;
 
   if (!participant_id || !schedule_id) {
     throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.');
