@@ -15,15 +15,18 @@ module.exports = (sequelize, DataTypes) => {
       });
       this.hasMany(models.Settlement,{
         foreignKey:"schedule_id",
-        sourceKey:"schedule_id"
+        sourceKey:"schedule_id",
+        onDelete: 'CASCADE'
       })
       this.hasMany(models.Settlement,{
         foreignKey:"sender_id",
-        sourceKey:"participant_id"
+        sourceKey:"participant_id",
+        onDelete: 'CASCADE'
       })
       this.hasMany(models.Settlement,{
         foreignKey:"receiver_id",
-        sourceKey:"participant_id"
+        sourceKey:"participant_id",
+        onDelete: 'CASCADE'
       })
     }
   };
@@ -31,12 +34,14 @@ module.exports = (sequelize, DataTypes) => {
     participant_id:{
       type: DataTypes.UUID,
       comment:"참여자 ID",
-      primaryKey:true
+      primaryKey:true,
+      onDelete:'CASCADE'
     },
     schedule_id:{
       type: DataTypes.UUID,
       comment:"참여 일정 ID",
-      primaryKey:true
+      primaryKey:true,
+      onDelete:'CASCADE'
     },
     status: {
       type: DataTypes.ENUM('대기 중', '승인', '거절'),

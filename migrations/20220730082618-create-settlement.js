@@ -11,6 +11,7 @@ module.exports = {
       schedule_id:{
         type: Sequelize.UUID,
         comment:"정산 대상 스케줄 ID",
+        onDelete:'CASCADE',
         references: {
           model: 'participants',
           key: 'schedule_id'
@@ -19,6 +20,7 @@ module.exports = {
       sender_id:{
         type: Sequelize.UUID,
         comment:"정산액 입금자",
+        onDelete:'CASCADE',
         references: {
           model: 'participants',
           key: 'participant_id'
@@ -27,6 +29,7 @@ module.exports = {
       receiver_id:{
         type: Sequelize.UUID,
         comment:"정산액 수급자",
+        onDelete:'CASCADE',
         references: {
           model: 'participants',
           key: 'participant_id'

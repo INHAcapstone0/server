@@ -9,15 +9,18 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       this.belongsTo(models.Participant,{
         foreignKey:"schedule_id",
-        targetKey:"schedule_id"
+        targetKey:"schedule_id",
+        onDelete:'CASCADE'
       });
       this.belongsTo(models.Participant,{
         foreignKey:"sender_id",
         targetKey:"participant_id",
+        onDelete:'CASCADE'
       });
       this.belongsTo(models.Participant,{
         foreignKey:"receiver_id",
-        targetKey:"participant_id"
+        targetKey:"participant_id",
+        onDelete:'CASCADE'
       });
     }
   };

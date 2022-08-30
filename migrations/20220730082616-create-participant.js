@@ -6,6 +6,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"참여자 ID",
         primaryKey:true,
+        onDelete:'CASCADE',
         references: {
           model: 'users',
           key: 'id'
@@ -15,6 +16,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"참여 일정 ID",
         primaryKey:true,
+        onDelete:'CASCADE',
         references: {
           model: 'schedules',
           key: 'id'
