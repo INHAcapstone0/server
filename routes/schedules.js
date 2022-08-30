@@ -4,7 +4,8 @@ const {
 	getSchedule,
 	updateSchedule,
 	restoreSchedule,
-	deleteSchedule
+	deleteSchedule,
+	getMyApprovedSchedule
 } = require('../controllers/schedules');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -17,6 +18,7 @@ module.exports = (app) => {
 	//no params
 	router.get('/', getAllSchedules);
 
+	router.get('/status/',getMyApprovedSchedule)
 	//params:schedule_id
 	router.get("/:id", accessableToScheduleRequest, getSchedule);
 

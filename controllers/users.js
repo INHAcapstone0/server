@@ -93,6 +93,21 @@ exports.uploadUserImage=async(req, res)=>{
   }
 }
 
+exports.deleteUserImage=async(req, res)=>{
+  const {id} = req.user;
+  const result=await User.update({
+    img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`
+  },
+  {
+   where:{id} 
+  })
+  if(result==1){
+    res.status(StatusCodes.OK).json({ msg:`유저 프로필이 성공적으로 업데이트되었습니다.` })
+  }else{
+    throw new NotFoundError('업데이트할 유저가 존재하지 않습니다.')
+  }
+}
+
 exports.restoreUser = async (req, res) => { // 삭제된 유저 복구
   const { id } = req.params;
 

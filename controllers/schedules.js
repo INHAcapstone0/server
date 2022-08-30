@@ -11,8 +11,8 @@ exports.createSchedule = async (req, res) => {
   let {
     name,
     owner_id,
-    startAt, // yyyymmddhhmmss
-    endAt, // yyyymmddhhmmss
+    startAt, // yyyymmdd
+    endAt, // yyyymmdd
     participants
   } = req.body;
 
@@ -24,7 +24,7 @@ exports.createSchedule = async (req, res) => {
   endAt = toDate(endAt);
   
   if (!isValidDate(startAt) && !isValidDate(endAt)) {
-    throw new BadRequestError('일정 시작일과 종료일을 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+    throw new BadRequestError('일정 시작일과 종료일을 유효한 타입 [YYYYMMDD]으로 입력하세요.')
   } else if (startAt >= endAt) {
     throw new BadRequestError('일정 종료시간을 일정 시작시간 이후의 날짜로 입력하세요.')
   }
@@ -44,20 +44,25 @@ exports.createSchedule = async (req, res) => {
     throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
   }
 
-  if(participants){
-    let participant_list=[]
-    participants.push(owner_id)
-    participants.forEach(participant=>{
-      if(participant.trim()){
-        participant_list.push({
-        participant_id:participant,
-        schedule_id:schedule.id
-      })
-      }
-    })
+  // 최초 참여자 리스트는 소유주 
+  let participant_list=[{
+    participant_id:owner_id,
+    schedule_id:schedule.id,
+    status:'승인'
+  }]
 
-    await Participant.bulkCreate(participant_list)
+  if (Array.isArray(participants)) {
+    participants.forEach(participant => {
+      participant_list.push({
+        participant_id: participant,
+        schedule_id: schedule.id
+      })
+    })
+  }else{
+    throw new BadRequestError('참여자 정보를 Array 형태로 입력하세요.')
   }
+
+  await Participant.bulkCreate(participant_list)
 
   res.status(StatusCodes.CREATED).json(schedule)
 }
@@ -97,7 +102,6 @@ exports.getAllSchedules = async(req, res) => {
     })
   }
    
-  
   const schedules= await Schedule.findAll({
     where:condition,
     attributes:{ // 스케줄에 속해 있는 모든 영수증의 total_price 합을 추가
@@ -136,6 +140,34 @@ exports.getSchedule = async (req, res) => {
   }
   res.status(StatusCodes.OK).json(schedule)
 };
+
+exports.getMyApprovedSchedule = async(req, res)=>{
+  // 나의 user id를 가져오기 
+  const {id}= req.user
+  const {status} = req.query;
+  // participant_id가 나의 user id와 일치하는 것 중 status=승인인 데이터를 schedule과 include해서 가져오기
+  const results= await Participant.findAll({
+    where : {
+      participant_id:id,
+      status
+    },
+    include:[{
+      model:Schedule
+    }]
+  })
+
+  if(!results.length){
+    throw new NotFoundError('스케줄이 존재하지 않습니다.')
+  }
+
+  const schedules =[]
+
+  results.forEach(result=>{
+    schedules.push(result.Schedule)
+  })
+  
+  res.status(StatusCodes.OK).json(schedules)
+}
 
 //update 시 기간 및 name validation 나중에 추가
 exports.updateSchedule = async (req, res) => {

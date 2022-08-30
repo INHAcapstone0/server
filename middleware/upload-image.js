@@ -9,13 +9,12 @@ let upload = multer({
     storage: multerS3({
         s3: s3,
         bucket: "capstone-storage-server",
-        key: function (req, file, cb) {
+        key: function (req, file, next) {
              let extension = path.extname(file.originalname);
-             cb(null, Date.now().toString() + extension)
+             next(null, Date.now().toString() + extension)
         },
         acl: 'public-read-write',
     })
-
 })
 
 module.exports = upload;

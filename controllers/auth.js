@@ -26,7 +26,7 @@ const login = async (req, res) => {
   }
   const isPasswordCorrect = await comparePassword(password, user)
   if (!isPasswordCorrect) {
-    throw new UnauthenticatedError('비밀번호가 틀렸습니다.')
+    throw new NotFoundError('비밀번호가 틀렸습니다.')
   }
 
   const accessToken = jwt.sign(user);
@@ -53,7 +53,8 @@ const register = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
   password = await bcrypt.hash(password, salt)
 
-  const user = await User.create({ email, password, name })
+  let default_image_url=`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`
+  const user = await User.create({ email, password, name, img_url:default_image_url })
 
   res.status(StatusCodes.CREATED).json({ user: user.name, email: user.email })
 }

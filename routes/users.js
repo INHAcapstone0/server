@@ -4,7 +4,8 @@ const {
 	updateUser,
 	restoreUser,
 	deleteUser,
-	uploadUserImage
+	uploadUserImage,
+	deleteUserImage
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -24,6 +25,8 @@ module.exports = (app) => {
 	router.patch('/:id', accessableToUserRequest, updateUser)
 
 	router.patch('/img/upload', upload.single('user-profile'), uploadUserImage)
+
+	router.patch('/img/empty', deleteUserImage)
 
 	//params:user_id
 	router.put('/restore/:id', accessableToUserRequest, restoreUser)
