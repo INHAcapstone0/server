@@ -14,7 +14,7 @@ const accessableToParticipantRequest=async(req, res, next)=>{
   // param의 schedule_id로 schedule owner 조회
   if(schedule_id && participant_id){
     const {owner_id}=await Schedule.findOne({
-      where:{schedule_id}
+      where:{id:schedule_id}
     })
 
     // 요청자가 참여자 본인이거나 참가한 스케줄 소유자가 아니라면
