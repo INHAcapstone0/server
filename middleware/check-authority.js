@@ -16,9 +16,8 @@ const accessableToParticipantRequest=async(req, res, next)=>{
     const {owner_id}=await Schedule.findOne({
       where:{id:schedule_id}
     })
-
     // 요청자가 참여자 본인이거나 참가한 스케줄 소유자가 아니라면
-    if(!(req.user.id in [owner_id, participant_id])){
+    if(!([owner_id, participant_id].includes(req.user.id))){
       throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
     }
   }
