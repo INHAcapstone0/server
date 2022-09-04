@@ -15,6 +15,7 @@ module.exports = {
           model: 'receipts',
           key: 'id'
         },
+        onDelete: 'CASCADE'
       },
       name:{
         type:Sequelize.STRING,

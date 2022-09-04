@@ -12,13 +12,15 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "owner_id",
         allowNull: false,
         constraints: true,
-        onDelete: 'cascade'
+        onDelete: 'CASCADE'
       });
       this.hasMany(models.Participant,{
-        foreignKey:"schedule_id"
+        foreignKey:"schedule_id",
+        onDelete: 'CASCADE'
       });
       this.hasMany(models.Receipt,{
-        foreignKey:"schedule_id"
+        foreignKey:"schedule_id",
+        onDelete: 'CASCADE'
       });
     }
   };

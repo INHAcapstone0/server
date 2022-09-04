@@ -15,14 +15,16 @@ module.exports = {
           model: 'schedules',
           key: 'id'
         },
+        onDelete: 'CASCADE'
       },
       poster_id:{
         type:Sequelize.UUID,
         comment:"영수증 게시자 ID",
         references: {
           model: 'users',
-          key: 'id'
+          key: 'id',
         },
+        onDelete: 'CASCADE'
       },
       category: {
         type: Sequelize.ENUM('카페', '식당', '숙박', '기타'),

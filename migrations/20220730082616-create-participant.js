@@ -16,7 +16,7 @@ module.exports = {
         type: Sequelize.UUID,
         comment:"참여 일정 ID",
         primaryKey:true,
-        onDelete:'CASCADE',
+        onDelete: 'CASCADE',
         references: {
           model: 'schedules',
           key: 'id'

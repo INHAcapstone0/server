@@ -15,6 +15,7 @@ module.exports = {
           model: 'users',
           key: 'id'
         },
+        onDelete: 'CASCADE'
       },
       alarm_type: {
         type: Sequelize.ENUM('초대', '정산', '일정 시작', '일정 종료'),

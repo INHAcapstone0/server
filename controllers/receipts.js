@@ -149,7 +149,8 @@ exports.deleteReceipt = async (req, res) => {
   }
 
   const result = await Receipt.destroy({
-    where: { id }
+    where: { id },
+    force:true
   })
 
   if (result == 1) {

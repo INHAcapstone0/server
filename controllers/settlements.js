@@ -116,7 +116,8 @@ exports.deleteSettlement = async (req, res) => {
   }
 
   const result = await Settlement.destroy({
-    where: { id }
+    where: { id },
+    force:true
   })
 
   if (result == 1) {

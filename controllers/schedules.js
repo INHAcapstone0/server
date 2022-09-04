@@ -228,7 +228,8 @@ exports.deleteSchedule = async (req, res) => {
   }
 
   const result = await Schedule.destroy({
-    where: { id }
+    where: { id },
+    force:true
   })
 
   if(result==1){

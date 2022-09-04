@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
         ItemList와 1:N
       */
       this.belongsTo(models.User, {
-        foreignKey: "poster_id"
+        foreignKey: "poster_id",
+        onDelete: 'CASCADE'
       });
       this.belongsTo(models.Schedule, {
-        foreignKey: "schedule_id"
+        foreignKey: "schedule_id",
+        onDelete: 'CASCADE'
       });
       this.hasMany(models.Item, {
         foreignKey: "receipt_id"

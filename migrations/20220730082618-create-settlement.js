@@ -16,6 +16,7 @@ module.exports = {
           model: 'participants',
           key: 'schedule_id'
         },
+        onDelete: 'CASCADE'
       },
       sender_id:{
         type: Sequelize.UUID,
@@ -25,6 +26,7 @@ module.exports = {
           model: 'participants',
           key: 'participant_id'
         },
+        onDelete: 'CASCADE'
       },
       receiver_id:{
         type: Sequelize.UUID,
@@ -34,6 +36,7 @@ module.exports = {
           model: 'participants',
           key: 'participant_id'
         },
+        onDelete: 'CASCADE'
       },
       amount:{
         type: Sequelize.DOUBLE,

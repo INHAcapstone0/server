@@ -6,7 +6,8 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue:Sequelize.UUIDV4,
         primaryKey:true,
-        comment:"스케줄 식별번호"
+        comment:"스케줄 식별번호",
+        onDelete: 'CASCADE'
       },
       owner_id:{  
         type:Sequelize.UUID,

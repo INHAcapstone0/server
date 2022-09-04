@@ -89,7 +89,8 @@ exports.deleteParticipant = async (req, res) => {
   }
 
   const result = await Participant.destroy({
-    where: { participant_id, schedule_id }
+    where: { participant_id, schedule_id },
+    force:true
   })
 
   if (result == 1) {
