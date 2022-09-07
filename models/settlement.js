@@ -46,6 +46,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'participants',
         key: 'participant_id'
       },
+      onDelete: 'CASCADE'
     },
     receiver_id:{
       type: DataTypes.UUID,
@@ -54,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         model: 'participants',
         key: 'participant_id'
       },
+      onDelete: 'CASCADE'
     },
     amount:{
       type: DataTypes.DOUBLE,
