@@ -18,7 +18,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       alarm_type: {
-        type: Sequelize.ENUM('초대', '정산', '일정 시작', '일정 종료'),
+        type: Sequelize.ENUM('초대', '정산 확인 요청','정산 확인 완료', '영수증 업로드', '일정 시작', '일정 종료'),
         allowNull:false,
         comment: "알람 타입"
       },

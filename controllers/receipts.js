@@ -2,7 +2,7 @@ const { toDate, isValidDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const Receipt = db.Receipt;
+const {Receipt, Participant} = db;
 const Op = db.Sequelize.Op;
 
 exports.createReceipt = async (req, res) => {
@@ -31,6 +31,27 @@ exports.createReceipt = async (req, res) => {
   const receipt = await Receipt.create({
     schedule_id, poster_id, payDate, total_price, memo, place_of_payment, category
   });
+
+  const participants = await Participant.findAll({
+    where: {schedule_id}
+  })
+
+  const poster=await User.findByPk(poster_id)
+
+  if(!poster){
+    throw new BadRequestError('유저가 존재하지 않습니다.')
+  }
+
+  let alarm_list=[]
+  for (i of participants.map(participant=>participant.participant_id)){
+    alarm_list.push({
+      user_id:i, 
+      alarm_type:'영수증 업로드', 
+      message:`${poster.name}님이 새 영수증을 업로드하였습니다.`
+    })
+  }
+
+  //FCM 푸쉬알람 보내기
 
   res.status(StatusCodes.CREATED).json(receipt)
 }

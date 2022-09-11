@@ -2,7 +2,7 @@ const { toDate, isValidDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const {User, Schedule, Participant, Receipt, Sequelize} = db;
+const {User, Schedule, Participant, Receipt, Alarm, Sequelize} = db;
 const Op = Sequelize.Op
 
 //추후에 기간 중복에 대한 유효성 검증할 것
@@ -51,11 +51,19 @@ exports.createSchedule = async (req, res) => {
     status:'승인'
   }]
 
+  let alarm_list=[]
+
   if (Array.isArray(participants)) {
     participants.forEach(participant => {
       participant_list.push({
         participant_id: participant,
         schedule_id: schedule.id
+      })
+
+      alarm_list.push({
+        user_id:participant, 
+        alarm_type:'초대', 
+        message:`${user.name}님이 "${name}" 일정에 당신을 초대하려고 합니다.`
       })
     })
   }else{
@@ -64,6 +72,11 @@ exports.createSchedule = async (req, res) => {
 
   await Participant.bulkCreate(participant_list)
 
+  if (alarm_list.length!=0){
+    await Alarm.bulkCreate(alarm_list)
+  }
+  //FCM으로 유저에게 알람 보내기
+  
   res.status(StatusCodes.CREATED).json(schedule)
 }
 

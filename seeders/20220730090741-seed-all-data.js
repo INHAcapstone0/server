@@ -202,18 +202,85 @@ module.exports = {
     }
     await queryInterface.bulkInsert('settlements', sampleSettlements, {});
 
-    for (let i = 0; i < 10; i++) {
-      let alarmObj={
-        id:alarmIds[i],
-        user_id:userIds[Math.floor(i/2)],
+    
+    // for (let i = 0; i < 10; i++) {
+    //   let alarmObj={
+    //     id:alarmIds[i],
+    //     user_id:userIds[Math.floor(i/2)],
+    //     alarm_type:'초대',
+    //     message:'테스트메세지'+i,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   }
+    //   sampleAlarms.push(alarmObj)
+    // }
+    let alarms=[
+      {
+        id:alarmIds[0],
+        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
         alarm_type:'초대',
-        message:'테스트메세지'+i,
+        message:'관리자 님이 제주도 여행 일정에 당신을 초대했습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
-      }
-      sampleAlarms.push(alarmObj)
-    }
-    await queryInterface.bulkInsert('alarms', sampleAlarms, {});
+      },
+      {
+        id:alarmIds[1],
+        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type:'일정 시작',
+        message:'관리자 님의 제주도 여행 일정이 시작되었습니다.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[2],
+        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type:'일정 시작',
+        message:'관리자 님의 제주도 여행 일정이 시작되었습니다.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[3],
+        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type:'일정 종료',
+        message:'관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[4],
+        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type:'일정 종료',
+        message:'관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[5],
+        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type:'영수증 업로드',
+        message:'테스트유저0 님이 제주도 여행 일정에 영수증을 업로드하였습니다.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[6],
+        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type:'정산 확인 요청',
+        message:'테스트유저0 님이 30000원 정산 확인 요청을 보냈습니다.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        id:alarmIds[7],
+        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type:'정산 확인 완료',
+        message:'관리자 님이 30000원 정산 확인을 완료하였습니다.',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    ]
+    await queryInterface.bulkInsert('alarms', alarms, {});
   },
 
   async down(queryInterface, Sequelize) {
