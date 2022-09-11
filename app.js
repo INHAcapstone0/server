@@ -6,6 +6,7 @@ const app = express()
 const fs = require('fs')
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
+const scheduler=require('./utils/scheduler')
 
 const cors = require('cors')
 const helmet = require('helmet')
@@ -32,6 +33,7 @@ const start = async () => {
     await db.sequelize.sync() //sequelize sync
 
     app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`))
+    scheduler.loadInitialSchedule()
   } catch (err) {
     console.log(err)
   }
