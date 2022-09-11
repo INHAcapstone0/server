@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
 const {User, Schedule, Participant, Receipt, Alarm, Sequelize} = db;
 const Op = Sequelize.Op
+const scheduler=require('../utils/node-scheduler')
 
 //추후에 기간 중복에 대한 유효성 검증할 것
 exports.createSchedule = async (req, res) => {
@@ -75,7 +76,10 @@ exports.createSchedule = async (req, res) => {
   if (alarm_list.length!=0){
     await Alarm.bulkCreate(alarm_list)
   }
-  
+
+  //scheduler 등록
+  scheduler.createOrFixScheduler(schedule)
+
   //FCM으로 유저에게 초대 알람 보내기
   
   res.status(StatusCodes.CREATED).json(schedule)
@@ -213,6 +217,8 @@ exports.updateSchedule = async (req, res) => {
   })
 
   if(result==1){
+    //scheduler 수정
+    scheduler.createOrFixScheduler(afterUpdateSchedule)
     res.status(StatusCodes.OK).json({msg:"스케줄이 수정되었습니다."})
   }else{
     throw new NotFoundError(`스케줄 id가 ${id}인 스케줄을 찾을 수 없습니다.`)
@@ -242,12 +248,16 @@ exports.deleteSchedule = async (req, res) => {
     throw new BadRequestError('스케줄 id를 입력해주세요.');
   }
 
+  const schedule=await Schedule.findByPk(id)
+
   const result = await Schedule.destroy({
     where: { id },
     force:true
   })
 
   if(result==1){
+    //scheduler 삭제
+    scheduler.deleteScheduler(schedule)
     res.status(StatusCodes.OK).json({ msg:`스케줄이 성공적으로 삭제되었습니다.` })
   }else{
     throw new NotFoundError('삭제할 스케줄이 존재하지 않습니다.')

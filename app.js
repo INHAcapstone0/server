@@ -15,8 +15,6 @@ app.use(helmet()) //보안 관련 HTTP 헤더를 설정
 app.use(express.json()) // json parser
 app.use(cors()) // 모든 CORS request 허용
 
-
-
 // routes 내의 모든 라우터 미들웨어 등록
 fs.readdirSync(__dirname + "/routes")
   .forEach(data => {
@@ -33,7 +31,7 @@ const start = async () => {
     await db.sequelize.sync() //sequelize sync
 
     app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`))
-    scheduler.loadInitialSchedule()
+    scheduler.loadInitialScheduler()
   } catch (err) {
     console.log(err)
   }
