@@ -1,7 +1,7 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const {Participant, Alarm, Schedule} = db;
+const {Participant, Alarm, Schedule, User} = db;
 
 exports.createParticipant = async (req, res) => {
   const { participant_id, schedule_id } = req.body
@@ -53,7 +53,11 @@ exports.getAllParticipants = async (req, res) => {
   }
 
   const participants = await Participant.findAll({
-    where: condition
+    where: condition,
+    include:[{
+      model:User,
+      attributes:['img_url']
+    }],
   })
 
   if (!participants.length) {
