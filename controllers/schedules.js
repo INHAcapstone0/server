@@ -63,7 +63,7 @@ exports.createSchedule = async (req, res) => {
       alarm_list.push({
         user_id:participant, 
         alarm_type:'초대', 
-        message:`${user.name}님이 "${name}" 일정에 당신을 초대하려고 합니다.`
+        message:`${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`
       })
     })
   }else{
@@ -75,7 +75,8 @@ exports.createSchedule = async (req, res) => {
   if (alarm_list.length!=0){
     await Alarm.bulkCreate(alarm_list)
   }
-  //FCM으로 유저에게 알람 보내기
+  
+  //FCM으로 유저에게 초대 알람 보내기
   
   res.status(StatusCodes.CREATED).json(schedule)
 }
@@ -84,6 +85,7 @@ exports.getAllSchedules = async(req, res) => {
   const {owner_name, name, owner_id, participant_id}=req.query;
   let condition={}
 
+  console.log(req.user)
   // 스케줄에 속해 있는 모든 영수증의 total_price 합을 조회하기 위한 join
   let include=[{
     model:Receipt,
