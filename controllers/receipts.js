@@ -1,8 +1,8 @@
-const { toDate, isValidDate } = require('../lib/modules');
+const { toDate, isValidDate, toFullDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const {Receipt, Participant} = db;
+const {Receipt, Participant, User} = db;
 const Op = db.Sequelize.Op;
 
 exports.createReceipt = async (req, res) => {
@@ -21,7 +21,7 @@ exports.createReceipt = async (req, res) => {
   }
 
   if (payDate) {
-    payDate = toDate(payDate);
+    payDate = toFullDate(payDate);
   }
 
   if (!isValidDate(payDate)) {
