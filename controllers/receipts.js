@@ -1,8 +1,8 @@
 const { toDate, isValidDate, toFullDate } = require('../lib/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, NotFoundError } = require('../errors')
-const {Receipt, Participant, User} = db;
+const { BadRequestError, NotFoundError } = require('../errors');
+const {Receipt, Participant, User, Alarm} = db;
 const Op = db.Sequelize.Op;
 
 exports.createReceipt = async (req, res) => {
@@ -49,6 +49,10 @@ exports.createReceipt = async (req, res) => {
       alarm_type:'영수증 업로드', 
       message:`${poster.name}님이 새 영수증을 업로드하였습니다.`
     })
+  }
+
+  if (alarm_list.length!=0){
+    await Alarm.bulkCreate(alarm_list)
   }
 
   //FCM 푸쉬알람 보내기
