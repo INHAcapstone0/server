@@ -56,7 +56,7 @@ exports.getAllParticipants = async (req, res) => {
     where: condition,
     include:[{
       model:User,
-      attributes:['img_url']
+      attributes:['img_url', 'name']
     }],
   })
 
