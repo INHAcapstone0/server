@@ -1,10 +1,10 @@
 'use strict';
 const bcrypt = require('bcrypt')
-const { v4: uuidV4 } = require('uuid')
-
+const {v4} = require('uuid')
+const {toDate} =require('../lib/modules')
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const now= new Date();
+    const now = new Date();
     let sampleUsers = [];
     let sampleSchedules = [];
     let sampleReceipts = [];
@@ -32,7 +32,7 @@ module.exports = {
       '593f3b45-cce6-4f81-898a-7e5c07cd94b7',
       '25f33811-dd10-40fa-92ac-78f3305ee33a',
     ];
-    let receiptsIds=[
+    let receiptsIds = [
       '9322e936-88cb-4cd7-9a36-cf877b427b20',
       '735f05e3-894b-498d-91cf-c8409a38a409',
       'f28afe0f-3487-4ce7-939e-0c6a674414b2',
@@ -44,14 +44,14 @@ module.exports = {
       'ffa4071d-6982-4c01-80f7-170872a0012a',
       '4ecc89f9-1ca0-4fee-aab5-0b0459fe0057'
     ];
-    let settlementIds=[
+    let settlementIds = [
       '787220eb-b7f5-4fff-84eb-a0387127bc63',
       '5bff585e-3a10-4783-ac33-c32c7f6b199b',
       'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
       'ded3cb2f-0ece-48f0-b6c2-ef05619d7df1',
       '80e28f5b-e59b-4041-9131-60651ae005d5',
     ]
-    let alarmIds=[
+    let alarmIds = [
       'bd66d6ed-801b-4d0d-9c88-c7a0febc26ef',
       'd59375fb-1c2a-4a21-9851-ae2422285ac5',
       '3664226f-5bed-4920-b637-226d7f7dbe15',
@@ -63,7 +63,7 @@ module.exports = {
       'a8b4e54a-e538-4c23-b0c1-c23b75f08a3b',
       '11fe2df6-e71e-4351-bb36-aaf62d1f9663'
     ]
-    let itemIds=[
+    let itemIds = [
       'dce9061c-3174-44dc-8360-be251241344a',
       'cd982e21-dbf0-4aa3-b6e0-51f1240500f2',
       '85c14598-abb2-4d5e-b557-fa8f91d2ab32',
@@ -87,14 +87,14 @@ module.exports = {
     ]
 
     const salt = await bcrypt.genSalt(10);
-    
+
     for (let i = 0; i < 10; i++) {
       let password = await bcrypt.hash(`rlathfals${i}#`, salt)
       let userObj = {
         id: userIds[i], //나중에 랜덤한 UUID값으로 바꿀것 ->id:uuidV4()
         email: "test" + i + "@example.com",
         name: "테스트유저" + i,
-        img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
+        img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
         password: password,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -103,14 +103,14 @@ module.exports = {
     }
     await queryInterface.bulkInsert('users', sampleUsers, {});
 
-    let password=await bcrypt.hash(`taylor#1213`, salt)
-    let password2=await bcrypt.hash(`wjdtjrdn12#`, salt)
-    let customUsers=[
+    let password = await bcrypt.hash(`taylor#1213`, salt)
+    let password2 = await bcrypt.hash(`wjdtjrdn12#`, salt)
+    let customUsers = [
       {
         id: 'a9306475-2465-4eac-87a4-4b8d5c6c4d5b',
         email: "cnwish1@naver.com",
         name: "호스트",
-        img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
+        img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
         password,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -118,28 +118,167 @@ module.exports = {
       {
         id: 'a7881fe1-2145-46dc-90c2-f8659def21e4',
         email: "cnwish2@naver.com",
-        name: "참가자", 
-        img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
+        name: "참가자",
+        img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
         password,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
-      
+
       {
         id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         email: "root@test.com",
-        name: "관리자", 
-        img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
-        password:password2,
+        name: "관리자",
+        img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
+        password: password2,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
-  ]
-  await queryInterface.bulkInsert('users', customUsers, {});
+    ]
+    await queryInterface.bulkInsert('users', customUsers, {});
 
+    let customSchedules = [{
+      "name": "folklore1",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220101",
+      "endAt": "20220121",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore2",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220201",
+      "endAt": "20220221",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore3",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220301",
+      "endAt": "20220321",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore4",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220401",
+      "endAt": "20220421",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore5",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220501",
+      "endAt": "20220521",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore6",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220601",
+      "endAt": "20220621",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore7",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220701",
+      "endAt": "20220721",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore8",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220801",
+      "endAt": "20220821",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "folklore9",
+      "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "startAt": "20220901",
+      "endAt": "20220921",
+      "participants": ["44ecb180-bd14-4fcc-8088-e58da95fd984", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore1",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210101",
+      "endAt": "20210121",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore2",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210201",
+      "endAt": "20210221",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore3",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210301",
+      "endAt": "20210321",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore4",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210401",
+      "endAt": "20210421",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore5",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210501",
+      "endAt": "20210521",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore6",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210601",
+      "endAt": "20210621",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore7",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210701",
+      "endAt": "20210721",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore8",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210801",
+      "endAt": "20210821",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    },
+    {
+      "name": "evermore9",
+      "owner_id": "44ecb180-bd14-4fcc-8088-e58da95fd984",
+      "startAt": "20210901",
+      "endAt": "20210921",
+      "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
+    }]
+
+    customSchedules.forEach(one=>{
+      sampleSchedules.push({
+        id:v4(),
+        name: one.name,
+        owner_id: one.owner_id,
+        startAt: toDate(one.startAt),
+        endAt:toDate(one.endAt),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+    })
+    
     for (let i = 0; i < 5; i++) {
       let scheduleObj = {
-        id:scheduleIds[i],
+        id: scheduleIds[i],
         name: "테스트스케줄" + i,
         owner_id: userIds[i],
         startAt: new Date(now.setDate(now.getDate() + 1)),
@@ -152,9 +291,9 @@ module.exports = {
     await queryInterface.bulkInsert('schedules', sampleSchedules, {});
 
     for (let i = 0; i < 10; i++) {
-      let participantObj={
+      let participantObj = {
         participant_id: userIds[i],
-        schedule_id: scheduleIds[Math.floor(i/2)],
+        schedule_id: scheduleIds[Math.floor(i / 2)],
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -163,24 +302,24 @@ module.exports = {
     await queryInterface.bulkInsert('participants', sampleParticipants, {});
 
     for (let i = 0; i < 10; i++) {
-      let receiptObj={
-        id:receiptsIds[i],
-        schedule_id: scheduleIds[Math.floor(i/2)],
+      let receiptObj = {
+        id: receiptsIds[i],
+        schedule_id: scheduleIds[Math.floor(i / 2)],
         poster_id: userIds[i],
-        total_price:i*1000000,
+        total_price: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
       sampleReceipts.push(receiptObj)
     }
     await queryInterface.bulkInsert('receipts', sampleReceipts, {});
-    
+
     for (let i = 0; i < 20; i++) {
-      let itemObj={
-        id:itemIds[i],
-        receipt_id:receiptsIds[Math.floor(i/2)],
-        name:`테스트아이템`+i,
-        price:i*500000,
+      let itemObj = {
+        id: itemIds[i],
+        receipt_id: receiptsIds[Math.floor(i / 2)],
+        name: `테스트아이템` + i,
+        price: i * 500000,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -189,12 +328,12 @@ module.exports = {
     await queryInterface.bulkInsert('items', sampleItems, {});
 
     for (let i = 0; i < 5; i++) {
-      let settlementObj={
-        id:settlementIds[i],
+      let settlementObj = {
+        id: settlementIds[i],
         schedule_id: scheduleIds[i],
-        sender_id:userIds[  i*2  ],
-        receiver_id:userIds[  (i*2)+1  ],
-        amount:i*1000000,
+        sender_id: userIds[i * 2],
+        receiver_id: userIds[(i * 2) + 1],
+        amount: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -202,7 +341,7 @@ module.exports = {
     }
     await queryInterface.bulkInsert('settlements', sampleSettlements, {});
 
-    
+
     // for (let i = 0; i < 10; i++) {
     //   let alarmObj={
     //     id:alarmIds[i],
@@ -214,68 +353,68 @@ module.exports = {
     //   }
     //   sampleAlarms.push(alarmObj)
     // }
-    let alarms=[
+    let alarms = [
       {
-        id:alarmIds[0],
-        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
-        alarm_type:'초대',
-        message:'관리자 님이 제주도 여행 일정에 당신을 초대했습니다.',
+        id: alarmIds[0],
+        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type: '초대',
+        message: '관리자 님이 제주도 여행 일정에 당신을 초대했습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[1],
-        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
-        alarm_type:'일정 시작',
-        message:'관리자 님의 제주도 여행 일정이 시작되었습니다.',
+        id: alarmIds[1],
+        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type: '일정 시작',
+        message: '관리자 님의 제주도 여행 일정이 시작되었습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[2],
-        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
-        alarm_type:'일정 시작',
-        message:'관리자 님의 제주도 여행 일정이 시작되었습니다.',
+        id: alarmIds[2],
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type: '일정 시작',
+        message: '관리자 님의 제주도 여행 일정이 시작되었습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[3],
-        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
-        alarm_type:'일정 종료',
-        message:'관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
+        id: alarmIds[3],
+        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type: '일정 종료',
+        message: '관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[4],
-        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
-        alarm_type:'일정 종료',
-        message:'관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
+        id: alarmIds[4],
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type: '일정 종료',
+        message: '관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[5],
-        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
-        alarm_type:'영수증 업로드',
-        message:'테스트유저0 님이 제주도 여행 일정에 영수증을 업로드하였습니다.',
+        id: alarmIds[5],
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type: '영수증 업로드',
+        message: '테스트유저0 님이 제주도 여행 일정에 영수증을 업로드하였습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[6],
-        user_id:'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
-        alarm_type:'정산 확인 요청',
-        message:'테스트유저0 님이 30000원 정산 확인 요청을 보냈습니다.',
+        id: alarmIds[6],
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+        alarm_type: '정산 확인 요청',
+        message: '테스트유저0 님이 30000원 정산 확인 요청을 보냈습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        id:alarmIds[7],
-        user_id:'4008b5cb-c626-4a3a-9490-08572249ccf4',
-        alarm_type:'정산 확인 완료',
-        message:'관리자 님이 30000원 정산 확인을 완료하였습니다.',
+        id: alarmIds[7],
+        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        alarm_type: '정산 확인 완료',
+        message: '관리자 님이 30000원 정산 확인을 완료하였습니다.',
         createdAt: new Date(),
         updatedAt: new Date(),
       },
