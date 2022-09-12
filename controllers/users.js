@@ -59,15 +59,15 @@ exports.getUsersNotJoinedInSchedule = async(req, res)=>{
   let participant_list=[]
   const results=await Participant.findAll({
     where:{
-      schedule_id:{
-        [Op.ne]:exceptScheduleId,
-      }
+      schedule_id:exceptScheduleId
     }
   })
 
   results.forEach(result=>{
     participant_list.push(result.participant_id)
   })
+
+  console.log(participant_list)
 
   const users=await User.findAll({
     where:{
