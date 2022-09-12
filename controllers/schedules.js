@@ -169,20 +169,33 @@ exports.getMyApprovedSchedule = async(req, res)=>{
     where : {
       participant_id:id,
       status
-    },
-    include:[{
-      model:Schedule
-    }]
+    }
   })
 
   if(!results.length){
     throw new NotFoundError('스케줄이 존재하지 않습니다.')
   }
 
-  const schedules =[]
+  const schedule_ids =[]
 
   results.forEach(result=>{
-    schedules.push(result.Schedule)
+    schedule_ids.push(result.schedule_id)
+  })
+
+  const schedules= await Schedule.findAll({
+    where:{
+      id:{
+        [Op.in]:schedule_ids
+      }
+    },
+    attributes:{ // 스케줄에 속해 있는 모든 영수증의 total_price 합을 추가
+      include:[[Sequelize.fn('sum',Sequelize.col('receipts.total_price')), 'total_pay']]
+    },
+    include:[{
+      model:Receipt,
+      attributes:[]
+    }],
+    group:['id']
   })
   
   res.status(StatusCodes.OK).json(schedules)
