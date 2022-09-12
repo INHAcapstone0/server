@@ -4,9 +4,9 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const {Participant, Alarm, Schedule, User} = db;
 
 exports.createParticipant = async (req, res) => {
-  const { participant_id, schedule_id } = req.body
+  const { participant_ids, schedule_id } = req.body
 
-  if (!participant_id || !schedule_id) {
+  if (!participant_ids || !schedule_id) {
     throw new BadRequestError('참여자 id와 스케줄 id를 모두 입력하세요.')
   }
 
@@ -18,24 +18,33 @@ exports.createParticipant = async (req, res) => {
     throw new BadRequestError('스케줄 정보가 존재하지 않습니다.')
   }
 
-  const [participant, created] = await Participant.findOrCreate({
-    where: { participant_id, schedule_id },
-    defaults: { participant_id, schedule_id }
-  })
+  let participant_list=[]
+  let alarm_list=[]
 
-  if (!created) {
-    throw new BadRequestError('중복된 참여자 정보가 존재합니다.')
+  if (Array.isArray(participant_ids)) {
+    participant_ids.forEach(participant => {
+      participant_list.push({
+        participant_id: participant,
+        schedule_id
+      })
+
+      alarm_list.push({
+        user_id:participant, 
+        alarm_type:'초대', 
+        message:`${req.user.name}님이 "${schedule.name}" 일정에 당신을 초대했습니다.`
+      })
+    })
+  }else{
+    throw new BadRequestError('참여자 정보를 Array 형태로 입력하세요.')
   }
 
-  await Alarm.create({
-    user_id:participant_id, 
-    alarm_type:'초대', 
-    message:`${req.user.name}님이 ${schedule.name} 일정에 당신을 초대했습니다.`
-  })
+  const participants = await Participant.bulkCreate(participant_list)
 
+  await Alarm.bulkCreate(alarm_list)
+  
   //FCM으로 유저에게 초대 알람 보내기
 
-  res.status(StatusCodes.CREATED).json(participant)
+  res.status(StatusCodes.CREATED).json(participants)
 }
 
 exports.getAllParticipants = async (req, res) => {

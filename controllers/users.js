@@ -1,7 +1,7 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
-const User = db.User;
+const {User, Schedule, Participant} = db;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../lib/modules');
 
@@ -47,6 +47,43 @@ exports.getUser = async (req, res) => {
 
   res.status(StatusCodes.OK).json(user)
 }
+
+// 특정 스케줄에 속한 유저 제외한 유저목록 반환해주는 api (초대거절,초대보류중 유저도 x)
+exports.getUsersNotJoinedInSchedule = async(req, res)=>{ 
+  const { exceptScheduleId } = req.query;
+
+  if (!exceptScheduleId){
+    throw new BadRequestError('exceptScheduleId를 반드시 입력해주세요.')
+  }
+
+  let participant_list=[]
+  const results=await Participant.findAll({
+    where:{
+      schedule_id:{
+        [Op.ne]:exceptScheduleId,
+      }
+    }
+  })
+
+  results.forEach(result=>{
+    participant_list.push(result.participant_id)
+  })
+
+  const users=await User.findAll({
+    where:{
+      id:{
+        [Op.notIn]:participant_list
+      }
+    }
+  })
+
+  if (users.length==0){
+    throw new BadRequestError('유저정보가 존재하지 않습니다.')
+  }
+
+  res.status(StatusCodes.OK).json(users)
+}
+
 
 exports.updateUser = async (req, res) => {
   const { id } = req.params;

@@ -5,7 +5,8 @@ const {
 	restoreUser,
 	deleteUser,
 	uploadUserImage,
-	deleteUserImage
+	deleteUserImage,
+	getUsersNotJoinedInSchedule
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -16,6 +17,8 @@ module.exports = (app) => {
 
 	//queryString:name
 	router.get('/', getAllUsers);
+
+	router.get('/rest',getUsersNotJoinedInSchedule)
 
 	//params:user_id
 	router.get("/:id", accessableToUserRequest, getUser);
