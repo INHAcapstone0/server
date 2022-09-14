@@ -373,6 +373,15 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
       })
+      one.participants.forEach(_participant=>{
+        sampleParticipants.push({
+          participant_id: _participant,
+          schedule_id:sampleId,
+          status:'승인',
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+      })
     })
     
     for (let i = 0; i < 5; i++) {
