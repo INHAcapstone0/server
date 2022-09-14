@@ -264,13 +264,23 @@ module.exports = {
       "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
     }]
 
+    //참여자 정보에 test0 전부 넣을것
+
     customSchedules.forEach(one=>{
+      let sampleId=v4()
       sampleSchedules.push({
-        id:v4(),
+        id:sampleId,
         name: one.name,
         owner_id: one.owner_id,
         startAt: toDate(one.startAt),
         endAt:toDate(one.endAt),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
+      sampleParticipants.push({
+        participant_id: one.owner_id,
+        schedule_id:sampleId,
+        status:'승인',
         createdAt: new Date(),
         updatedAt: new Date(),
       })
