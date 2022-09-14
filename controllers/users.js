@@ -67,8 +67,6 @@ exports.getUsersNotJoinedInSchedule = async(req, res)=>{
     participant_list.push(result.participant_id)
   })
 
-  console.log(participant_list)
-
   const users=await User.findAll({
     where:{
       id:{

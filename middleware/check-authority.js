@@ -60,12 +60,12 @@ const accessableToScheduleRequest=async(req, res, next)=>{
 
   // param의 id로 Schedule 조회
   if(id){
-    const {owner_id}=await Schedule.findOne({
+    const schedule=await Schedule.findOne({
       where:{id}
     })
 
     // 요청자가 스케줄 소유자가 아니라면
-    if(req.user.id != owner_id){
+    if(!schedule || req.user.id != schedule.owner_id){
       throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
     }
   }
