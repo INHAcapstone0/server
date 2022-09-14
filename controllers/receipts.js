@@ -22,10 +22,24 @@ exports.createReceipt = async (req, res) => {
 
   if (payDate) {
     payDate = toFullDate(payDate);
+    if (!isValidDate(payDate)) {
+      throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+    }
   }
 
-  if (!isValidDate(payDate)) {
-    throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+  const poster=await Participant.findOne({
+    where:{
+      participant_id:poster_id,
+      schedule_id
+    },
+    include:[{
+      model:User,
+      attributes:['name']
+    }],
+  })
+  
+  if(!poster){
+    throw new BadRequestError('영수증 게시자가 해당 스케줄의 참가자 내에 존재하지 않습니다.')
   }
 
   const receipt = await Receipt.create({
@@ -36,18 +50,13 @@ exports.createReceipt = async (req, res) => {
     where: {schedule_id}
   })
 
-  const poster=await User.findByPk(poster_id)
-
-  if(!poster){
-    throw new BadRequestError('유저가 존재하지 않습니다.')
-  }
-
   let alarm_list=[]
+  
   for (i of participants.map(participant=>participant.participant_id)){
     alarm_list.push({
       user_id:i, 
       alarm_type:'영수증 업로드', 
-      message:`${poster.name}님이 새 영수증을 업로드하였습니다.`
+      message:`${poster.User.name}님이 새 영수증을 업로드하였습니다.`
     })
   }
 
