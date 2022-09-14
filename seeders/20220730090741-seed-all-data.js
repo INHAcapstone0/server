@@ -287,13 +287,21 @@ module.exports = {
         updatedAt: new Date(),
       };
       sampleSchedules.push(scheduleObj);
+      sampleParticipants.push({
+        participant_id: userIds[i],
+        schedule_id:scheduleIds[i],
+        status:'승인',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })
     }
     await queryInterface.bulkInsert('schedules', sampleSchedules, {});
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
       let participantObj = {
-        participant_id: userIds[i],
-        schedule_id: scheduleIds[Math.floor(i / 2)],
+        participant_id: userIds[i+1],
+        schedule_id: scheduleIds[i],
+        status:'대기 중',
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -305,7 +313,7 @@ module.exports = {
       let receiptObj = {
         id: receiptsIds[i],
         schedule_id: scheduleIds[Math.floor(i / 2)],
-        poster_id: userIds[i],
+        poster_id: userIds[Math.floor(i / 2)],
         total_price: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -331,8 +339,8 @@ module.exports = {
       let settlementObj = {
         id: settlementIds[i],
         schedule_id: scheduleIds[i],
-        sender_id: userIds[i * 2],
-        receiver_id: userIds[(i * 2) + 1],
+        sender_id: userIds[i],
+        receiver_id: userIds[i+1],
         amount: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
