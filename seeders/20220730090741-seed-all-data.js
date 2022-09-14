@@ -1,7 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt')
 const {v4} = require('uuid')
-const {toDate} =require('../lib/modules')
+const {toDate, toFullDate} =require('../lib/modules')
 module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
@@ -264,10 +264,99 @@ module.exports = {
       "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
     }]
 
+    let customReceipts = [{
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220301090909",
+      "total_price": "10000",
+      "memo": "",
+      "place_of_payment": "스타벅스1"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220302090909",
+      "total_price": "20000",
+      "memo": "",
+      "place_of_payment": "스타벅스2"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220303090909",
+      "total_price": "30000",
+      "memo": "",
+      "place_of_payment": "스타벅스3"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220304090909",
+      "total_price": "40000",
+      "memo": "",
+      "place_of_payment": "스타벅스4"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220305090909",
+      "total_price": "50000",
+      "memo": "",
+      "place_of_payment": "스타벅스5"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220306090909",
+      "total_price": "60000",
+      "memo": "",
+      "place_of_payment": "스타벅스6"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220307090909",
+      "total_price": "70000",
+      "memo": "",
+      "place_of_payment": "스타벅스7"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220308090909",
+      "total_price": "80000",
+      "memo": "",
+      "place_of_payment": "스타벅스8"
+    },
+    {
+      "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "payDate": "20220309090909",
+      "total_price": "90000",
+      "memo": "",
+      "place_of_payment": "스타벅스9"
+    }]
+
     //참여자 정보에 test0 전부 넣을것
 
     customSchedules.forEach(one=>{
+
       let sampleId=v4()
+      if (one.name=='folklore6'){
+        customReceipts.forEach(receipt=>{
+          sampleReceipts.push({
+            id:v4(),
+            schedule_id: sampleId,
+            poster_id: receipt.poster_id,
+            payDate: toFullDate(receipt.payDate),
+            total_price: parseInt(receipt.total_price),
+            memo:receipt.memo,
+            place_of_payment: receipt.place_of_payment,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        })
+      }
       sampleSchedules.push({
         id:sampleId,
         name: one.name,

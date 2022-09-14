@@ -77,10 +77,10 @@ exports.getAllReceipts = async (req, res) => {
     condition.schedule_id = schedule_id
   }
   if (poster_id) {
-    condition.schedule_id = poster_id
+    condition.poster_id = poster_id
   }
   if (place_of_payment) {
-    condition.schedule_id = { [Op.like]: `%${place_of_payment}%` }
+    condition.place_of_payment = { [Op.like]: `%${place_of_payment}%` }
   }
 
   let min = 0,
