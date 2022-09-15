@@ -5,6 +5,7 @@ const {
 	deleteSettlement,
 	getAllSettlements,
 	getSettlement,
+	settlementCheckRequest
 } = require('../controllers/settlements');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -12,6 +13,8 @@ const {accessableToSettlementRequest} = require('../middleware/check-authority')
 
 module.exports = (app) => {
 	router.post('/', createSettlement)
+
+	router.post('/push', settlementCheckRequest)
 
 	router.get('/', getAllSettlements)
 

@@ -5,6 +5,7 @@ const Settlement = db.Settlement
 const Schedule=db.Schedule
 const Op = db.Sequelize.Op
 const { toDate, isValidDate } = require('../lib/modules')
+const { STATUS_CODES } = require('http')
 
 exports.createSettlement = async (req, res) => {
   const {schedule_id, sender_id, receiver_id, amount}=req.body
@@ -23,6 +24,20 @@ exports.createSettlement = async (req, res) => {
   }
 
   res.status(StatusCodes.CREATED).json(settlement)
+}
+
+exports.settlementCheckRequest=async(req, res)=>{
+  const {id} = req.body // 정산 id
+
+  // id로 settlement 조회 후 sender_id와 req.user.id 비교
+  const settlement=await Settlement.findByPk(id)
+
+  if (id!=req.user.id){
+    throw new BadRequestError('정산액 입금자와 요청자의 id가 일치하지 않습니다.')
+  }
+
+  req.status(STATUS_CODES.OK).json({msg: "성공적으로 정산 확인 요청을 보냈습니다."})
+  // receiver_id에게 fcm push 전송
 }
 
 exports.getAllSettlements = async (req, res) => {
