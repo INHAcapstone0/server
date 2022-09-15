@@ -72,6 +72,7 @@ module.exports = (sequelize, DataTypes) => {
   {
     sequelize,
     modelName:"User",
+    tableName:"users",
     timestamps:true, // createdAt, updatedAt 활성화
     paranoid:true, // timestamps 활성화 시 사용 가능, deletedAt field 활성화
   });

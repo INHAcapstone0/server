@@ -50,6 +50,7 @@ module.exports = (sequelize, DataTypes) => {
   {
     sequelize,
     modelName:"Item",
+    tableName:"items",
     timestamps:true, // createAt, updateAt field 활성화
     paranoid:true, // timestamps 활성화 시 사용 가능, deleteAt field 활성화
     hooks:{

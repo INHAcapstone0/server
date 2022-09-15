@@ -54,6 +54,7 @@ module.exports = (sequelize, DataTypes) => {
   {
     sequelize,
     modelName:"Participant",
+    tableName:"participants",
     timestamps:true, // createAt, updateAt field 활성화
   });
   // queryInterface.addConstraint('Users', ['firstName', 'lastName'], {
