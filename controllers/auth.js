@@ -6,6 +6,7 @@ const jwt = require('../utils/jwt-util')
 const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
+const {verifyFCMToken}=require('../firebase')
 
 const comparePassword = async function (candidatePassword, user) {
   const isMatch = await bcrypt.compare(candidatePassword, user.password)
@@ -13,7 +14,7 @@ const comparePassword = async function (candidatePassword, user) {
 }
 
 const login = async (req, res) => {
-  const { email, password } = req.body
+  const { email, password, device_token } = req.body
 
   if (!email || !password) {
     throw new BadRequestError('이메일과 비밀번호를 모두 입력해주세요.')
@@ -34,13 +35,32 @@ const login = async (req, res) => {
 
   redisClient.set(user.id, refreshToken);
 
-  res.status(StatusCodes.OK).json({
+  let result={
     user: user.name,
     user_id: user.id,
     data: {
       accessToken, refreshToken
     }
-  })
+  }
+
+  // 유저 device token 가져와서 null이면 그대로 채워주고, 이미 값이 존재하고 일치하지 않으면
+  // msg에 새로운 디바디스에서 접속하였습니다 메세지 출력
+
+  if (device_token){ //parameter가 있으면
+    //device token 유효성 검증
+    const validateToken=await verifyFCMToken(device_token)
+  
+    if (validateToken && (device_token!=user.device_token)){ // 일치하지 않을 때만 메세지 추가 후 update
+    
+      await User.update({device_token}, {
+        where: {id:user.id}
+      })
+      result.msg='새로운 디바이스에서 접속하였습니다.'
+    }
+  }
+
+
+  res.status(StatusCodes.OK).json(result)
 }
 
 const register = async (req, res) => {
