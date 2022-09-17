@@ -9,7 +9,8 @@
     "migrate": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all --debug",
     "undo-migrate": "npx sequelize-cli db:migrate:undo:all",
     "refresh": "npm run undo-migrate && npm run migrate",
-    "reverse": "npm run migrate && npm run undo-migrate"
+    "reverse": "npm run migrate && npm run undo-migrate",
+    "nodemon": "nodemon app"
   },
   "repository": {
     "type": "git",
