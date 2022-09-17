@@ -58,6 +58,11 @@ module.exports = {
         allowNull: true,
         type: Sequelize.DATE
       },
+      device_token:{
+        type:'VARCHAR(100)',
+        allowNull:true,
+        comment:"유저 디바이스 토큰"
+      },
     });
   },
   async down(queryInterface, Sequelize) {

@@ -67,7 +67,12 @@ module.exports = (sequelize, DataTypes) => {
       type:DataTypes.BOOLEAN,
       defaultValue:false,
       comment:"계정 잠김 여부(로그인 5회 실패)"
-    }
+    },
+    device_token:{
+      type:'VARCHAR(100)',
+      allowNull:true,
+      comment:"유저 디바이스 토큰"
+    },
   },
   {
     sequelize,
