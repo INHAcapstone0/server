@@ -3,14 +3,18 @@ const {
 	register, 
 	checkEmail, 
 	checkName, 
-	refresh
+	refresh,
+	authMail,
+	logout
 }=require('../controllers/auth')
-
+const authenticateUser=require('../middleware/authentication')
 var router = require('express').Router();
 
 module.exports = (app) => {
 
 	router.post('/login',login)
+
+	router.post('/logout',authenticateUser,logout)
 
 	router.post('/register',register)
 	
@@ -19,6 +23,8 @@ module.exports = (app) => {
 	router.get('/check/name', checkName)
 
 	router.get('/refresh', refresh)
+
+	router.post('/mail', authMail)
 
 	app.use("/auth", router);
 }

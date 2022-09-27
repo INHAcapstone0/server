@@ -59,7 +59,7 @@ module.exports = {
         type: Sequelize.DATE
       },
       device_token:{
-        type:'VARCHAR(100)',
+        type:'VARCHAR(1000)',
         allowNull:true,
         comment:"유저 디바이스 토큰"
       },

@@ -4,6 +4,7 @@ const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../err
 const {User, Schedule, Participant} = db;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../lib/modules');
+const {verifyFCMToken, sendUnicastMessage}=require('../firebase')
 
 exports.getAllUsers = async (req, res) => {
   // exceptMe는 자신을 제외하는 flag값 ('true'값만 인식함)
@@ -82,10 +83,15 @@ exports.getUsersNotJoinedInSchedule = async(req, res)=>{
   res.status(StatusCodes.OK).json(users)
 }
 
-
 exports.updateUser = async (req, res) => {
   const { id } = req.params;
-  let {password, name}=req.body;
+  let updateField={};
+  let {password, name, device_token}=req.body;
+  
+  if(name){
+    updateField.name=name
+  }
+
   if(!id){
     throw new BadRequestError('id를 입력해주세요.')
   }
@@ -96,16 +102,67 @@ exports.updateUser = async (req, res) => {
     }
     password= await hashPassword(password);
     // promisify 사용 안됨. 나중에 고치기
+    updateField.password=password
   }
   
-  const result = await User.update({password, name}, {
+  if(device_token){
+    updateField.device_token=device_token
+  }
+  
+  const result = await User.update(updateField, {
     where: {id}
   })
+  
   if(result==1){
     res.status(StatusCodes.OK).json({ msg:`유저가 성공적으로 업데이트되었습니다.` })
   }else{
-    throw new NotFoundError('업데이트할 유저가 존재하지 않습니다.')
+    throw new NotFoundError('업데이트할 유저가 존재하지 않거나 업데이트가 이루어진 내역이 없습니다.')
   }
+}
+
+exports.registerUserDeviceToken=async(req, res)=>{
+  const {device_token} = req.body
+
+  // 1. 업데이트할 토큰 유효성 검사
+  if(!device_token){
+    throw new BadRequestError('디바이스 토큰 정보를 올바르게 입력해주세요.')
+  }
+  await verifyFCMToken(device_token)
+    .catch(err => {
+      console.log('validate failed')
+      throw new BadRequestError('디바이스 토큰 정보를 올바르게 입력해주세요.')
+    })
+
+  let result={
+    message:"디바이스 토큰이 업데이트되었습니다."
+  }
+
+  const user= await User.findByPk(req.user.id)
+  
+  if (user.device_token==device_token){
+    return res.status(StatusCodes.OK).json({message:"기존 디바이스 토큰과 일치합니다."})
+  }
+
+  // 1. 기존에 사용자 데이터에 저장되어 있던 device token이 유효할 경우 해당 토큰에 로그아웃 유도 알람을 보냄
+  await verifyFCMToken(user.device_token)
+    .then(result=>{
+      sendUnicastMessage({
+        data: {
+          type:'logout',
+        },
+        token: user.device_token
+      })
+      result.message="기존에 접속 중인 기기에서 로그아웃됩니다."
+    })
+    .catch(err => {
+    })
+  
+  await User.update({ device_token }, {
+    where: { id: user.id }
+  })
+
+  res.status(StatusCodes.OK).json(result)
+
 }
 
 exports.uploadUserImage=async(req, res)=>{

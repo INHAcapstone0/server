@@ -6,7 +6,7 @@ const jwt = require('../utils/jwt-util')
 const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
-const {verifyFCMToken}=require('../firebase')
+const nodemailer=require('nodemailer')
 
 const comparePassword = async function (candidatePassword, user) {
   const isMatch = await bcrypt.compare(candidatePassword, user.password)
@@ -42,25 +42,16 @@ const login = async (req, res) => {
       accessToken, refreshToken
     }
   }
-
-  // 유저 device token 가져와서 null이면 그대로 채워주고, 이미 값이 존재하고 일치하지 않으면
-  // msg에 새로운 디바디스에서 접속하였습니다 메세지 출력
-
-  if (device_token){ //parameter가 있으면
-    //device token 유효성 검증
-    const validateToken=await verifyFCMToken(device_token)
-  
-    if (validateToken && (device_token!=user.device_token)){ // 일치하지 않을 때만 메세지 추가 후 update
-    
-      await User.update({device_token}, {
-        where: {id:user.id}
-      })
-      result.msg='새로운 디바이스에서 접속하였습니다.'
-    }
-  }
-
-
   res.status(StatusCodes.OK).json(result)
+}
+
+const logout= async(req, res)=>{
+  // 유저 디바이스 토큰 정보 null로 업데이트
+  await User.update({ device_token:null }, {
+    where: { id: req.user.id }
+  })
+  
+  res.status(StatusCodes.OK).json({message:"성공적으로 로그아웃되었습니다."})
 }
 
 const register = async (req, res) => {
@@ -168,6 +159,52 @@ const refresh = async (req, res) => {
   }
 };
 
+const authMail=async(req, res)=>{
+  const {toEmail} = req.body
+
+  var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+  if (toEmail.match(regExp) == null) {
+    throw new BadRequestError('이메일 형식이 올바르지 않습니다.')
+  }
+
+  let authNum = Math.random().toString().substring(2,4)
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
+  });
+
+  let mailOptions = await transporter.sendMail({
+    from:`N빵<${process.env.NODEMAILER_USER}>`,
+    to: toEmail,
+    subject: 'N빵 회원가입을 위한 인증번호를 입력해주세요.',
+    html:`<html>
+    <body>
+      <div> 
+        <p style='color:black'>회원 가입을 위한 인증번호 입니다.</p>
+        <p style='color:black'>아래의 인증 번호를 앱에서 입력하여 인증을 완료해주세요.</p>
+        <h2>${authNum}</h2>
+      </div>
+    </body>
+    </html>`
+  });
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      throw new BadRequestError('인증 이메일 전송에 실패하였습니다. 다시 시도해주세요.')
+    }
+    console.log(info)
+    transporter.close()
+  });
+  res.status(StatusCodes.CREATED).json({authNum});
+}
+
 module.exports = {
-  login, register, checkName, checkEmail, refresh
+  login, register, checkName, checkEmail, refresh, authMail, logout
 }

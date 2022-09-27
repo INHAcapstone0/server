@@ -6,7 +6,8 @@ const {
 	deleteUser,
 	uploadUserImage,
 	deleteUserImage,
-	getUsersNotJoinedInSchedule
+	getUsersNotJoinedInSchedule,
+	registerUserDeviceToken
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -30,6 +31,8 @@ module.exports = (app) => {
 	router.patch('/img/upload', upload.single('user-profile'), uploadUserImage)
 
 	router.patch('/img/empty', deleteUserImage)
+
+	router.patch('/device/token',registerUserDeviceToken)
 
 	//params:user_id
 	router.put('/restore/:id', accessableToUserRequest, restoreUser)

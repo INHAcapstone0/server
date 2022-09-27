@@ -194,6 +194,9 @@ exports.deleteReceipt = async (req, res) => {
   }
 };
 
+exports.test=async(req,res)=>{
+  
+}
 
 
 
