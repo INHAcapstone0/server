@@ -134,13 +134,13 @@ exports.registerUserDeviceToken=async(req, res)=>{
     })
 
   let result={
-    message:"디바이스 토큰이 업데이트되었습니다."
+    msg:"디바이스 토큰이 업데이트되었습니다."
   }
 
   const user= await User.findByPk(req.user.id)
   
   if (user.device_token==device_token){
-    return res.status(StatusCodes.OK).json({message:"기존 디바이스 토큰과 일치합니다."})
+    return res.status(StatusCodes.OK).json({msg:"기존 디바이스 토큰과 일치합니다."})
   }
 
   // 1. 기존에 사용자 데이터에 저장되어 있던 device token이 유효할 경우 해당 토큰에 로그아웃 유도 알람을 보냄
@@ -152,7 +152,7 @@ exports.registerUserDeviceToken=async(req, res)=>{
         },
         token: user.device_token
       })
-      result.message="기존에 접속 중인 기기에서 로그아웃됩니다."
+      result.msg="기존에 접속 중인 기기에서 로그아웃됩니다."
     })
     .catch(err => {
     })
