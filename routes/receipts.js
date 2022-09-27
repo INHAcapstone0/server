@@ -5,7 +5,8 @@ const {
 	updateReceipt,
 	restoreReceipt,
 	deleteReceipt,
-	uploadReceiptImage
+	uploadReceiptImage,
+	test
 } = require('../controllers/receipts');
 var router = require('express').Router();
 const authenticateUser = require('../middleware/authentication')
@@ -32,6 +33,8 @@ module.exports = (app) => {
 
 	router.delete('/:id',
 		accessableToReceiptRequest, deleteReceipt)
+
+	router.post('/test', upload.single('file'), test)
 
 	app.use('/receipts', authenticateUser, router)
 }

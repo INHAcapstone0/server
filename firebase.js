@@ -8,15 +8,9 @@ admin.initializeApp({
 });
 
 async function verifyFCMToken (fcmToken) {
-  admin.messaging().send({
+  return admin.messaging().send({
       token: fcmToken
   }, true)
-  .then(result => {
-    return true //validate
-  })
-  .catch(err => {
-    return true //invalidate
-})
 }
 
 /* 

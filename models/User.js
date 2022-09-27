@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
       comment:"계정 잠김 여부(로그인 5회 실패)"
     },
     device_token:{
-      type:'VARCHAR(100)',
+      type:'VARCHAR(1000)',
       allowNull:true,
       comment:"유저 디바이스 토큰"
     },
