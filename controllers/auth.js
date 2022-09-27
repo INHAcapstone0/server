@@ -50,8 +50,8 @@ const logout= async(req, res)=>{
   await User.update({ device_token:null }, {
     where: { id: req.user.id }
   })
-  
-  res.status(StatusCodes.OK).json({message:"성공적으로 로그아웃되었습니다."})
+
+  res.status(StatusCodes.OK).json({msg:"성공적으로 로그아웃되었습니다."})
 }
 
 const register = async (req, res) => {
