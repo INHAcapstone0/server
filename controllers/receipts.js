@@ -100,7 +100,7 @@ exports.createReceipt = async (req, res) => {
 }
 
 exports.getAllReceipts = async (req, res) => {
-  const { schedule_id, poster_id, place_of_payment, max_total_price, min_total_price } = req.query;
+  const { schedule_id, poster_id, place_of_payment, max_total_price, min_total_price, category } = req.query;
   let condition = {}
 
   if (schedule_id) {
@@ -111,6 +111,9 @@ exports.getAllReceipts = async (req, res) => {
   }
   if (place_of_payment) {
     condition.place_of_payment = { [Op.like]: `%${place_of_payment}%` }
+  }
+  if (category) {
+    condition.category = category
   }
 
   let min = 0,
