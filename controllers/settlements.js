@@ -1,11 +1,10 @@
 const db = require('../models')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const Settlement = db.Settlement
-const Schedule=db.Schedule
+const {Settlement, Schedule, User, Alarm} = db;
 const Op = db.Sequelize.Op
 const { toDate, isValidDate } = require('../lib/modules')
-const { STATUS_CODES } = require('http')
+const {sendUnicastMessage}= require('../firebase')
 
 exports.createSettlement = async (req, res) => {
   const {schedule_id, sender_id, receiver_id, amount}=req.body
@@ -30,14 +29,79 @@ exports.settlementCheckRequest=async(req, res)=>{
   const {id} = req.body // 정산 id
 
   // id로 settlement 조회 후 sender_id와 req.user.id 비교
-  const settlement=await Settlement.findByPk(id)
+  const settlement = await Settlement.findByPk(id)
 
-  if (id!=req.user.id){
+  if (settlement.sender_id!=req.user.id){
     throw new BadRequestError('정산액 입금자와 요청자의 id가 일치하지 않습니다.')
   }
 
-  req.status(STATUS_CODES.OK).json({msg: "성공적으로 정산 확인 요청을 보냈습니다."})
+  const sender = await User.findByPk(settlement.sender_id)
+  const receiver = await User.findByPk(settlement.receiver_id)
+
   // receiver_id에게 fcm push 전송
+  if (receiver.device_token){
+    await sendUnicastMessage({
+      noitfication:{
+        "title": "정산 확인 요청",
+        "body": `${sender.name}님이 ${settlement.amount}원을 송금하여 확인 요청을 보냈습니다.`
+      },
+      data:{
+        type:'정산 확인 요청'
+      },
+      token:receiver.device_token
+    })
+  }
+
+  await Alarm.create({
+    user_id:receiver.id,
+    alarm_type:'정산 확인 요청', 
+    message:`${sender.name}님이 ${settlement.amount}원을 송금하여 확인 요청을 보냈습니다.`
+  })
+
+  res.status(StatusCodes.OK).json({msg: "성공적으로 정산 확인 요청을 보냈습니다."})
+}
+
+exports.settlementCheck=async(req, res)=>{
+  const {id} = req.body // 정산 id
+
+  // id로 settlement 조회 후 sender_id와 req.user.id 비교
+  const settlement = await Settlement.findByPk(id)
+
+  if (settlement.receiver_id!=req.user.id){
+    throw new BadRequestError('정산액 수급자와 요청자의 id가 일치하지 않습니다.')
+  }
+
+  const sender = await User.findByPk(settlement.sender_id)
+  const receiver = await User.findByPk(settlement.receiver_id)
+
+  // is_paid -> true
+  await Settlement.update(
+    { is_paid: true },
+    { where: id })
+    .then(async()=>{
+      // sender_id에게 fcm push 전송
+      if (sender.device_token) {
+        await sendUnicastMessage({
+          noitfication: {
+            "title": "정산 확인 완료",
+            "body": `${receiver.name}님이 정산 확인을 완료하였습니다!`
+          },
+          data: {
+            type: '정산 확인 요청'
+          },
+          token: receiver.device_token
+        })
+      }
+
+      await Alarm.create({
+        user_id: receiver.id,
+        alarm_type: '정산 확인 완료',
+        message: `${receiver.name}님이 정산 확인을 완료하였습니다!`
+      })
+
+      res.status(StatusCodes.OK).json({ msg: "성공적으로 정산 확인 요청을 보냈습니다." })
+    })
+
 }
 
 exports.getAllSettlements = async (req, res) => {

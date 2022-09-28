@@ -43,6 +43,34 @@ exports.createParticipant = async (req, res) => {
   await Alarm.bulkCreate(alarm_list)
   
   //FCM으로 유저에게 초대 알람 보내기
+  let token_list=[]
+  
+  const users = await User.findAll({
+    where:{
+      id:{
+        [Op.in] : participant_ids
+      }
+    }
+  })
+
+  users.forEach(user=>{
+    if (user.device_token){
+      token_list.push(user.device_token)
+    }
+  })
+
+  if (token_list.legnth != 0) {
+    await sendMulticastMessage({
+      notification: {
+        "title": "새 일정 초대",
+        "body": `${req.user.name}님이 "${schedule.name}" 일정에 당신을 초대했습니다.`
+      },
+      data: {
+        type: '초대'
+      },
+      tokens: token_list,
+    })
+  }
 
   res.status(StatusCodes.CREATED).json(participants)
 }

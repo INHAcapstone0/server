@@ -4,6 +4,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors');
 const {Receipt, Participant, User, Alarm} = db;
 const Op = db.Sequelize.Op;
+const {sendMulticastMessage}=require('../firebase')
 
 exports.createReceipt = async (req, res) => {
   let {
@@ -51,8 +52,9 @@ exports.createReceipt = async (req, res) => {
   })
 
   let alarm_list=[]
-  
+  let participant_ids=[]
   for (i of participants.map(participant=>participant.participant_id)){
+    participant_ids.push(i)
     alarm_list.push({
       user_id:i, 
       alarm_type:'영수증 업로드', 
@@ -65,6 +67,34 @@ exports.createReceipt = async (req, res) => {
   }
 
   //FCM 푸쉬알람 보내기
+  let token_list=[]
+  
+  const users = await User.findAll({
+    where:{
+      id:{
+        [Op.in] : participant_ids
+      }
+    }
+  })
+
+  users.forEach(user=>{
+    if (user.device_token){
+      token_list.push(user.device_token)
+    }
+  })
+
+  if (token_list.legnth != 0) {
+    await sendMulticastMessage({
+      notification: {
+        "title": '영수증 업로드',
+        "body": `${poster.User.name}님이 새 영수증을 업로드하였습니다.`
+      },
+      data: {
+        type: '영수증 업로드'
+      },
+      tokens: token_list,
+    })
+  }
 
   res.status(StatusCodes.CREATED).json(receipt)
 }

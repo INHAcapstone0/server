@@ -7,6 +7,7 @@ const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
 const nodemailer=require('nodemailer')
+const {hashPassword}=require('../lib/modules');
 
 const comparePassword = async function (candidatePassword, user) {
   const isMatch = await bcrypt.compare(candidatePassword, user.password)
@@ -56,7 +57,7 @@ const logout= async(req, res)=>{
 
 const register = async (req, res) => {
   let { email, password, name } = req.body;
-  var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[$@^!%*#?&])[a-z0-9$@^!%*#?&]{8,}$");
+  var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$@^!%*#?&])[a-z0-9A-Z$@^!%*#?&]{8,}$");
   if (!checkPassword.test(password)) {
     throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리 이상으로 입력하세요.');
   }
@@ -160,11 +161,11 @@ const refresh = async (req, res) => {
 };
 
 const authMail=async(req, res)=>{
-  const {toEmail} = req.body
+  const {email} = req.body
 
   var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
-  if (toEmail.match(regExp) == null) {
+  if (email.match(regExp) == null) {
     throw new BadRequestError('이메일 형식이 올바르지 않습니다.')
   }
 
@@ -172,7 +173,7 @@ const authMail=async(req, res)=>{
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
-    port: 587,
+    port: 465,
     secure: false,
     auth: {
       user: process.env.NODEMAILER_USER,
@@ -180,9 +181,9 @@ const authMail=async(req, res)=>{
     },
   });
 
-  let mailOptions = await transporter.sendMail({
+  let mailOptions = {
     from:`N빵<${process.env.NODEMAILER_USER}>`,
-    to: toEmail,
+    to: email,
     subject: 'N빵 회원가입을 위한 인증번호를 입력해주세요.',
     html:`<html>
     <body>
@@ -193,7 +194,7 @@ const authMail=async(req, res)=>{
       </div>
     </body>
     </html>`
-  });
+  };
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
@@ -205,6 +206,81 @@ const authMail=async(req, res)=>{
   res.status(StatusCodes.CREATED).json({authNum});
 }
 
+const issueTempPassword = async(req, res)=>{
+  // 1. 사용자 메일 받기
+  const {email} = req.body
+  // 2. 유저정보에 존재한다면 해당 메일로 임시 비밀번호 생성 후 유저 pw 업데이트 및 임시비밀번호 메일전송
+  const user= await User.findOne({where :{email}})
+
+  if (!user){
+    throw new NotFoundError('유저 정보를 찾을 수 없습니다.')
+  }
+
+  let ranValue1 = ['1','2','3','4','5','6','7','8','9','0']; // 2~5개
+	let ranValue2 = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']; //2~4개
+	let ranValue3 = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z']; //2~4개
+	let ranValue4 = ['!','@','#','$','%','^','&','*']; //2~3개
+	
+	var temp_pw = [];
+	
+	for(i=0 ; i<Math.floor(Math.random()*4)+2; i++) {
+		temp_pw.push(ranValue1[Math.floor(Math.random() * ranValue1.length)]);
+  }
+  for(i=0 ; i<Math.floor(Math.random()*3)+2; i++) {
+		temp_pw.push(ranValue2[Math.floor(Math.random() * ranValue2.length)]);
+  }
+  for(i=0 ; i<Math.floor(Math.random()*3)+2; i++) {
+		temp_pw.push(ranValue3[Math.floor(Math.random() * ranValue3.length)]);
+  }
+  for(i=0 ; i<Math.floor(Math.random()*2)+2; i++) {
+		temp_pw.push(ranValue4[Math.floor(Math.random() * ranValue4.length)]);
+  }
+  
+  temp_pw.sort(() => Math.random() - 0.5); //shuffle
+  let new_pw = temp_pw.join('')
+
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS,
+    },
+  });
+
+  let mailOptions = {
+    from:`N빵<${process.env.NODEMAILER_USER}>`,
+    to: email,
+    subject: 'N빵 임시 비밀번호 재설정',
+    html:`<html>
+    <body>
+      <div> 
+        <p style='color:black'>회원님의 이메일로 등록된 계정의 임시 비밀번호를 보내드립니다.</p>
+        <p style='color:black'>아래의 임시 비밀번호로 앱에서 로그인한 후 비밀번호를 변경하세요.</p>
+        <h2>${new_pw}</h2>
+      </div>
+    </body>
+    </html>`
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      throw new BadRequestError('인증 이메일 전송에 실패하였습니다. 다시 시도해주세요.')
+    }
+    transporter.close()
+  });
+
+  new_pw= await hashPassword(new_pw);
+
+  await User.update({ password: new_pw },
+    { where: { id: user.id } }
+  )
+
+  res.status(StatusCodes.OK).json({msg : "입력하신 이메일로 임시 비밀번호를 전송하였습니다."});
+}
+
 module.exports = {
-  login, register, checkName, checkEmail, refresh, authMail, logout
+  login, register, checkName, checkEmail, refresh, authMail, logout, issueTempPassword
 }

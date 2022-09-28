@@ -5,7 +5,8 @@ const {
 	checkName, 
 	refresh,
 	authMail,
-	logout
+	logout,
+	issueTempPassword
 }=require('../controllers/auth')
 const authenticateUser=require('../middleware/authentication')
 var router = require('express').Router();
@@ -25,6 +26,8 @@ module.exports = (app) => {
 	router.get('/refresh', refresh)
 
 	router.post('/mail', authMail)
+
+	router.post('/mail/password', issueTempPassword)
 
 	app.use("/auth", router);
 }

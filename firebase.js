@@ -33,7 +33,7 @@ async function sendMulticastMessage(message){
 /* 
  message {
   data: {data},
-  tokens: registrationToken,
+  token: registrationToken,
 }
 */
 async function sendUnicastMessage(message){

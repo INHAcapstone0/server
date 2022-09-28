@@ -5,10 +5,10 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const {User, Schedule, Participant, Receipt, Alarm, Sequelize} = db;
 const Op = Sequelize.Op
 const scheduler=require('../utils/node-scheduler')
+const {sendMulticastMessage}= require('../firebase')
 
 //추후에 기간 중복에 대한 유효성 검증할 것
 exports.createSchedule = async (req, res) => {
-  // participants Array 추가, 해당 옵션 사용 시 schedule을 생성할 때 participant 객체에 bulkInsert함
   let {
     name,
     owner_id,
@@ -81,6 +81,34 @@ exports.createSchedule = async (req, res) => {
   scheduler.createOrFixScheduler(schedule)
 
   //FCM으로 유저에게 초대 알람 보내기
+  let token_list=[]
+  
+  const users = await User.findAll({
+    where:{
+      id:{
+        [Op.in] : participants
+      }
+    }
+  })
+
+  users.forEach(user=>{
+    if (user.device_token){
+      token_list.push(user.device_token)
+    }
+  })
+
+  if (token_list.legnth != 0) {
+    await sendMulticastMessage({
+      notification: {
+        "title": "새 일정 초대",
+        "body": `${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`
+      },
+      data: {
+        type: '초대'
+      },
+      tokens: token_list,
+    })
+  }
   
   res.status(StatusCodes.CREATED).json(schedule)
 }

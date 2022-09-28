@@ -472,7 +472,7 @@ module.exports = {
     let alarms = [
       {
         id: alarmIds[0],
-        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '초대',
         message: '관리자 님이 제주도 여행 일정에 당신을 초대했습니다.',
         createdAt: new Date(),
@@ -480,7 +480,7 @@ module.exports = {
       },
       {
         id: alarmIds[1],
-        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 시작',
         message: '관리자 님의 제주도 여행 일정이 시작되었습니다.',
         createdAt: new Date(),
@@ -496,7 +496,7 @@ module.exports = {
       },
       {
         id: alarmIds[3],
-        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 종료',
         message: '관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
         createdAt: new Date(),
@@ -528,7 +528,7 @@ module.exports = {
       },
       {
         id: alarmIds[7],
-        user_id: '4008b5cb-c626-4a3a-9490-08572249ccf4',
+        user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '정산 확인 완료',
         message: '관리자 님이 30000원 정산 확인을 완료하였습니다.',
         createdAt: new Date(),
