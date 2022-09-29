@@ -27,7 +27,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       category: {
-        type: Sequelize.ENUM('카페', '식당', '숙박', '기타'),
+        type: Sequelize.ENUM('카페', '음식점', '숙박업소', '기타'),
         defaultValue:'기타',
         comment: "영수증 카테고리"
       },

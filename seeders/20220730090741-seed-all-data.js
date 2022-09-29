@@ -138,7 +138,6 @@ module.exports = {
     await queryInterface.bulkInsert('users', customUsers, {});
 
     let customSchedules = [{
-      "id":"04282e63-8cdd-4ce2-becb-abc19e12f376",
       "name": "folklore1",
       "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
       "startAt": "20220101",
@@ -265,7 +264,7 @@ module.exports = {
       "participants": ["4008b5cb-c626-4a3a-9490-08572249ccf4", "4fff267a-e427-4bdf-aea4-fe4c0e78de4f", "55fc3df3-76a2-457e-9246-7f10d5b18614", "5a0f8f63-3a6b-4582-afe8-aa56fb1204cc", "63175920-d3fe-40e2-bf69-f6f8083a6936"]
     }]
 
-    let customReceipts = [{
+    let customReceipts1 = [{
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
       "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
       "payDate": "20220301090909",
@@ -338,23 +337,128 @@ module.exports = {
       "place_of_payment": "스타벅스9"
     }]
 
+    let customReceipts2 = [{
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "카페",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425257037.jpg",
+      "total_price": 42700,
+      "place_of_payment": "젤리뻬어",
+      "memo": "칵테일 마심",
+      "payDate": "2022-01-01T15:01:10.000Z",
+      "createdAt": "2022-01-01T15:11:10.000Z",
+      "updatedAt": "2022-01-01T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "카페",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425412801.jpg",
+      "total_price": 12000,
+      "place_of_payment": "아마스빈 인하대점",
+      "memo": "버블티",
+      "payDate": "2022-01-02T15:01:10.000Z",
+      "createdAt": "2022-01-02T15:11:10.000Z",
+      "updatedAt": "2022-01-02T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "음식점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425636800.jpg",
+      "total_price": 18300,
+      "place_of_payment": "써브웨이 인천인하대점",
+      "memo": "3일 점심",
+      "payDate": "2022-01-03T15:01:10.000Z",
+      "createdAt": "2022-01-03T15:11:10.000Z",
+      "updatedAt": "2022-01-03T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "음식점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425668072.jpg",
+      "total_price": 31500,
+      "place_of_payment": "하나텐",
+      "memo": "4일 저녁",
+      "payDate": "2022-01-04T15:01:10.000Z",
+      "createdAt": "2022-01-04T15:11:10.000Z",
+      "updatedAt": "2022-01-04T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "음식점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425683137.jpg",
+      "total_price": 32000,
+      "place_of_payment": "가메이",
+      "memo": "5일 점심",
+      "payDate": "2022-01-05T15:01:10.000Z",
+      "createdAt": "2022-01-05T15:11:10.000Z",
+      "updatedAt": "2022-01-05T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "숙박업소",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425708248.jpg",
+      "total_price": 210000,
+      "place_of_payment": "레스케이프호텔",
+      "memo": "렢",
+      "payDate": "2022-01-07T15:01:10.000Z",
+      "createdAt": "2022-01-07T15:11:10.000Z",
+      "updatedAt": "2022-01-07T15:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "숙박업소",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425727692.jpg",
+      "total_price": 160000,
+      "place_of_payment": "신라스테이 광화문",
+      "memo": "신",
+      "payDate": "2022-01-08T15:01:10.000Z",
+      "createdAt": "2022-01-08T15:11:10.000Z",
+      "updatedAt": "2022-01-08T15:11:10.000Z",
+      "deletedAt": null
+    }]
+
+
     //참여자 정보에 test0 전부 넣을것
 
-    customSchedules.forEach(one=>{
-      let sampleId=v4()
-      if (one.id){
-        sampleId=one.id
-      }
-      
-      if (one.name=='folklore6'){
-        customReceipts.forEach(receipt=>{
+    customSchedules.forEach(one => {
+      let sampleId = v4()
+
+      if (one.name == 'folklore6') {
+        customReceipts1.forEach(receipt => {
           sampleReceipts.push({
-            id:v4(),
+            id: v4(),
             schedule_id: sampleId,
             poster_id: receipt.poster_id,
             payDate: toFullDate(receipt.payDate),
             total_price: parseInt(receipt.total_price),
-            memo:receipt.memo,
+            memo: receipt.memo,
+            place_of_payment: receipt.place_of_payment,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          })
+        })
+      } else if (one.name == 'folklore1') {
+        customReceipts2.forEach(receipt => {
+          sampleReceipts.push({
+            id: v4(),
+            schedule_id: sampleId,
+            poster_id: receipt.poster_id,
+            payDate: toFullDate(receipt.payDate),
+            total_price: parseInt(receipt.total_price),
+            img_url:receipt.img_url,
+            memo: receipt.memo,
             place_of_payment: receipt.place_of_payment,
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -362,32 +466,32 @@ module.exports = {
         })
       }
       sampleSchedules.push({
-        id:sampleId,
+        id: sampleId,
         name: one.name,
         owner_id: one.owner_id,
         startAt: toDate(one.startAt),
-        endAt:toDate(one.endAt),
+        endAt: toDate(one.endAt),
         createdAt: new Date(),
         updatedAt: new Date(),
       })
       sampleParticipants.push({
         participant_id: one.owner_id,
-        schedule_id:sampleId,
-        status:'승인',
+        schedule_id: sampleId,
+        status: '승인',
         createdAt: new Date(),
         updatedAt: new Date(),
       })
-      one.participants.forEach(_participant=>{
+      one.participants.forEach(_participant => {
         sampleParticipants.push({
           participant_id: _participant,
-          schedule_id:sampleId,
-          status:'승인',
+          schedule_id: sampleId,
+          status: '승인',
           createdAt: new Date(),
           updatedAt: new Date(),
         })
       })
     })
-    
+
     for (let i = 0; i < 5; i++) {
       let scheduleObj = {
         id: scheduleIds[i],
@@ -401,8 +505,8 @@ module.exports = {
       sampleSchedules.push(scheduleObj);
       sampleParticipants.push({
         participant_id: userIds[i],
-        schedule_id:scheduleIds[i],
-        status:'승인',
+        schedule_id: scheduleIds[i],
+        status: '승인',
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -411,9 +515,9 @@ module.exports = {
 
     for (let i = 0; i < 5; i++) {
       let participantObj = {
-        participant_id: userIds[i+1],
+        participant_id: userIds[i + 1],
         schedule_id: scheduleIds[i],
-        status:'대기 중',
+        status: '대기 중',
         createdAt: new Date(),
         updatedAt: new Date(),
       }
@@ -452,7 +556,7 @@ module.exports = {
         id: settlementIds[i],
         schedule_id: scheduleIds[i],
         sender_id: userIds[i],
-        receiver_id: userIds[i+1],
+        receiver_id: userIds[i + 1],
         amount: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
