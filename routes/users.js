@@ -12,7 +12,7 @@ const {
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
 const {accessableToUserRequest}=require('../middleware/check-authority') // 권한 판별
-const upload=require('../middleware/s3-upload-image')
+const {uploadS3}=require('../middleware/s3')
 
 module.exports = (app) => {
 
@@ -28,7 +28,7 @@ module.exports = (app) => {
 	//body:user_pw, user_email, user_name
 	router.patch('/:id', accessableToUserRequest, updateUser)
 
-	router.patch('/img/upload', upload.single('user-profile'), uploadUserImage)
+	router.patch('/img/upload', uploadS3.single('user-profile'), uploadUserImage)
 
 	router.patch('/img/empty', deleteUserImage)
 

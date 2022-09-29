@@ -174,6 +174,13 @@ exports.uploadUserImage=async(req, res)=>{
     throw new BadRequestError('파일 저장 중 오류가 발생했습니다.')
   }
 
+  const user = await User.findByPk(id)
+
+  // 기존에 저장된 영수증 이미지 삭제
+  if (user.img_url){
+    deleteS3(user.img_url)
+  }
+
   const result = await User.update({img_url}, {
     where: {id}
   })

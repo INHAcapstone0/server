@@ -10,7 +10,7 @@ const {
 } = require('../controllers/receipts');
 var router = require('express').Router();
 const authenticateUser = require('../middleware/authentication')
-const uploadS3 = require('../middleware/s3-upload-image')
+const {uploadS3} = require('../middleware/s3')
 const upload=require('../middleware/local-upload-image')
 const { accessableToReceiptRequest } = require('../middleware/check-authority') // 권한 판별
 

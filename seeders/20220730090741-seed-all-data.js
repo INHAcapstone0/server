@@ -457,6 +457,7 @@ module.exports = {
             poster_id: receipt.poster_id,
             payDate: toFullDate(receipt.payDate),
             total_price: parseInt(receipt.total_price),
+            category:receipt.category,
             img_url:receipt.img_url,
             memo: receipt.memo,
             place_of_payment: receipt.place_of_payment,

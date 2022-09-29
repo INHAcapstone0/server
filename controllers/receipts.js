@@ -9,6 +9,7 @@ const fs = require('fs')
 const FormData = require("form-data");
 const path=require('path')
 const axios=require('axios')
+const {deleteS3} = require('../middleware/s3')
 
 exports.createReceipt = async (req, res) => {
   let {
@@ -183,6 +184,13 @@ exports.uploadReceiptImage=async(req, res)=>{
     throw new BadRequestError('파일 저장 중 오류가 발생했습니다.')
   }
 
+  const receipt = await Receipt.findByPk(id)
+
+  // 기존에 저장된 영수증 이미지 삭제
+  if (receipt.img_url){
+    deleteS3(receipt.img_url)
+  }
+
   const result = await Receipt.update({img_url}, {
     where: {id}
   })
@@ -245,7 +253,7 @@ exports.test = async (req, res) => {
 
     form.append(
       "message",
-      JSON.stringify({ "images": [{ "format": "jpeg", "name": "demo" }], "requestId": "guide-demo", "version": "V2", "timestamp": 1584062336793 })
+      JSON.stringify({ "images": [{ "format": "jpeg", "name": "sample" }], "requestId": "capstone", "version": "V2", "timestamp": 0 })
     )
 
     //2. CLOVA 전송
