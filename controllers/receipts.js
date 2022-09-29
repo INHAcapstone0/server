@@ -5,6 +5,10 @@ const { BadRequestError, NotFoundError } = require('../errors');
 const {Receipt, Participant, User, Alarm} = db;
 const Op = db.Sequelize.Op;
 const {sendMulticastMessage}=require('../firebase')
+const fs = require('fs')
+const FormData = require("form-data");
+const path=require('path')
+const axios=require('axios')
 
 exports.createReceipt = async (req, res) => {
   let {
@@ -227,9 +231,45 @@ exports.deleteReceipt = async (req, res) => {
   }
 };
 
-exports.test=async(req,res)=>{
-  
+exports.test = async (req, res) => {
+  try {
+    const filePath = path.join(__dirname + "/../" + req.file.path)
+    console.log(filePath)
+    const api_url = process.env.CLOVA_URI
+    //1. file 읽기
+    let form = new FormData();
+    form.append(
+      "file",
+      fs.createReadStream(filePath)
+    );
+
+    form.append(
+      "message",
+      JSON.stringify({ "images": [{ "format": "jpeg", "name": "demo" }], "requestId": "guide-demo", "version": "V2", "timestamp": 1584062336793 })
+    )
+
+    //2. CLOVA 전송
+    await axios
+      .post(api_url, form, {
+        headers: {
+          ...form.getHeaders(),
+          'X-OCR-SECRET': process.env.X_OCR_SECRET,
+        },
+      })
+      .then((result) => {
+        console.log(result.data.images[0].receipt.result);
+        res.status(StatusCodes.OK).json(result.data.images[0].receipt.result)
+      })
+    //3. file 삭제
+  } catch (error) {
+    console.log(error)
+    throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
+  } finally {
+    fs.unlinkSync(__dirname + "/../" + req.file.path)
+  }
 }
+
+
 
 
 

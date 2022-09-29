@@ -10,7 +10,8 @@ const {
 } = require('../controllers/receipts');
 var router = require('express').Router();
 const authenticateUser = require('../middleware/authentication')
-const upload = require('../middleware/upload-image')
+const uploadS3 = require('../middleware/s3-upload-image')
+const upload=require('../middleware/local-upload-image')
 const { accessableToReceiptRequest } = require('../middleware/check-authority') // 권한 판별
 
 
@@ -26,7 +27,7 @@ module.exports = (app) => {
 		accessableToReceiptRequest, updateReceipt)
 
 	router.patch('/img/upload/:id',
-		accessableToReceiptRequest, upload.single('receipt-img'), uploadReceiptImage)
+		accessableToReceiptRequest, uploadS3.single('receipt-img'), uploadReceiptImage)
 
 	router.put('/restore/:id',
 		accessableToReceiptRequest, restoreReceipt)

@@ -138,6 +138,7 @@ module.exports = {
     await queryInterface.bulkInsert('users', customUsers, {});
 
     let customSchedules = [{
+      "id":"04282e63-8cdd-4ce2-becb-abc19e12f376",
       "name": "folklore1",
       "owner_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
       "startAt": "20220101",
@@ -340,8 +341,11 @@ module.exports = {
     //참여자 정보에 test0 전부 넣을것
 
     customSchedules.forEach(one=>{
-
       let sampleId=v4()
+      if (one.id){
+        sampleId=one.id
+      }
+      
       if (one.name=='folklore6'){
         customReceipts.forEach(receipt=>{
           sampleReceipts.push({

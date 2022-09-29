@@ -12,7 +12,7 @@ const {
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
 const {accessableToUserRequest}=require('../middleware/check-authority') // 권한 판별
-const upload=require('../middleware/upload-image')
+const upload=require('../middleware/s3-upload-image')
 
 module.exports = (app) => {
 

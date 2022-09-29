@@ -3,7 +3,7 @@ const { UnauthenticatedError } = require('../errors')
 
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization
-  console.log(req.headers)
+  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     throw new UnauthenticatedError('인증 헤더 정보가 없거나 올바르지 않습니다.')
   }

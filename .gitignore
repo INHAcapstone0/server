@@ -8,3 +8,5 @@ config.json
 dump.rdb
 /config/awsconfig.json
 /config/serviceAccountKey.json
+
+/data
