@@ -7,7 +7,7 @@ const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
 const nodemailer=require('nodemailer')
-const {isValidPassword}=require('../lib/modules');
+const {isValidPassword}=require('../utils/modules');
 
 const comparePassword = async function (candidatePassword, user) {
   const isMatch = await bcrypt.compare(candidatePassword, user.password)
