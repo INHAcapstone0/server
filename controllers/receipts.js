@@ -1,15 +1,15 @@
-const { toDate, isValidDate, toFullDate } = require('../lib/modules');
+const { toDate, isValidDate, toFullDate } = require('../utils/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors');
-const {Receipt, Participant, User, Alarm} = db;
+const { Receipt, Participant, User, Alarm } = db;
 const Op = db.Sequelize.Op;
-const {sendMulticastMessage}=require('../firebase')
+const { sendMulticastMessage } = require('../firebase')
 const fs = require('fs')
 const FormData = require("form-data");
-const path=require('path')
-const axios=require('axios')
-const {deleteS3} = require('../middleware/s3')
+const path = require('path')
+const axios = require('axios')
+const { deleteS3 } = require('../middleware/s3')
 
 exports.createReceipt = async (req, res) => {
   let {
@@ -22,7 +22,7 @@ exports.createReceipt = async (req, res) => {
     category
   } = req.body;
 
-  if (!schedule_id || !poster_id ) {
+  if (!schedule_id || !poster_id) {
     throw new BadRequestError('스케줄 id와 poster id를 필수로 입력해야 합니다.')
   }
 
@@ -33,18 +33,18 @@ exports.createReceipt = async (req, res) => {
     }
   }
 
-  const poster=await Participant.findOne({
-    where:{
-      participant_id:poster_id,
+  const poster = await Participant.findOne({
+    where: {
+      participant_id: poster_id,
       schedule_id
     },
-    include:[{
-      model:User,
-      attributes:['name']
+    include: [{
+      model: User,
+      attributes: ['name']
     }],
   })
-  
-  if(!poster){
+
+  if (!poster) {
     throw new BadRequestError('영수증 게시자가 해당 스케줄의 참가자 내에 존재하지 않습니다.')
   }
 
@@ -53,37 +53,37 @@ exports.createReceipt = async (req, res) => {
   });
 
   const participants = await Participant.findAll({
-    where: {schedule_id}
+    where: { schedule_id }
   })
 
-  let alarm_list=[]
-  let participant_ids=[]
-  for (i of participants.map(participant=>participant.participant_id)){
+  let alarm_list = []
+  let participant_ids = []
+  for (i of participants.map(participant => participant.participant_id)) {
     participant_ids.push(i)
     alarm_list.push({
-      user_id:i, 
-      alarm_type:'영수증 업로드', 
-      message:`${poster.User.name}님이 새 영수증을 업로드하였습니다.`
+      user_id: i,
+      alarm_type: '영수증 업로드',
+      message: `${poster.User.name}님이 새 영수증을 업로드하였습니다.`
     })
   }
 
-  if (alarm_list.length!=0){
+  if (alarm_list.length != 0) {
     await Alarm.bulkCreate(alarm_list)
   }
 
   //FCM 푸쉬알람 보내기
-  let token_list=[]
-  
+  let token_list = []
+
   const users = await User.findAll({
-    where:{
-      id:{
-        [Op.in] : participant_ids
+    where: {
+      id: {
+        [Op.in]: participant_ids
       }
     }
   })
 
-  users.forEach(user=>{
-    if (user.device_token){
+  users.forEach(user => {
+    if (user.device_token) {
       token_list.push(user.device_token)
     }
   })
@@ -175,29 +175,29 @@ exports.updateReceipt = async (req, res) => {
   }
 };
 
-exports.uploadReceiptImage=async(req, res)=>{
-  const {id} = req.params;
+exports.uploadReceiptImage = async (req, res) => {
+  const { id } = req.params;
 
-  const img_url=req.file.location
+  const img_url = req.file.location
 
-  if(!img_url){
+  if (!img_url) {
     throw new BadRequestError('파일 저장 중 오류가 발생했습니다.')
   }
 
   const receipt = await Receipt.findByPk(id)
 
   // 기존에 저장된 영수증 이미지 삭제
-  if (receipt.img_url){
+  if (receipt.img_url) {
     deleteS3(receipt.img_url)
   }
 
-  const result = await Receipt.update({img_url}, {
-    where: {id}
+  const result = await Receipt.update({ img_url }, {
+    where: { id }
   })
 
-  if(result==1){
-    res.status(StatusCodes.OK).json({ msg:`영수증 이미지가 성공적으로 업데이트되었습니다.` })
-  }else{
+  if (result == 1) {
+    res.status(StatusCodes.OK).json({ msg: `영수증 이미지가 성공적으로 업데이트되었습니다.` })
+  } else {
     throw new NotFoundError('업데이트할 영수증이 존재하지 않습니다.')
   }
 }
@@ -229,7 +229,7 @@ exports.deleteReceipt = async (req, res) => {
 
   const result = await Receipt.destroy({
     where: { id },
-    force:true
+    force: true
   })
 
   if (result == 1) {
@@ -257,23 +257,88 @@ exports.test = async (req, res) => {
     )
 
     //2. CLOVA 전송
-    await axios
+    const targetParceData=await axios
       .post(api_url, form, {
         headers: {
           ...form.getHeaders(),
           'X-OCR-SECRET': process.env.X_OCR_SECRET,
         },
       })
-      .then((result) => {
-        console.log(result.data.images[0].receipt.result);
-        res.status(StatusCodes.OK).json(result.data.images[0].receipt.result)
+    
+    let ocr_result = {
+      items: []
+    }
+
+    let target_store = {}
+    console.log(targetParceData.data.images[0].receipt.result)
+    let { paymentInfo, storeInfo, subResults, totalPrice } = targetParceData.data.images[0].receipt.result
+
+    ocr_result.payDate = Object.assign({}, (paymentInfo.date?.formatted || {}), (paymentInfo.time?.formatted || {}))
+
+    ocr_result.store = {
+      name: storeInfo.name.formatted.value || storeInfo.subName.formatted.value,
+      addresses: storeInfo.addresses[0].text,
+      tel: storeInfo.tel[0].formatted.value || null
+    }
+
+    ocr_result.store.name = ocr_result.store.name.replace('(주)', '')
+
+    subResults[0].items.forEach(r => {
+      ocr_result.items.push({
+        name: r.name.text,
+        count: parseInt(r.count.formatted.value),
+        price: parseInt(r.price.price.formatted.value)
       })
+    })
+    ocr_result.totalPrice = parseInt(totalPrice.price.formatted.value)
+
+    //1. store.address로 x, y 구하기
+    let result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
+      headers: {
+        Authorization: process.env.KAKAO_API_KEY
+      },
+      params: {
+        query: ocr_result.store.addresses
+      }
+    })
+
+    //2. x,y, keyword()
+    let { x, y } = result.data.documents[0].address
+    result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
+      headers: {
+        Authorization: process.env.KAKAO_API_KEY
+      },
+      params: {
+        query: ocr_result.store.name,
+        x,
+        y,
+        radius: 200,
+        sort: 'accuracy'
+      }
+    })
+
+    // console.log(ocr_result.store.tel)
+    result.data.documents.forEach(r => {
+      if (r.phone.replace(/\-/g, '') == ocr_result.store.tel) {
+        target_store = Object.assign({}, target_store, r)
+      }
+    })
+
+    if (Object.keys(target_store).length == 0) {
+      target_store = result.data.documents[0]
+    }
+
+    ocr_result.store.category = target_store.category_group_name || ''
+    ocr_result.store.name=target_store.place_name
+
+    fs.unlinkSync(__dirname + "/../" + req.file.path)
+    return res.status(StatusCodes.OK).json({target_store, ocr_result})
+
     //3. file 삭제
   } catch (error) {
     console.log(error)
-    throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
-  } finally {
     fs.unlinkSync(__dirname + "/../" + req.file.path)
+    throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
   }
 }
 

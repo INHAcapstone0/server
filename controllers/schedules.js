@@ -1,4 +1,4 @@
-const { toDate, isValidDate } = require('../lib/modules');
+const { toDate, isValidDate } = require('../utils/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')

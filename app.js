@@ -7,7 +7,6 @@ const fs = require('fs')
 const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
 const scheduler=require('./utils/node-scheduler')
-
 const cors = require('cors')
 const helmet = require('helmet')
 

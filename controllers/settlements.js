@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
 const {Settlement, Schedule, User, Alarm} = db;
 const Op = db.Sequelize.Op
-const { toDate, isValidDate } = require('../lib/modules')
+const { toDate, isValidDate } = require('../utils/modules')
 const {sendUnicastMessage}= require('../firebase')
 
 exports.createSettlement = async (req, res) => {

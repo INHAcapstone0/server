@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
 const {User, Schedule, Participant} = db;
 const Op = db.Sequelize.Op;
-const {isValidPassword, hashPassword}=require('../lib/modules');
+const {isValidPassword, hashPassword}=require('../utils/modules');
 const {verifyFCMToken, sendUnicastMessage}=require('../firebase')
 
 exports.getAllUsers = async (req, res) => {
