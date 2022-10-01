@@ -7,7 +7,7 @@ const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
 const nodemailer=require('nodemailer')
-const {hashPassword}=require('../lib/modules');
+const {isValidPassword}=require('../lib/modules');
 
 const comparePassword = async function (candidatePassword, user) {
   const isMatch = await bcrypt.compare(candidatePassword, user.password)
@@ -57,8 +57,7 @@ const logout= async(req, res)=>{
 
 const register = async (req, res) => {
   let { email, password, name } = req.body;
-  var checkPassword = new RegExp("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[$@^!%*#?&])[a-z0-9A-Z$@^!%*#?&]{8,}$");
-  if (!checkPassword.test(password)) {
+  if (!isValidPassword(password)) {
     throw new BadRequestError('패스워드를 숫자, 알파벳, 특수문자를 포함한 8자리 이상으로 입력하세요.');
   }
 
