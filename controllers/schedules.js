@@ -1,4 +1,4 @@
-const { toDate, isValidDate } = require('../utils/modules');
+const { toDate, isValidDate, toFullDate } = require('../utils/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
@@ -12,8 +12,8 @@ exports.createSchedule = async (req, res) => {
   let {
     name,
     owner_id,
-    startAt, // yyyymmdd
-    endAt, // yyyymmdd
+    startAt, // yyyymmddhhmmss
+    endAt, // yyyymmddhhmmss
     participants
   } = req.body;
 
@@ -234,10 +234,32 @@ exports.updateSchedule = async (req, res) => {
   const { id } = req.params;
   const { name, startAt, endAt } = req.body;
 
+  let updateCond={}
   if(!id){
     throw new BadRequestError('스케줄 id를 입력해주세요.');
   }
   //업데이트 전 상태
+
+  if(name){
+    updateCond.name=name
+  }
+  if(startAt){
+    startAt = toDate(startAt);
+    if(!isValidDate(startAt)){
+      throw new BadRequestError('일정 시작일과 종료일을 유효한 타입 [YYYYMMDD]으로 입력하세요.')
+    }
+    updateCond.startAt=startAt
+  }
+  if(endAt){
+    endAt = toDate(endAt);
+    if(!isValidDate(endAt)){
+      throw new BadRequestError('일정 시작일과 종료일을 유효한 타입 [YYYYMMDD]으로 입력하세요.')
+    }
+    updateCond.endAt=endAt
+  }
+  if (startAt && endAt && startAt >= endAt) {
+    throw new BadRequestError('일정 종료시간을 일정 시작시간 이후의 날짜로 입력하세요.')
+  }
 
   const beforeUpdateSchedule= await Schedule.findByPk(id)
 
@@ -253,7 +275,7 @@ exports.updateSchedule = async (req, res) => {
     throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
   }
 
-  const result= await Schedule.update({ name, startAt, endAt }, {
+  const result= await Schedule.update(updateCond, {
     where: {id}
   })
 

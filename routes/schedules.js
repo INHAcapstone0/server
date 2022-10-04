@@ -9,7 +9,7 @@ const {
 } = require('../controllers/schedules');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
-const { accessableToScheduleRequest } = require('../middleware/check-authority') // 권한 판별
+const { accessableToScheduleRequest, readableToScheduleRequest } = require('../middleware/check-authority') // 권한 판별
 
 module.exports = (app) => {
 	//body:schedule_name, owner_id, startAt, endAt
@@ -20,7 +20,7 @@ module.exports = (app) => {
 
 	router.get('/status/',getMyApprovedSchedule)
 	//params:schedule_id
-	router.get("/:id", accessableToScheduleRequest, getSchedule);
+	router.get("/:id", readableToScheduleRequest, getSchedule);
 
 	//params:schedule_id
 	//body:schedule_name,owner_id, startAt, endAt

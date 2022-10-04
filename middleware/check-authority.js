@@ -1,7 +1,7 @@
 const { param } = require('express/lib/router');
-const { UnauthenticatedError } = require('../errors')
+const { UnauthenticatedError, BadRequestError } = require('../errors')
 const db = require('../models');
-const { Receipt, Schedule, Alarm, Settlement } = db;
+const { Receipt, Schedule, Alarm, Settlement, Participant } = db;
 
 // Participant request의 리소스에 접근 권한이 있는지 확인
 const accessableToParticipantRequest = async (req, res, next) => {
@@ -73,6 +73,38 @@ const accessableToScheduleRequest = async (req, res, next) => {
   return next()
 }
 
+const readableToScheduleRequest = async (req, res, next) => {
+  if (req.user.admin) { // 관리자라면 미들웨어 패싱
+    return next()
+  }
+
+  const { id } = req.params
+
+  // param의 id로 Schedule 조회
+  if(!id){
+    throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
+  }
+
+  const participants = await Participant.findAll({
+    include:[{
+      model:Schedule,
+      where:{id},
+      attributes:[]
+    }]
+  })
+
+  let participant_list=[]
+  participants.forEach(p=>participant_list.push(p.participant_id))
+  
+  if (!(participant_list.includes(req.user.id))){
+    throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
+  }
+  else{
+    return next()
+  }
+}
+
+
 // Alarm request의 리소스에 접근 권한이 있는지 확인
 const accessableToAlarmRequest = async (req, res, next) => {
   if (req.user.admin) { // 관리자라면 미들웨어 패싱
@@ -135,5 +167,6 @@ module.exports = {
   accessableToReceiptRequest,
   accessableToScheduleRequest,
   accessableToUserRequest,
-  accessableToSettlementRequest
+  accessableToSettlementRequest,
+  readableToScheduleRequest
 }

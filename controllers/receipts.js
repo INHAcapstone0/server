@@ -257,39 +257,53 @@ exports.test = async (req, res) => {
     )
 
     //2. CLOVA 전송
-    const targetParceData=await axios
+    const targetParceData = await axios
       .post(api_url, form, {
         headers: {
           ...form.getHeaders(),
           'X-OCR-SECRET': process.env.X_OCR_SECRET,
         },
       })
-    
+
     let ocr_result = {
       items: []
     }
 
     let target_store = {}
-    console.log(targetParceData.data.images[0].receipt.result)
-    let { paymentInfo, storeInfo, subResults, totalPrice } = targetParceData.data.images[0].receipt.result
 
-    ocr_result.payDate = Object.assign({}, (paymentInfo.date?.formatted || {}), (paymentInfo.time?.formatted || {}))
+    let parceData = targetParceData.data.images[0].receipt.result
+    let { paymentInfo, storeInfo, subResults, totalPrice } = parceData
+
+    if (paymentInfo) {
+      ocr_result.payDate = Object.assign({}, (paymentInfo?.date?.formatted || {}), (paymentInfo?.time?.formatted || {}))
+    }
+    else {
+      ocr_result.payDate = null
+    }
 
     ocr_result.store = {
       name: storeInfo.name.formatted.value || storeInfo.subName.formatted.value,
       addresses: storeInfo.addresses[0].text,
-      tel: storeInfo.tel[0].formatted.value || null
+      tel: '',
+      category:''
+    }
+
+    if (storeInfo.tel) {
+      ocr_result.store.tel = storeInfo.tel[0].formatted.value
     }
 
     ocr_result.store.name = ocr_result.store.name.replace('(주)', '')
 
-    subResults[0].items.forEach(r => {
-      ocr_result.items.push({
-        name: r.name.text,
-        count: parseInt(r.count.formatted.value),
-        price: parseInt(r.price.price.formatted.value)
+    if (subResults.length != 0) {
+      subResults[0].items.forEach(r => {
+        ocr_result.items.push({
+          name: r.name.text,
+          count: parseInt(r.count?.formatted.value || '1'),
+          price: parseInt(r.price.price.formatted.value)
+        })
       })
-    })
+    }
+
     ocr_result.totalPrice = parseInt(totalPrice.price.formatted.value)
 
     //1. store.address로 x, y 구하기
@@ -303,7 +317,9 @@ exports.test = async (req, res) => {
     })
 
     //2. x,y, keyword()
+
     let { x, y } = result.data.documents[0].address
+    
     result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
       headers: {
         Authorization: process.env.KAKAO_API_KEY
@@ -317,22 +333,31 @@ exports.test = async (req, res) => {
       }
     })
 
-    // console.log(ocr_result.store.tel)
-    result.data.documents.forEach(r => {
-      if (r.phone.replace(/\-/g, '') == ocr_result.store.tel) {
-        target_store = Object.assign({}, target_store, r)
+    console.log(result.data)
+
+    if (result.data.documents.length != 0) { // keyword 검색 결과가 존재하지 않으면 넘기기
+      result.data.documents.forEach(r => {
+        if (r.phone.replace(/\-/g, '') == ocr_result.store.tel) {
+          target_store = Object.assign({}, target_store, r)
+        }
+      })
+
+      if (Object.keys(target_store).length == 0) {
+        target_store = result.data.documents[0]
       }
-    })
 
-    if (Object.keys(target_store).length == 0) {
-      target_store = result.data.documents[0]
+      ocr_result.store.category = target_store?.category_group_name || ''
+      ocr_result.store.name = target_store?.place_name || ocr_result.store.name
+      ocr_result.store.addresses = target_store?.road_address_name || target_store?.address_name
     }
-
-    ocr_result.store.category = target_store.category_group_name || ''
-    ocr_result.store.name=target_store.place_name
+    
+    console.log(ocr_result)
 
     fs.unlinkSync(__dirname + "/../" + req.file.path)
-    return res.status(StatusCodes.OK).json({target_store, ocr_result})
+    return res.status(StatusCodes.OK).json({
+      parceData,
+      data : ocr_result
+    })
 
     //3. file 삭제
   } catch (error) {
@@ -341,8 +366,3 @@ exports.test = async (req, res) => {
     throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
   }
 }
-
-
-
-
-

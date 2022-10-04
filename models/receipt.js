@@ -1,6 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
-const {BadRequestError}=require('../errors/')
+const {BadRequestError}=require('../errors')
 
 module.exports = (sequelize, DataTypes) => {
   class Receipt extends Model {
