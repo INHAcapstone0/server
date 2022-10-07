@@ -194,8 +194,9 @@ exports.uploadUserImage=async(req, res)=>{
 
 exports.deleteUserImage=async(req, res)=>{
   const {id} = req.user;
+  let default_image_url=(Math.random()<0.5)?`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage2.png'
   const result=await User.update({
-    img_url:`https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`
+    img_url:default_image_url
   },
   {
    where:{id} 
