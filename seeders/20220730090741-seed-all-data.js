@@ -1,7 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt')
 const {v4} = require('uuid')
-const {toDate, toFullDate} =require('../lib/modules')
+const {toDate, toFullDate, toDate_deprecated} =require('../utils/modules')
 module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
@@ -85,10 +85,46 @@ module.exports = {
       '2c4bca25-5011-486f-b95f-2d9c768d6b8a',
       '8c4399c1-ac71-45f3-a897-be0434b1b000'
     ]
+    let customUsers2=[
+      {
+        name:'김유나',
+        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A50.jpeg',
+      },
+      {
+        name:'이진성',
+        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A51.jpeg',
+      },
+      {
+        name:'유은아',
+        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A52.jpeg',
+      },
+      {
+        name:'이수아',
+        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A53.jpeg',
+      },
+      {
+        name:'박지현',
+        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A54.jpeg'
+      }
+    ] 
 
     const salt = await bcrypt.genSalt(10);
 
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
+      let password = await bcrypt.hash(`rlathfals${i}#`, salt)
+      let userObj = {
+        id: userIds[i], //나중에 랜덤한 UUID값으로 바꿀것 ->id:uuidV4()
+        email: "test" + i + "@example.com",
+        name: customUsers2[i].name,
+        img_url: customUsers2[i].img_url,
+        password: password,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      sampleUsers.push(userObj)
+    }
+
+    for (let i = 5; i < 10; i++) {
       let password = await bcrypt.hash(`rlathfals${i}#`, salt)
       let userObj = {
         id: userIds[i], //나중에 랜덤한 UUID값으로 바꿀것 ->id:uuidV4()
@@ -101,6 +137,8 @@ module.exports = {
       };
       sampleUsers.push(userObj)
     }
+
+
     await queryInterface.bulkInsert('users', sampleUsers, {});
 
     let password = await bcrypt.hash(`taylor#1213`, salt)
@@ -470,8 +508,8 @@ module.exports = {
         id: sampleId,
         name: one.name,
         owner_id: one.owner_id,
-        startAt: toDate(one.startAt),
-        endAt: toDate(one.endAt),
+        startAt: toDate_deprecated(one.startAt),
+        endAt: toDate_deprecated(one.endAt),
         createdAt: new Date(),
         updatedAt: new Date(),
       })

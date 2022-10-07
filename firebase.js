@@ -19,6 +19,7 @@ async function verifyFCMToken (fcmToken) {
   tokens: [registrationTokens],
 }
 */
+
 async function sendMulticastMessage(message){
   getMessaging().sendMulticast(message)
   .then((response) => {
