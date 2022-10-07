@@ -272,6 +272,7 @@ exports.test = async (req, res) => {
     let target_store = {}
 
     let parceData = targetParceData.data.images[0].receipt.result
+
     let { paymentInfo, storeInfo, subResults, totalPrice } = parceData
 
     if (paymentInfo) {
@@ -288,6 +289,7 @@ exports.test = async (req, res) => {
       category:''
     }
 
+    fs.writeFileSync(__dirname+`/../data/${Date.now().toString()}_${ocr_result.store.name}.json`, JSON.stringify(parceData))
     if (storeInfo.tel) {
       ocr_result.store.tel = storeInfo.tel[0].formatted.value
     }
@@ -316,8 +318,8 @@ exports.test = async (req, res) => {
       }
     })
 
+    console.log()
     //2. x,y, keyword()
-
     let { x, y } = result.data.documents[0].address
     
     result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
