@@ -308,7 +308,7 @@ module.exports = {
       "payDate": "20220301090909",
       "total_price": "10000",
       "memo": "",
-      "place_of_payment": "스타벅스1"
+      "place": "스타벅스1"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -316,7 +316,7 @@ module.exports = {
       "payDate": "20220302090909",
       "total_price": "20000",
       "memo": "",
-      "place_of_payment": "스타벅스2"
+      "place": "스타벅스2"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -324,7 +324,7 @@ module.exports = {
       "payDate": "20220303090909",
       "total_price": "30000",
       "memo": "",
-      "place_of_payment": "스타벅스3"
+      "place": "스타벅스3"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -332,7 +332,7 @@ module.exports = {
       "payDate": "20220304090909",
       "total_price": "40000",
       "memo": "",
-      "place_of_payment": "스타벅스4"
+      "place": "스타벅스4"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -340,7 +340,7 @@ module.exports = {
       "payDate": "20220305090909",
       "total_price": "50000",
       "memo": "",
-      "place_of_payment": "스타벅스5"
+      "place": "스타벅스5"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -348,7 +348,7 @@ module.exports = {
       "payDate": "20220306090909",
       "total_price": "60000",
       "memo": "",
-      "place_of_payment": "스타벅스6"
+      "place": "스타벅스6"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -356,7 +356,7 @@ module.exports = {
       "payDate": "20220307090909",
       "total_price": "70000",
       "memo": "",
-      "place_of_payment": "스타벅스7"
+      "place": "스타벅스7"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -364,7 +364,7 @@ module.exports = {
       "payDate": "20220308090909",
       "total_price": "80000",
       "memo": "",
-      "place_of_payment": "스타벅스8"
+      "place": "스타벅스8"
     },
     {
       "schedule_id": "7664eb1d-e8f8-4daf-881e-bac5e6ea7393",
@@ -372,7 +372,7 @@ module.exports = {
       "payDate": "20220309090909",
       "total_price": "90000",
       "memo": "",
-      "place_of_payment": "스타벅스9"
+      "place": "스타벅스9"
     }]
 
     let customReceipts2 = [{
@@ -381,7 +381,7 @@ module.exports = {
       "category": "카페",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425257037.jpg",
       "total_price": 42700,
-      "place_of_payment": "젤리뻬어",
+      "place": "젤리뻬어",
       "memo": "칵테일 마심",
       "payDate": "2022-01-01T15:01:10.000Z",
       "createdAt": "2022-01-01T15:11:10.000Z",
@@ -394,7 +394,7 @@ module.exports = {
       "category": "카페",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425412801.jpg",
       "total_price": 12000,
-      "place_of_payment": "아마스빈 인하대점",
+      "place": "아마스빈 인하대점",
       "memo": "버블티",
       "payDate": "2022-01-02T15:01:10.000Z",
       "createdAt": "2022-01-02T15:11:10.000Z",
@@ -407,7 +407,7 @@ module.exports = {
       "category": "음식점",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425636800.jpg",
       "total_price": 18300,
-      "place_of_payment": "써브웨이 인천인하대점",
+      "place": "써브웨이 인천인하대점",
       "memo": "3일 점심",
       "payDate": "2022-01-03T15:01:10.000Z",
       "createdAt": "2022-01-03T15:11:10.000Z",
@@ -420,7 +420,7 @@ module.exports = {
       "category": "음식점",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425668072.jpg",
       "total_price": 31500,
-      "place_of_payment": "하나텐",
+      "place": "하나텐",
       "memo": "4일 저녁",
       "payDate": "2022-01-04T15:01:10.000Z",
       "createdAt": "2022-01-04T15:11:10.000Z",
@@ -433,7 +433,7 @@ module.exports = {
       "category": "음식점",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425683137.jpg",
       "total_price": 32000,
-      "place_of_payment": "가메이",
+      "place": "가메이",
       "memo": "5일 점심",
       "payDate": "2022-01-05T15:01:10.000Z",
       "createdAt": "2022-01-05T15:11:10.000Z",
@@ -446,7 +446,7 @@ module.exports = {
       "category": "숙박업소",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425708248.jpg",
       "total_price": 210000,
-      "place_of_payment": "레스케이프호텔",
+      "place": "레스케이프호텔",
       "memo": "렢",
       "payDate": "2022-01-07T15:01:10.000Z",
       "createdAt": "2022-01-07T15:11:10.000Z",
@@ -459,7 +459,7 @@ module.exports = {
       "category": "숙박업소",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425727692.jpg",
       "total_price": 160000,
-      "place_of_payment": "신라스테이 광화문",
+      "place": "신라스테이 광화문",
       "memo": "신",
       "payDate": "2022-01-08T15:01:10.000Z",
       "createdAt": "2022-01-08T15:11:10.000Z",
@@ -480,9 +480,10 @@ module.exports = {
             schedule_id: sampleId,
             poster_id: receipt.poster_id,
             payDate: toFullDate(receipt.payDate),
+            category:'기타',
             total_price: parseInt(receipt.total_price),
             memo: receipt.memo,
-            place_of_payment: receipt.place_of_payment,
+            place: receipt.place,
             createdAt: new Date(),
             updatedAt: new Date(),
           })
@@ -498,7 +499,7 @@ module.exports = {
             category:receipt.category,
             img_url:receipt.img_url,
             memo: receipt.memo,
-            place_of_payment: receipt.place_of_payment,
+            place: receipt.place,
             createdAt: new Date(),
             updatedAt: new Date(),
           })
@@ -569,12 +570,15 @@ module.exports = {
         id: receiptsIds[i],
         schedule_id: scheduleIds[Math.floor(i / 2)],
         poster_id: userIds[Math.floor(i / 2)],
+        category:'기타',
         total_price: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
       }
       sampleReceipts.push(receiptObj)
     }
+
+
     await queryInterface.bulkInsert('receipts', sampleReceipts, {});
 
     for (let i = 0; i < 20; i++) {

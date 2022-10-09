@@ -10,6 +10,7 @@ module.exports = {
       },
       receipt_id:{
         type: Sequelize.UUID,
+        allowNull:false,
         comment:"영수증 ID",
         references: {
           model: 'receipts',
@@ -19,11 +20,13 @@ module.exports = {
       },
       name:{
         type:Sequelize.STRING,
+        allowNull:false,
         default:'무제',
         comment:"물픔(또는 구매내역) 이름"
       },
       quantity:{
         type:Sequelize.INTEGER,
+        allowNull:false,
         defaultValue:1,
         comment:"물품 수량",
         validate:{ // 최대 100개 한도
@@ -33,6 +36,7 @@ module.exports = {
       },
       price:{
         type:Sequelize.INTEGER,
+        allowNull:false,
         defaultValue:0,
         comment:"물품 단가",
         validate:{ // 최대 200만원 한도

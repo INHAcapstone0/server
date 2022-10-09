@@ -7,15 +7,18 @@ const redisClient = require('../utils/redis');
 const bcrypt = require('bcrypt')
 const {decode} = require('jsonwebtoken');
 const nodemailer=require('nodemailer')
-const {isValidPassword}=require('../utils/modules');
+const {isValidPassword, hashPassword}=require('../utils/modules');
 
-const comparePassword = async function (candidatePassword, user) {
-  const isMatch = await bcrypt.compare(candidatePassword, user.password)
+const comparePassword = async function (candidatePassword, password) {
+  const isMatch = await bcrypt.compare(candidatePassword, password)
   return isMatch
 }
 
 const login = async (req, res) => {
-  const { email, password, device_token } = req.body
+  const { email, password } = req.body
+
+  let pwCompare=false // 원래 비밀번호 비교
+  let tempPwCompare=false // 임시 비밀번호 비교
 
   if (!email || !password) {
     throw new BadRequestError('이메일과 비밀번호를 모두 입력해주세요.')
@@ -26,9 +29,14 @@ const login = async (req, res) => {
   if (!user) {
     throw new NotFoundError('유저가 존재하지 않습니다.')
   }
-  const isPasswordCorrect = await comparePassword(password, user)
-  if (!isPasswordCorrect) {
-    throw new NotFoundError('비밀번호가 틀렸습니다.')
+  pwCompare = await comparePassword(password, user.password)
+  if (user.temp_password){
+    tempPwCompare = await comparePassword(password, user.temp_password)
+  }
+  if (!pwCompare) { // 비밀번호가 다르면
+    if (!tempPwCompare){ // 임시 비밀번호와도 다르면
+      throw new NotFoundError('비밀번호가 틀렸습니다.')
+    }
   }
 
   const accessToken = jwt.sign(user);
@@ -41,7 +49,8 @@ const login = async (req, res) => {
     user_id: user.id,
     data: {
       accessToken, refreshToken
-    }
+    },
+    temp_pw: tempPwCompare // 임시 비밀번호로 로그인했는지 여부
   }
   res.status(StatusCodes.OK).json(result)
 }
@@ -236,7 +245,7 @@ const issueTempPassword = async(req, res)=>{
   }
   
   temp_pw.sort(() => Math.random() - 0.5); //shuffle
-  let new_pw = temp_pw.join('')
+  temp_pw = temp_pw.join('')
 
   let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -258,7 +267,7 @@ const issueTempPassword = async(req, res)=>{
       <div> 
         <p style='color:black'>회원님의 이메일로 등록된 계정의 임시 비밀번호를 보내드립니다.</p>
         <p style='color:black'>아래의 임시 비밀번호로 앱에서 로그인한 후 비밀번호를 변경하세요.</p>
-        <h2>${new_pw}</h2>
+        <h2>${temp_pw}</h2>
       </div>
     </body>
     </html>`
@@ -271,9 +280,9 @@ const issueTempPassword = async(req, res)=>{
     transporter.close()
   });
 
-  new_pw= await hashPassword(new_pw);
+  temp_pw= await hashPassword(temp_pw);
 
-  await User.update({ password: new_pw },
+  await User.update({ temp_password: temp_pw },
     { where: { id: user.id } }
   )
 

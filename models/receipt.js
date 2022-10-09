@@ -32,44 +32,48 @@ module.exports = (sequelize, DataTypes) => {
     },
     schedule_id: {
       type: DataTypes.UUID,
+      allowNull: false,
       comment: "영수증 소속 일정 ID"
     },
     poster_id: {
       type: DataTypes.UUID,
+      allowNull: false,
       comment: "영수증 게시자 ID"
     },
     category: {
       type: DataTypes.ENUM('카페', '음식점', '숙박업소', '기타'),
       defaultValue:'기타',
+      allowNull: false,
       comment: "영수증 카테고리"
     },
     img_url:{
       type:'VARCHAR(3000)',
-      allowNull:true,
       comment:"영수증 사진 URL 주소"
     },
     total_price: {
       type: DataTypes.DOUBLE,
       defaultValue: 0,
+      allowNull: false,
       comment: "총 결제금액",
       validate: { // 1000만원 한도
         min: 0,
         max: 10000000
       }
     },
-    place_of_payment: {
+    place: {
       type: DataTypes.STRING,
-      allowNull: true,
       comment: "구매처(또는 상호명)"
+    },
+    address:{
+      type: DataTypes.STRING,
+      comment: "상세주소"
     },
     memo: {
       type: DataTypes.STRING,
-      allowNull: true,
       comment: "기타 사항"
     },
     payDate: {
       type: DataTypes.DATE,
-      allowNull: true,
       comment: "구매 일자"
     }
   },

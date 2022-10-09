@@ -48,6 +48,7 @@ module.exports = (sequelize, DataTypes) => {
     status: {
       type: DataTypes.ENUM('대기 중', '승인', '거절'),
       defaultValue:'대기 중',
+      allowNull: false,
       comment: "참가 요청 상태"
     },
   },

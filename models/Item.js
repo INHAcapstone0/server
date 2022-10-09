@@ -21,15 +21,18 @@ module.exports = (sequelize, DataTypes) => {
     },
     receipt_id:{
       type: DataTypes.UUID,
+      allowNull:false,
       comment:"영수증 ID"
     },
     name:{
       type:DataTypes.STRING,
+      allowNull:false,
       default:'무제',
       comment:"물픔(또는 구매내역) 이름"
     },
     quantity:{
       type:DataTypes.INTEGER,
+      allowNull:false,
       defaultValue:1,
       comment:"물품 수량",
       validate:{ // 최대 100개 한도
@@ -39,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     price:{
       type:DataTypes.INTEGER,
+      allowNull:false,
       defaultValue:0,
       comment:"물품 단가",
       validate:{ // 최대 200만원 한도

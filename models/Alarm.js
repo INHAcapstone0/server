@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     user_id: {
       type: DataTypes.UUID,
+      allowNull:false,
       comment: "유저 ID"
     },
     alarm_type: {
@@ -30,10 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     message: {
       type: DataTypes.STRING,
+      allowNull:false,
       comment: "알람 내용 수량"
     },
     checked: {
       type: DataTypes.BOOLEAN,
+      allowNull:false,
       defaultValue: false,
       comment: "알람 체크 여부",
     }

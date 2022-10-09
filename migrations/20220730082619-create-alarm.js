@@ -10,6 +10,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.UUID,
+        allowNull:false,
         comment: "유저 ID",
         references: {
           model: 'users',
@@ -24,10 +25,12 @@ module.exports = {
       },
       message: {
         type: Sequelize.STRING,
+        allowNull:false,
         comment: "알람 내용 수량"
       },
       checked: {
         type: Sequelize.BOOLEAN,
+        allowNull:false,
         defaultValue: false,
         comment: "알람 체크 여부",
       },

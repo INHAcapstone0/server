@@ -18,7 +18,8 @@ exports.createReceipt = async (req, res) => {
     payDate,
     total_price,
     memo,
-    place_of_payment,
+    place,
+    address,
     category
   } = req.body;
 
@@ -49,7 +50,7 @@ exports.createReceipt = async (req, res) => {
   }
 
   const receipt = await Receipt.create({
-    schedule_id, poster_id, payDate, total_price, memo, place_of_payment, category
+    schedule_id, poster_id, payDate, total_price, memo, place, address, category
   });
 
   const participants = await Participant.findAll({
@@ -301,12 +302,12 @@ exports.test = async (req, res) => {
         ocr_result.items.push({
           name: r.name.text,
           count: parseInt(r.count?.formatted.value || '1'),
-          price: parseInt(r.price.price.formatted.value)
+          price: parseInt(r.price?.price.formatted.value || '0')
         })
       })
     }
 
-    ocr_result.totalPrice = parseInt(totalPrice.price.formatted.value)
+    ocr_result.totalPrice = parseInt(totalPrice?.price?.formatted.value||'0')
 
     //1. store.address로 x, y 구하기
     let result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {

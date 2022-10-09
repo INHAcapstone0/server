@@ -103,6 +103,7 @@ exports.updateUser = async (req, res) => {
     password= await hashPassword(password);
     // promisify 사용 안됨. 나중에 고치기
     updateField.password=password
+    updateField.temp_password=null
   }
   
   if(device_token){

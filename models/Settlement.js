@@ -33,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     schedule_id:{
       type: DataTypes.UUID,
+      allowNull:false,
       comment:"정산 대상 스케줄 ID",
       references: {
         model: 'participants',
@@ -41,6 +42,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     sender_id:{
       type: DataTypes.UUID,
+      allowNull:false,
       comment:"정산액 입금자",
       references: {
         model: 'participants',
@@ -50,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     receiver_id:{
       type: DataTypes.UUID,
+      allowNull:false,
       comment:"정산액 수급자",
       references: {
         model: 'participants',
@@ -59,16 +62,17 @@ module.exports = (sequelize, DataTypes) => {
     },
     amount:{
       type: DataTypes.DOUBLE,
+      allowNull:false,
       comment:"정산 금액"
     },
     is_paid: {
       type: DataTypes.BOOLEAN,
+      allowNull:false,
       defaultValue:false,
       comment:"정산 여부"
     },
     due_date:{
       type:DataTypes.DATE,
-      allowNull:true,
       comment:"정산 마감일"
     }
   },

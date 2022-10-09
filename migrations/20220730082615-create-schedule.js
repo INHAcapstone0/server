@@ -16,21 +16,21 @@ module.exports = {
           key: 'id'
         },
         comment:"일정 소유자(제작자)",
+        allowNull:false,
       },
       name:{
         type: Sequelize.STRING,
-        comment:"일정 이름"
+        comment:"일정 이름",
+        allowNull:false,
       },
       startAt:{
         type:Sequelize.DATE,
-        allowNull:true,
-        defaultValue:null,
+        allowNull:false,
         comment:"일정 시작시간"
       },
       endAt:{
         type:Sequelize.DATE,
-        allowNull:true,
-        defaultValue:null,
+        allowNull:false,
         comment:"일정 종료시간(또는 정산 시작시간)"
       },
       createdAt: {
@@ -42,7 +42,6 @@ module.exports = {
         type: Sequelize.DATE
       },
       deletedAt: {
-        allowNull: true,
         type: Sequelize.DATE
       },
     });
