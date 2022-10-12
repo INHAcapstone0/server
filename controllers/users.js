@@ -22,7 +22,7 @@ exports.getAllUsers = async (req, res) => {
   const users = await User.findAll({
     where:condition,
     attributes:{ // 패스워드 정보는 제거 후 리턴
-      exclude:['password']
+      exclude:['password', 'temp_password']
     }
   })
   
@@ -40,7 +40,12 @@ exports.getUser = async (req, res) => {
     throw new BadRequestError('id를 입력해주세요.')
   }
 
-  const user = await User.findByPk(id)
+  const user = await User.findOne({
+    where:{id},
+    attributes:{ // 패스워드 정보는 제거 후 리턴
+      exclude:['password', 'temp_password']
+    }
+  })
   
   if(!user){
     throw new NotFoundError('유저가 존재하지 않습니다.')
@@ -131,6 +136,7 @@ exports.registerUserDeviceToken=async(req, res)=>{
   await verifyFCMToken(device_token)
     .catch(err => {
       console.log('validate failed')
+      console.stack(err)
       throw new BadRequestError('디바이스 토큰 정보를 올바르게 입력해주세요.')
     })
 
@@ -153,7 +159,7 @@ exports.registerUserDeviceToken=async(req, res)=>{
         },
         token: user.device_token
       })
-      result.msg="기존에 접속 중인 기기에서 로그아웃됩니다."
+      result.msg="기존에 접속 중인 기기에서 로그아웃되었습니다."
     })
     .catch(err => {
     })

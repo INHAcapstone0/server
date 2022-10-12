@@ -37,6 +37,10 @@ const login = async (req, res) => {
     if (!tempPwCompare){ // 임시 비밀번호와도 다르면
       throw new NotFoundError('비밀번호가 틀렸습니다.')
     }
+  }else{
+    await User.update({ temp_password: null },
+      { where: { id: user.id } }
+    )
   }
 
   const accessToken = jwt.sign(user);

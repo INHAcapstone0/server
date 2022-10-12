@@ -322,7 +322,7 @@ exports.test = async (req, res) => {
     console.log()
     //2. x,y, keyword()
     let { x, y } = result.data.documents[0].address
-    
+    ocr_result.store.cord={x, y}
     result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
       headers: {
         Authorization: process.env.KAKAO_API_KEY

@@ -4,19 +4,7 @@ const { Schedule, Participant, User, Alarm } = db;
 const Op = db.Sequelize.Op
 const {sendMulticastMessage} = require('../firebase')
 
-scheduleCreate = async (schedule) => {
-  
-  
-  // let end_alarm_list=[]
-  // let notApprovedUsers=[]
-
-  
-  // end_alarm_list.push({
-  //   user_id:user.id, 
-  //   alarm_type:'일정 종료', 
-  //   message:`${schedule.name} 일정이 종료되었습니다.`
-  // })
-
+const scheduleCreate = async (schedule) => {
 
   global['scheduleStart_' + schedule.id] = scheduler.scheduleJob(schedule.startAt, async function () {
     let fcm_token_list=[]
@@ -113,7 +101,7 @@ scheduleCreate = async (schedule) => {
   }.bind(null, schedule))
 }
 
-loadInitialScheduler = async () => {
+const loadInitialScheduler = async () => {
   const schedules = await Schedule.findAll({
     where: {
       startAt: {
@@ -127,12 +115,12 @@ loadInitialScheduler = async () => {
   }
 }
 
-createOrFixScheduler = async (schedule) => {
+const createOrFixScheduler = async (schedule) => {
   await deleteScheduler(schedule)
   await scheduleCreate(schedule)
 }
 
-deleteScheduler = async (schedule) => {
+const deleteScheduler = async (schedule) => {
   if (`scheduleStart_${schedule.id}` in global) { // 기존에 시작 스케줄러에 등록되어 있다면 scheduler cancel 후 삭제
     global[`scheduleStart_${schedule.id}`].cancel()
     delete global['scheduleStart_' + schedule.id]
