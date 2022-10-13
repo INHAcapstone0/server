@@ -56,6 +56,10 @@ module.exports = {
         type: Sequelize.STRING,
         comment: "상세주소"
       },
+      tel:{
+        type: Sequelize.STRING,
+        comment: "가게 전화번호"
+      },
       memo: {
         type: Sequelize.STRING,
         comment: "기타 사항"

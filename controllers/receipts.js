@@ -20,6 +20,7 @@ exports.createReceipt = async (req, res) => {
     memo,
     place,
     address,
+    tel,
     category
   } = req.body;
 
@@ -50,7 +51,7 @@ exports.createReceipt = async (req, res) => {
   }
 
   const receipt = await Receipt.create({
-    schedule_id, poster_id, payDate, total_price, memo, place, address, category
+    schedule_id, poster_id, payDate, total_price, memo, place, address, category, tel
   });
 
   const participants = await Participant.findAll({

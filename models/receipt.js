@@ -68,6 +68,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       comment: "상세주소"
     },
+    tel:{
+      type: DataTypes.STRING,
+      comment: "가게 전화번호"
+    },
     memo: {
       type: DataTypes.STRING,
       comment: "기타 사항"
