@@ -1,7 +1,7 @@
 'use strict';
 const bcrypt = require('bcrypt')
-const {v4} = require('uuid')
-const {toDate, toFullDate, toDate_deprecated} =require('../utils/modules')
+const { v4 } = require('uuid')
+const { toDate, toFullDate, toDate_deprecated } = require('../utils/modules')
 module.exports = {
   async up(queryInterface, Sequelize) {
     const now = new Date();
@@ -85,28 +85,28 @@ module.exports = {
       '2c4bca25-5011-486f-b95f-2d9c768d6b8a',
       '8c4399c1-ac71-45f3-a897-be0434b1b000'
     ]
-    let customUsers2=[
+    let customUsers2 = [
       {
-        name:'김유나',
-        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A50.jpeg',
+        name: '김유나',
+        img_url: 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A50.jpeg',
       },
       {
-        name:'이진성',
-        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A51.jpeg',
+        name: '이진성',
+        img_url: 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A51.jpeg',
       },
       {
-        name:'유은아',
-        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A52.jpeg',
+        name: '유은아',
+        img_url: 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A52.jpeg',
       },
       {
-        name:'이수아',
-        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A53.jpeg',
+        name: '이수아',
+        img_url: 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A53.jpeg',
       },
       {
-        name:'박지현',
-        img_url:'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A54.jpeg'
+        name: '박지현',
+        img_url: 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/user-profile/%E1%84%90%E1%85%A6%E1%84%89%E1%85%B3%E1%84%90%E1%85%B3%E1%84%8B%E1%85%B2%E1%84%8C%E1%85%A54.jpeg'
       }
-    ] 
+    ]
 
     const salt = await bcrypt.genSalt(10);
 
@@ -479,7 +479,159 @@ module.exports = {
       "createdAt": "2022-01-08T15:11:10.000Z",
       "updatedAt": "2022-01-08T15:11:10.000Z",
       "deletedAt": null
-    }]
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "카페",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725898365.jpg",
+      "total_price": 11700,
+      "place": "더벤티 인하대헤리움점",
+      "address": "인천 미추홀구 용정공원로83번길 49 1층 142호",
+      "tel": "0507-1388-9730",
+      "memo": "더벤티 3잔",
+      "payDate": "2022-01-01T19:01:10.000Z",
+      "createdAt": "2022-01-01T19:11:10.000Z",
+      "updatedAt": "2022-01-01T19:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "편의점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725864929.jpg",
+      "total_price": 10000,
+      "place": "CU 인하웅비재점",
+      "address": "인천 미추홀구 소성로 40 인하대학교기숙사",
+      "tel": "032-872-6103",
+      "memo": "편의점1",
+      "payDate": "2022-01-01T16:01:10.000Z",
+      "createdAt": "2022-01-01T16:11:10.000Z",
+      "updatedAt": "2022-01-01T16:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "대형마트",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725958796.jpg",
+      "total_price": 100000,
+      "place": "홈플러스 인하점",
+      "address": "인천 미추홀구 소성로 6",
+      "tel": "032-763-2080",
+      "memo": "대형마트1",
+      "payDate": "2022-01-01T17:01:10.000Z",
+      "createdAt": "2022-01-01T17:11:10.000Z",
+      "updatedAt": "2022-01-01T17:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "약국",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725885217.jpg",
+      "total_price": 12000,
+      "place": "인하사랑약국",
+      "address": "인천 미추홀구 인하로77번길 6",
+      "tel": "0507-1427-9094",
+      "memo": "약국1",
+      "payDate": "2022-01-01T18:01:10.000Z",
+      "createdAt": "2022-01-01T18:11:10.000Z",
+      "updatedAt": "2022-01-01T18:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "대형마트",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725938518.jpg",
+      "total_price": 200000,
+      "place": "이마트 동인천점",
+      "address": "인천 중구 인중로 134",
+      "tel": "032-451-1234",
+      "memo": "대형마트2",
+      "payDate": "2022-01-02T17:01:10.000Z",
+      "createdAt": "2022-01-02T17:11:10.000Z",
+      "updatedAt": "2022-01-02T17:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "대형마트",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725919599.jpg",
+      "total_price": 300000,
+      "place": "롯데마트 청라점",
+      "address": "인천 서구 청라커낼로 252",
+      "tel": "032-590-2500",
+      "memo": "대형마트3",
+      "payDate": "2022-01-03T17:01:10.000Z",
+      "createdAt": "2022-01-03T17:11:10.000Z",
+      "updatedAt": "2022-01-03T17:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "편의점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725803709.jpg",
+      "total_price": 30000,
+      "place": "GS25 이편한인하대역점",
+      "address": "인천 미추홀구 용정공원로83번길 43 (용현동 665-19)",
+      "tel": "",
+      "memo": "편의점3",
+      "payDate": "2022-01-03T16:01:10.000Z",
+      "createdAt": "2022-01-03T16:11:10.000Z",
+      "updatedAt": "2022-01-03T16:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "편의점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725784585.jpg",
+      "total_price": 40000,
+      "place": "GS25 용현SK뷰점",
+      "address": "인천 미추홀구 용정공원로 33",
+      "tel": "032-891-7233",
+      "memo": "편의점4",
+      "payDate": "2022-01-04T16:01:10.000Z",
+      "createdAt": "2022-01-04T16:11:10.000Z",
+      "updatedAt": "2022-01-04T16:11:10.000Z",
+      "deletedAt": null
+    },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "편의점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725745694.png",
+      "total_price": 50000,
+      "place": "세븐일레븐 인하대역점",
+      "address": "인천 미추홀구 독배로 311",
+      "tel": "032-887-0848",
+      "memo": "편의점5",
+      "payDate": "2022-01-05T16:01:10.000Z",
+      "createdAt": "2022-01-05T16:11:10.000Z",
+      "updatedAt": "2022-01-05T16:11:10.000Z",
+      "deletedAt": null
+    },
+
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "편의점",
+      "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/receipt-img/1665725849184.jpg",
+      "total_price": 20000,
+      "place": "CU 인하대학교점",
+      "address": "인천 미추홀구 인하로 77 (용현동)",
+      "tel": "032-876-0574",
+      "memo": "편의점2",
+      "payDate": "2022-01-02T16:01:10.000Z",
+      "createdAt": "2022-01-02T16:11:10.000Z",
+      "updatedAt": "2022-01-02T16:11:10.000Z",
+      "deletedAt": null
+    },
+    ]
 
 
     //참여자 정보에 test0 전부 넣을것
@@ -494,7 +646,7 @@ module.exports = {
             schedule_id: sampleId,
             poster_id: receipt.poster_id,
             payDate: toFullDate(receipt.payDate),
-            category:'기타',
+            category: '기타',
             total_price: parseInt(receipt.total_price),
             memo: receipt.memo,
             place: receipt.place,
@@ -510,12 +662,12 @@ module.exports = {
             poster_id: receipt.poster_id,
             payDate: toFullDate(receipt.payDate),
             total_price: parseInt(receipt.total_price),
-            category:receipt.category,
-            img_url:receipt.img_url,
+            category: receipt.category,
+            img_url: receipt.img_url,
             memo: receipt.memo,
             place: receipt.place,
-            address:receipt.address,
-            tel:receipt.tel,
+            address: receipt.address,
+            tel: receipt.tel,
             createdAt: new Date(),
             updatedAt: new Date(),
           })
@@ -586,7 +738,7 @@ module.exports = {
         id: receiptsIds[i],
         schedule_id: scheduleIds[Math.floor(i / 2)],
         poster_id: userIds[Math.floor(i / 2)],
-        category:'기타',
+        category: '기타',
         total_price: i * 1000000,
         createdAt: new Date(),
         updatedAt: new Date(),
