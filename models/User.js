@@ -16,9 +16,6 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Participant,{
         foreignKey:"participant_id",
       });
-      this.hasMany(models.Receipt,{
-        foreignKey:"poster_id",
-      });
       this.hasMany(models.Alarm,{
         foreignKey:"user_id",
       });

@@ -453,7 +453,7 @@ module.exports = {
     {
       "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
       "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
-      "category": "숙박업소",
+      "category": "숙박",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425708248.jpg",
       "total_price": 210000,
       "place": "레스케이프호텔",
@@ -468,7 +468,7 @@ module.exports = {
     {
       "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
       "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
-      "category": "숙박업소",
+      "category": "숙박",
       "img_url": "https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/1664425727692.jpg",
       "total_price": 160000,
       "place": "신라스테이 광화문",

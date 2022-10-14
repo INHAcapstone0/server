@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         User와 N:1
         ItemList와 1:N
       */
-      this.belongsTo(models.User, {
+      this.belongsTo(models.Participant, {
         foreignKey: "poster_id",
         onDelete: 'CASCADE'
       });

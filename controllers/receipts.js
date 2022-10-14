@@ -244,18 +244,22 @@ exports.deleteReceipt = async (req, res) => {
 exports.test = async (req, res) => {
   try {
     const filePath = path.join(__dirname + "/../" + req.file.path)
-    console.log(filePath)
     const api_url = process.env.CLOVA_URI
-    //1. file 읽기
+
     let form = new FormData();
-    form.append(
+
+    // 임시 저장된 파일을 읽어서 FormData에 file, message 항목 append
+    form.append(// file
       "file",
       fs.createReadStream(filePath)
     );
 
-    form.append(
+    form.append( // message
       "message",
-      JSON.stringify({ "images": [{ "format": "jpeg", "name": "sample" }], "requestId": "capstone", "version": "V2", "timestamp": 0 })
+      JSON.stringify({ 
+        "images": [{ "format": "jpeg", "name": "sample" }], 
+        "requestId": "capstone", "version": "V2", "timestamp": 0 
+      })
     )
 
     //2. CLOVA 전송
@@ -273,9 +277,9 @@ exports.test = async (req, res) => {
 
     let target_store = {}
 
-    let parceData = targetParceData.data.images[0].receipt.result
+    let clovaCVData = targetParceData.data.images[0].receipt.result
 
-    let { paymentInfo, storeInfo, subResults, totalPrice } = parceData
+    let { paymentInfo, storeInfo, subResults, totalPrice } = clovaCVData
 
     if (paymentInfo) {
       ocr_result.payDate = Object.assign({}, (paymentInfo?.date?.formatted || {}), (paymentInfo?.time?.formatted || {}))
@@ -291,7 +295,7 @@ exports.test = async (req, res) => {
       category:''
     }
 
-    fs.writeFileSync(__dirname+`/../data/${Date.now().toString()}_${ocr_result.store.name}.json`, JSON.stringify(parceData))
+    fs.writeFileSync(__dirname+`/../data/${Date.now().toString()}_${ocr_result.store.name}.json`, JSON.stringify(clovaCVData))
     if (storeInfo.tel) {
       ocr_result.store.tel = storeInfo.tel[0].formatted.value
     }
@@ -300,11 +304,13 @@ exports.test = async (req, res) => {
 
     if (subResults.length != 0) {
       subResults[0].items.forEach(r => {
-        ocr_result.items.push({
-          name: r.name.text,
-          count: parseInt(r.count?.formatted.value || '1'),
-          price: parseInt(r.price?.price.formatted.value || '0')
-        })
+        let name = r.name?.text || '정보 없음'
+        let count =  parseInt(r.count?.formatted?.value || r.count?.text || '1')
+        let price =  parseInt(r.price?.price?.formatted?.value || r.price?.price?.text || '0')
+        count=isNaN(count)?1:count
+        price=isNaN(price)?1:price
+  
+        ocr_result.items.push({name, count, price})
       })
     }
 
@@ -320,10 +326,10 @@ exports.test = async (req, res) => {
       }
     })
 
-    console.log()
+    console.log(result)
     //2. x,y, keyword()
     let { x, y } = result.data.documents[0].address
-    ocr_result.store.cord={x, y}
+    ocr_result.store.cord={ x, y }
     result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
       headers: {
         Authorization: process.env.KAKAO_API_KEY
@@ -332,7 +338,7 @@ exports.test = async (req, res) => {
         query: ocr_result.store.name,
         x,
         y,
-        radius: 200,
+        radius: 200, // 200m 내외로 검색
         sort: 'accuracy'
       }
     })
@@ -359,7 +365,6 @@ exports.test = async (req, res) => {
 
     fs.unlinkSync(__dirname + "/../" + req.file.path)
     return res.status(StatusCodes.OK).json({
-      parceData,
       data : ocr_result
     })
 
