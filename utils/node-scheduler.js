@@ -55,7 +55,7 @@ const scheduleCreate = async (schedule) => {
       })
     }
     } catch (error) {
-      console.stack(error)
+      console.log(error)
     }
     
 
@@ -89,7 +89,8 @@ const scheduleCreate = async (schedule) => {
         message:`${schedule.name} 일정이 종료되었습니다.`
       })
     })
-
+    try {
+      if (tokens.length!=0){
     sendMulticastMessage({
       notification:{
         "title": "일정 종료",
@@ -100,6 +101,9 @@ const scheduleCreate = async (schedule) => {
       },
       tokens:fcm_token_list
     })
+  }}catch(error){
+    console.log(error)
+  }
     
     await Alarm.bulkCreate(end_alarm_list)
     console.log(`${schedule.name} end at ${new Date()}`);

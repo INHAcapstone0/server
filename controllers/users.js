@@ -136,7 +136,6 @@ exports.registerUserDeviceToken=async(req, res)=>{
   await verifyFCMToken(device_token)
     .catch(err => {
       console.log('validate failed')
-      console.stack(err)
       throw new BadRequestError('디바이스 토큰 정보를 올바르게 입력해주세요.')
     })
 
