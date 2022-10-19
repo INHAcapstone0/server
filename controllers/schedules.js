@@ -96,6 +96,7 @@ exports.createSchedule = async (req, res) => {
       token_list.push(user.device_token)
     }
   })
+  console.log(token_list)
 
   if (token_list.legnth != 0) {
     await sendMulticastMessage({
