@@ -44,7 +44,7 @@ const scheduleCreate = async (schedule) => {
     try {
       if (tokens.length!=0){
       sendMulticastMessage({
-        noitfication:{
+        notification:{
           "title": "일정 시작",
           "body": `${schedule.name} 일정이 시작되었습니다!`
         },
@@ -91,7 +91,7 @@ const scheduleCreate = async (schedule) => {
     })
 
     sendMulticastMessage({
-      noitfication:{
+      notification:{
         "title": "일정 종료",
         "body": `${schedule.name} 일정이 종료되었습니다.`
       },

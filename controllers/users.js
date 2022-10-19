@@ -262,7 +262,7 @@ exports.test=async(req, res)=>{
   console.log(user)
   try{
     sendMulticastMessage({
-      noitfication: {
+      notification: {
         "title": "테스트메세지",
         "body": `테스트메세지 본문`
       },
