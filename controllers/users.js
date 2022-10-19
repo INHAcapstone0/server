@@ -257,7 +257,10 @@ exports.deleteUser = async (req, res) => {
 
 exports.test=async(req, res)=>{
   // 자기 자신에게 알람 보내기
-  let user=User.findByPk(req.user.id)
+  let user= await User.findByPk(req.user.id)
+
+  console.log(user)
+  try{
 
   sendUnicastMessage({
     noitfication:{
@@ -269,8 +272,10 @@ exports.test=async(req, res)=>{
     },
     token:user.device_token
   })
-
-  res.send('OK')
+  }catch(error){
+    console.log(error)
+  }
+  res.json(user)
 }
 
 
