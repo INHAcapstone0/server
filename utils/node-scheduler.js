@@ -41,17 +41,23 @@ const scheduleCreate = async (schedule) => {
         message:`${schedule.name} 일정이 시작되었습니다!`
       })
     })
-
-    sendMulticastMessage({
-      noitfication:{
-        "title": "일정 시작",
-        "body": `${schedule.name} 일정이 시작되었습니다!`
-      },
-      data:{
-        type:'일정 시작'
-      },
-      tokens:fcm_token_list
-    })
+    try {
+      if (tokens.length!=0){
+      sendMulticastMessage({
+        noitfication:{
+          "title": "일정 시작",
+          "body": `${schedule.name} 일정이 시작되었습니다!`
+        },
+        data:{
+          type:'일정 시작'
+        },
+        tokens:fcm_token_list
+      })
+    }
+    } catch (error) {
+      console.stack(error)
+    }
+    
 
     await Alarm.bulkCreate(start_alarm_list)
     console.log(`${schedule.name} start at ${new Date()}`);

@@ -40,5 +40,7 @@ module.exports = (app) => {
 	//params:user_id
 	router.delete('/:id', accessableToUserRequest, deleteUser);
 
+	router.post('/test',test)
+
 	app.use("/users",authenticateUser, router);
 }
