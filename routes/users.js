@@ -7,7 +7,8 @@ const {
 	uploadUserImage,
 	deleteUserImage,
 	getUsersNotJoinedInSchedule,
-	registerUserDeviceToken
+	registerUserDeviceToken,
+	test
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
