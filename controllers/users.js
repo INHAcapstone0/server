@@ -262,17 +262,17 @@ exports.test=async(req, res)=>{
   console.log(user)
   try{
 
-  sendUnicastMessage({
-    noitfication:{
-      "title": "테스트메세지",
-      "body": `테스트메세지 본문`
-    },
-    data:{
-      type:'테스트메세지'
-    },
-    token:user.device_token
-  })
-  }catch(error){
+    await sendUnicastMessage({
+      noitfication: {
+        "title": "테스트메세지",
+        "body": `테스트메세지 본문`
+      },
+      data: {
+        type: '테스트메세지'
+      },
+      token: user.device_token
+    })
+  } catch (error) {
     console.log(error)
   }
   res.json(user)
