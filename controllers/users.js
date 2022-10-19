@@ -4,7 +4,7 @@ const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../err
 const {User, Schedule, Participant} = db;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../utils/modules');
-const {verifyFCMToken, sendUnicastMessage}=require('../firebase')
+const {verifyFCMToken, sendUnicastMessage, sendMulticastMessage}=require('../firebase')
 
 exports.getAllUsers = async (req, res) => {
   // exceptMe는 자신을 제외하는 flag값 ('true'값만 인식함)
@@ -261,8 +261,7 @@ exports.test=async(req, res)=>{
 
   console.log(user)
   try{
-
-    await sendUnicastMessage({
+    sendMulticastMessage({
       noitfication: {
         "title": "테스트메세지",
         "body": `테스트메세지 본문`
@@ -270,7 +269,7 @@ exports.test=async(req, res)=>{
       data: {
         type: '테스트메세지'
       },
-      token: user.device_token
+      tokens: [user.device_token]
     })
   } catch (error) {
     console.log(error)
