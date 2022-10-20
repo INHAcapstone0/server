@@ -35,6 +35,10 @@ exports.createSchedule = async (req, res) => {
     throw new NotFoundError('소유자 id를 가진 유저가 존재하지 않습니다.')
   }
 
+  if (!Array.isArray(participants)) {
+    throw new BadRequestError('참여자 정보를 Array 형태로 입력하세요.')
+  }
+
   // 중복된 스케줄이 존재하면 created를 반환
   const [schedule, created] = await Schedule.findOrCreate({
     where: { owner_id, name },
@@ -53,27 +57,23 @@ exports.createSchedule = async (req, res) => {
   }]
 
   let alarm_list=[]
-
-  if (Array.isArray(participants)) {
-    participants.forEach(participant => {
-      participant_list.push({
-        participant_id: participant,
-        schedule_id: schedule.id
-      })
-
-      alarm_list.push({
-        user_id:participant, 
-        alarm_type:'초대', 
-        message:`${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`
-      })
+  
+  participants.forEach(participant => {
+    participant_list.push({
+      participant_id: participant,
+      schedule_id: schedule.id
     })
-  }else{
-    throw new BadRequestError('참여자 정보를 Array 형태로 입력하세요.')
-  }
+
+    alarm_list.push({
+      user_id:participant, 
+      alarm_type:'초대', 
+      message:`${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`
+    })
+  })
 
   await Participant.bulkCreate(participant_list)
 
-  if (alarm_list.length!=0){
+  if (alarm_list.length){
     await Alarm.bulkCreate(alarm_list)
   }
 
@@ -96,9 +96,8 @@ exports.createSchedule = async (req, res) => {
       token_list.push(user.device_token)
     }
   })
-  console.log(token_list)
 
-  if (token_list.legnth != 0) {
+  if (token_list.legnth) {
     await sendMulticastMessage({
       notification: {
         "title": "새 일정 초대",
@@ -328,4 +327,10 @@ exports.deleteSchedule = async (req, res) => {
   }
 };
 
+exports.test=async(req, res)=>{
 
+  let {id} = req.body
+
+  console.log(global[`scheduleStart_${id}`])
+  res.send('ok')
+ }

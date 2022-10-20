@@ -326,7 +326,18 @@ exports.test = async (req, res) => {
       }
     })
 
-    console.log(result)
+    if(!result.data.documents.legnth){//결과값이 존재하지 않는다면
+      var regex=/(([가-힣A-Za-z·\d~\-\.]{2,}(로|길).[\d]+)|([가-힣A-Za-z·\d~\-\.]+(읍|동)\s)[\d]+)/
+      result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
+      headers: {
+        Authorization: process.env.KAKAO_API_KEY
+      },
+      params: {
+        query: ocr_result.store.addresses.match(regex)[1]
+      }
+    })
+    }
+    console.log()
     //2. x,y, keyword()
     let { x, y } = result.data.documents[0].address
     ocr_result.store.cord={ x, y }
@@ -338,7 +349,7 @@ exports.test = async (req, res) => {
         query: ocr_result.store.name,
         x,
         y,
-        radius: 200, // 200m 내외로 검색
+        radius: 500, // 200m 내외로 검색
         sort: 'accuracy'
       }
     })

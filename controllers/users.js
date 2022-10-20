@@ -258,22 +258,18 @@ exports.test=async(req, res)=>{
   // 자기 자신에게 알람 보내기
   let user= await User.findByPk(req.user.id)
 
-  console.log(user)
+  let {notification, data} = req.body
+
   try{
     sendMulticastMessage({
-      notification: {
-        "title": "테스트메세지",
-        "body": `테스트메세지 본문`
-      },
-      data: {
-        type: '테스트메세지'
-      },
+      notification,
+      data,
       tokens: [user.device_token]
     })
   } catch (error) {
-    console.log(error)
+    throw new BadRequestError('메세지 전송에 실패했습니다. \n'+error.message)
   }
-  res.json(user)
+  res.send('전송 성공')
 }
 
 

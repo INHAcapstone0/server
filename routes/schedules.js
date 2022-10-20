@@ -1,4 +1,5 @@
 const {
+	test,
 	createSchedule,
 	getAllSchedules,
 	getSchedule,
@@ -31,5 +32,6 @@ module.exports = (app) => {
 	//params:schedule_id
 	router.delete('/:id', accessableToScheduleRequest, deleteSchedule);
 
+	router.post('/test',test)
 	app.use("/schedules",authenticateUser, router);
 }
