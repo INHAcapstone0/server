@@ -5,6 +5,7 @@ const {User, Schedule, Participant} = db;
 const Op = db.Sequelize.Op;
 const {isValidPassword, hashPassword}=require('../utils/modules');
 const {verifyFCMToken, sendUnicastMessage, sendMulticastMessage}=require('../firebase')
+const bcrypt = require('bcrypt')
 
 exports.getAllUsers = async (req, res) => {
   // exceptMe는 자신을 제외하는 flag값 ('true'값만 인식함)
@@ -272,6 +273,16 @@ exports.test=async(req, res)=>{
   res.send('전송 성공')
 }
 
+exports.passwordCheck=async(req, res)=>{
+  const {password} = req.body
+
+  const user = await User.findByPk(req.user.id)
+
+  console.log(user.password)
+  const isMatch = await bcrypt.compare(password, user.password)
+  
+  res.status(StatusCodes.OK).json({isMatch})
+}
 
 
 

@@ -8,7 +8,8 @@ const {
 	deleteUserImage,
 	getUsersNotJoinedInSchedule,
 	registerUserDeviceToken,
-	test
+	test,
+	passwordCheck
 }=require('../controllers/users');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -41,6 +42,7 @@ module.exports = (app) => {
 	//params:user_id
 	router.delete('/:id', accessableToUserRequest, deleteUser);
 
+	router.post('/password/check', passwordCheck)
 	router.post('/test',test)
 
 	app.use("/users",authenticateUser, router);
