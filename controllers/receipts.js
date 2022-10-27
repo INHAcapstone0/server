@@ -322,6 +322,7 @@ exports.test = async (req, res) => {
       })
     }
 
+    let failFlag=0
     //1. store.address로 x, y 구하기
     let result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
       headers: {
@@ -330,10 +331,14 @@ exports.test = async (req, res) => {
       params: {
         query: ocr_result.store.addresses
       }
+    }).then(res=>{ //결과값이 존재하지 않을 때 후처리로 맞춤법 교정 API 통과
+      if(!res.data.documents.length){
+        failFlag=1
+      }
+      return res
     })
 
-    if(!result.data.documents.legnth){//결과값이 존재하지 않는다면 맞춤법 검색 후처리 한번 해준 후에 넘겨주기
-      console.log(ocr_result.store.addresses)
+    if(failFlag){//결과값이 존재하지 않는다면 맞춤법 검색 후처리 한번 해준 후에 넘겨주기
       let modifiedAddress= await axios.get(process.env.NAVER_API_URL, {
         headers: {
           "X-NAVER-CLIENT-ID":process.env.X_NAVER_CLIENT_ID,
@@ -365,7 +370,6 @@ exports.test = async (req, res) => {
         throw new Error("카카오api 오류")
       })
     }
-    console.log(result.data)
 
     //2. x,y, keyword()
     // 주소검색결과 없으면 카카오맵API에 등록되지 않은 것으로 간주하고 넘겨버리기
@@ -391,8 +395,6 @@ exports.test = async (req, res) => {
       }
     })
 
-    console.log(result.data)
-
     if (result.data.documents.length != 0) { // keyword 검색 결과가 존재하지 않으면 넘기기
       result.data.documents.forEach(r => {
         if (r.phone.replace(/\-/g, '') == ocr_result.store.tel) {
@@ -404,12 +406,17 @@ exports.test = async (req, res) => {
         target_store = result.data.documents[0]
       }
 
-      ocr_result.store.category = target_store?.category_group_name || ''
+      if (target_store?.category_group_name){
+        ocr_result.store.category = target_store?.category_group_name
+      }else if(target_store?.category_name){
+        ocr_result.store.category = target_store?.category_name.split('>').at(-1).trim()
+      }else{
+        ocr_result.store.category =''
+      }
+
       ocr_result.store.name = target_store?.place_name || ocr_result.store.name
       ocr_result.store.addresses = target_store?.road_address_name || target_store?.address_name
     }
-    
-    console.log(ocr_result)
 
     fs.unlinkSync(__dirname + "/../" + req.file.path)
     return res.status(StatusCodes.OK).json({
