@@ -244,7 +244,7 @@ exports.deleteReceipt = async (req, res) => {
 exports.test = async (req, res) => {
   try {
     const filePath = path.join(__dirname + "/../" + req.file.path)
-    const api_url = process.env.CLOVA_URI
+    const api_url = process.env.PROCESS_SERVER_URI
 
     let form = new FormData();
 
@@ -254,20 +254,20 @@ exports.test = async (req, res) => {
       fs.createReadStream(filePath)
     );
 
-    form.append( // message
-      "message",
-      JSON.stringify({ 
-        "images": [{ "format": "jpeg", "name": "sample" }], 
-        "requestId": "capstone", "version": "V2", "timestamp": 0 
-      })
-    )
+    // form.append( // message
+    //   "message",
+    //   JSON.stringify({ 
+    //     "images": [{ "format": "jpeg", "name": "sample" }], 
+    //     "requestId": "capstone", "version": "V2", "timestamp": 0 
+    //   })
+    // )
 
     //2. CLOVA 전송
     const targetParceData = await axios
       .post(api_url, form, {
         headers: {
           ...form.getHeaders(),
-          'X-OCR-SECRET': process.env.X_OCR_SECRET,
+          // 'X-OCR-SECRET': process.env.X_OCR_SECRET,
         },
       })
 
@@ -316,6 +316,12 @@ exports.test = async (req, res) => {
 
     ocr_result.totalPrice = parseInt(totalPrice?.price?.formatted.value||'0')
 
+    if(!ocr_result.store.addresses){
+      return res.status(StatusCodes.OK).json({
+        data : ocr_result
+      })
+    }
+
     //1. store.address로 x, y 구하기
     let result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
       headers: {
@@ -326,19 +332,50 @@ exports.test = async (req, res) => {
       }
     })
 
-    if(!result.data.documents.legnth){//결과값이 존재하지 않는다면
-      var regex=/(([가-힣A-Za-z·\d~\-\.]{2,}(로|길).[\d]+)|([가-힣A-Za-z·\d~\-\.]+(읍|동)\s)[\d]+)/
-      result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
-      headers: {
-        Authorization: process.env.KAKAO_API_KEY
-      },
-      params: {
-        query: ocr_result.store.addresses.match(regex)[1]
+    if(!result.data.documents.legnth){//결과값이 존재하지 않는다면 맞춤법 검색 후처리 한번 해준 후에 넘겨주기
+      console.log(ocr_result.store.addresses)
+      let modifiedAddress= await axios.get(process.env.NAVER_API_URL, {
+        headers: {
+          "X-NAVER-CLIENT-ID":process.env.X_NAVER_CLIENT_ID,
+          "X-NAVER-CLIENT-SECRET":process.env.X_NAVER_CLIENT_SECRET
+        },
+        params: {
+          query: ocr_result.store.addresses
+        }
+      }).catch(err=>{
+        console.log("네이버api 오류")
+        throw new Error("네이버api 오류")
+      })
+      // var regex=/(([가-힣A-Za-z·\d~\-\.]{2,}(로|길).[\d]+)|([가-힣A-Za-z·\d~\-\.]+(읍|동)\s)[\d]+)/
+      
+      if(!modifiedAddress.data.errata){ //맞춤법 교정 결과 또한 일치하면 그대로 response 보내기
+        return res.status(StatusCodes.OK).json({
+          data : ocr_result
+        })
       }
-    })
+      result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
+        headers: {
+          Authorization: process.env.KAKAO_API_KEY
+        },
+        params: {
+          query: modifiedAddress.data.errata
+        }
+      }).catch(err=>{
+        console.log("카카오api 오류")
+        throw new Error("카카오api 오류")
+      })
     }
-    console.log()
+    console.log(result.data)
+
     //2. x,y, keyword()
+    // 주소검색결과 없으면 카카오맵API에 등록되지 않은 것으로 간주하고 넘겨버리기
+    if(!result.data.documents[0].address){
+      ocr_result.store.name = ocr_result.store.name
+      return res.status(StatusCodes.OK).json({
+        data : ocr_result
+      })
+    }
+
     let { x, y } = result.data.documents[0].address
     ocr_result.store.cord={ x, y }
     result = await axios.get('https://dapi.kakao.com/v2/local/search/keyword.json', {
