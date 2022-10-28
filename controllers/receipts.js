@@ -180,6 +180,7 @@ exports.updateReceipt = async (req, res) => {
 exports.uploadReceiptImage = async (req, res) => {
   const { id } = req.params;
 
+  
   const img_url = req.file.location
 
   if (!img_url) {

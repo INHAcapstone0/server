@@ -6,11 +6,13 @@ let s3 = new AWS.S3();
 
 let multer = require("multer");
 let multerS3 = require('multer-s3');
+
 let uploadS3 = multer({
 	storage: multerS3({
 		s3: s3,
 		bucket: "capstone-storage-server",
 		key: function (req, file, next) {
+			console.log(file.originalname)
 			let extension = path.extname(file.originalname);
 			next(null, file.fieldname + '/' + Date.now().toString() + extension)
 		},

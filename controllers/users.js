@@ -177,6 +177,9 @@ exports.registerUserDeviceToken=async(req, res)=>{
 exports.uploadUserImage=async(req, res)=>{
   const {id} = req.user;
 
+  console.log(req.user_profile)
+  
+
   const img_url=req.file.location
 
   if(!img_url){
