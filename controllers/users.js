@@ -7,6 +7,8 @@ const {isValidPassword, hashPassword}=require('../utils/modules');
 const {verifyFCMToken, sendUnicastMessage, sendMulticastMessage}=require('../firebase')
 const bcrypt = require('bcrypt')
 
+const {deleteS3} = require('../middleware/s3')
+
 exports.getAllUsers = async (req, res) => {
   // exceptMe는 자신을 제외하는 flag값 ('true'값만 인식함)
   const { name, exceptMe } = req.query;

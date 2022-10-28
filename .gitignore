@@ -3,6 +3,7 @@ db_config.js
 .env
 /sql
 test.js
+test2.js
 test.py
 config.json
 dump.rdb

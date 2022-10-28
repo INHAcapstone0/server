@@ -254,14 +254,6 @@ exports.test = async (req, res) => {
       fs.createReadStream(filePath)
     );
 
-    // form.append( // message
-    //   "message",
-    //   JSON.stringify({ 
-    //     "images": [{ "format": "jpeg", "name": "sample" }], 
-    //     "requestId": "capstone", "version": "V2", "timestamp": 0 
-    //   })
-    // )
-
     //2. CLOVA 전송
     const targetParceData = await axios
       .post(api_url, form, {
@@ -322,6 +314,7 @@ exports.test = async (req, res) => {
       })
     }
 
+    console.log(ocr_result)
     let failFlag=0
     //1. store.address로 x, y 구하기
     let result = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
@@ -337,7 +330,7 @@ exports.test = async (req, res) => {
       }
       return res
     })
-
+    console.log(result.data)
     if(failFlag){//결과값이 존재하지 않는다면 맞춤법 검색 후처리 한번 해준 후에 넘겨주기
       let modifiedAddress= await axios.get(process.env.NAVER_API_URL, {
         headers: {
@@ -370,7 +363,7 @@ exports.test = async (req, res) => {
         throw new Error("카카오api 오류")
       })
     }
-
+    
     //2. x,y, keyword()
     // 주소검색결과 없으면 카카오맵API에 등록되지 않은 것으로 간주하고 넘겨버리기
     if(!result.data.documents[0].address){
@@ -417,6 +410,7 @@ exports.test = async (req, res) => {
       ocr_result.store.name = target_store?.place_name || ocr_result.store.name
       ocr_result.store.addresses = target_store?.road_address_name || target_store?.address_name
     }
+    console.log(result)
 
     fs.unlinkSync(__dirname + "/../" + req.file.path)
     return res.status(StatusCodes.OK).json({
