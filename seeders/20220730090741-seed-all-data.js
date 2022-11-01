@@ -794,7 +794,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '초대',
         message: '관리자 님이 제주도 여행 일정에 당신을 초대했습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 60)),
         updatedAt: new Date(),
       },
       {
@@ -802,7 +802,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 시작',
         message: '관리자 님의 제주도 여행 일정이 시작되었습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 50)),
         updatedAt: new Date(),
       },
       {
@@ -810,7 +810,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 시작',
         message: '관리자 님의 제주도 여행 일정이 시작되었습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now),
         updatedAt: new Date(),
       },
       {
@@ -818,7 +818,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 종료',
         message: '관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 30)),
         updatedAt: new Date(),
       },
       {
@@ -826,7 +826,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '일정 종료',
         message: '관리자 님의 제주도 여행 일정이 종료되었습니다. 정산 내역을 확인해주세요!',
-        createdAt: new Date(),
+        createdAt: new Date(now),
         updatedAt: new Date(),
       },
       {
@@ -834,7 +834,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '영수증 업로드',
         message: '테스트유저0 님이 제주도 여행 일정에 영수증을 업로드하였습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 40)),
         updatedAt: new Date(),
       },
       {
@@ -842,7 +842,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '정산 확인 요청',
         message: '테스트유저0 님이 30000원 정산 확인 요청을 보냈습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 20)),
         updatedAt: new Date(),
       },
       {
@@ -850,7 +850,7 @@ module.exports = {
         user_id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         alarm_type: '정산 확인 완료',
         message: '관리자 님이 30000원 정산 확인을 완료하였습니다.',
-        createdAt: new Date(),
+        createdAt: new Date(now.setMinutes(now.getMinutes() + 10)),
         updatedAt: new Date(),
       },
     ]

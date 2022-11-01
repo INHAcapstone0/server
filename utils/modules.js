@@ -29,5 +29,15 @@ module.exports = {
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt)
     return password;
-  }
+  },
+  toYYYYMMDDhhmmss: (d)=> {
+    function pad(n) { return n<10 ? "0"+n : n }
+    d=new Date()
+    return d.getFullYear()+"-"+
+    pad(d.getMonth()+1)+"-"+
+    pad(d.getDate())+" "+
+    pad(d.getHours())+":"+
+    pad(d.getMinutes())+":"+
+    pad(d.getSeconds())
+}
 }

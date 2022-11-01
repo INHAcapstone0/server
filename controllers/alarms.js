@@ -3,6 +3,7 @@ const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
 const Alarm = db.Alarm;
 const Op = db.Sequelize.Op;
+const {toYYYYMMDDhhmmss} = require('../utils/modules')
 
 exports.createAlarm = async (req, res) => {
   const {user_id, alarm_type, message}=req.body
@@ -21,7 +22,7 @@ exports.createAlarm = async (req, res) => {
 exports.getAllAlarms = async (req, res) => {
   const { alarm_type , user_id } = req.query;
   let condition={}
-
+  let result = []
   if(alarm_type){
     condition.alarm_type=alarm_type
   }
@@ -31,7 +32,8 @@ exports.getAllAlarms = async (req, res) => {
   }
 
   const alarms= await Alarm.findAll({
-      where:condition
+    where:condition,
+    order: [['createdAt', 'DESC']],
   })
 
   if (!alarms.length) {

@@ -133,7 +133,10 @@ exports.getAllReceipts = async (req, res) => {
 
   condition.total_price = { [Op.between]: [min, max] }
 
-  const receipts = await Receipt.findAll({ where: condition })
+  const receipts = await Receipt.findAll({ 
+    where: condition,
+    order: [['createdAt', 'DESC']],
+  })
   if (!receipts.length) {
     throw new NotFoundError('영수증이 존재하지 않습니다.')
   }
