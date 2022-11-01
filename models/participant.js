@@ -15,21 +15,6 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey:"schedule_id",
         onDelete: 'CASCADE'
       });
-      this.hasMany(models.Settlement,{
-        foreignKey:"schedule_id",
-        sourceKey:"schedule_id",
-        onDelete: 'CASCADE'
-      })
-      this.hasMany(models.Settlement,{
-        foreignKey:"sender_id",
-        sourceKey:"participant_id",
-        onDelete: 'CASCADE'
-      })
-      this.hasMany(models.Settlement,{
-        foreignKey:"receiver_id",
-        sourceKey:"participant_id",
-        onDelete: 'CASCADE'
-      })
     }
   };
   Participant.init({

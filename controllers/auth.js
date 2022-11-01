@@ -293,6 +293,13 @@ const issueTempPassword = async(req, res)=>{
   res.status(StatusCodes.OK).json({msg : "입력하신 이메일로 임시 비밀번호를 전송하였습니다."});
 }
 
+const test = async(req, res)=>{
+  console.log(req.body)
+  console.log(req.query)
+  console.log('called')
+  res.send('ok')
+}
+
 module.exports = {
-  login, register, checkName, checkEmail, refresh, authMail, logout, issueTempPassword
+  login, register, checkName, checkEmail, refresh, authMail, logout, issueTempPassword, test
 }

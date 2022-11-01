@@ -7,19 +7,21 @@ module.exports = (sequelize, DataTypes) => {
       Schedule과 N:1
     */
     static associate(models) {
-      this.belongsTo(models.Participant,{
+      this.belongsTo(models.Schedule,{
         foreignKey:"schedule_id",
-        targetKey:"schedule_id",
+        targetKey:"id",
         onDelete:'CASCADE'
       });
-      this.belongsTo(models.Participant,{
+      this.belongsTo(models.User,{
         foreignKey:"sender_id",
-        targetKey:"participant_id",
+        as: "sender",
+        targetKey:"id",
         onDelete:'CASCADE'
       });
-      this.belongsTo(models.Participant,{
+      this.belongsTo(models.User,{
         foreignKey:"receiver_id",
-        targetKey:"participant_id",
+        as: "receiver",
+        targetKey:"id",
         onDelete:'CASCADE'
       });
     }
@@ -36,8 +38,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       comment:"정산 대상 스케줄 ID",
       references: {
-        model: 'participants',
-        key: 'schedule_id'
+        model: 'schedules',
+        key: 'id'
       },
     },
     sender_id:{
@@ -45,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       comment:"정산액 입금자",
       references: {
-        model: 'participants',
-        key: 'participant_id'
+        model: 'users',
+        key: 'id'
       },
       onDelete: 'CASCADE'
     },
@@ -55,8 +57,8 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       comment:"정산액 수급자",
       references: {
-        model: 'participants',
-        key: 'participant_id'
+        model: 'users',
+        key: 'id'
       },
       onDelete: 'CASCADE'
     },

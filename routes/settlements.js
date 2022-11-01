@@ -5,7 +5,8 @@ const {
 	deleteSettlement,
 	getAllSettlements,
 	getSettlement,
-	settlementCheckRequest
+	settlementCheckRequest,
+	getSettlementsOfSchedule
 } = require('../controllers/settlements');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -25,6 +26,8 @@ module.exports = (app) => {
 	router.put('/restore/:id', accessableToSettlementRequest, restoreSettlement)
 
 	router.delete('/:id', accessableToSettlementRequest, deleteSettlement)
+
+	router.get('/bySchedule/:id', getSettlementsOfSchedule)
 
 	app.use('/settlements', authenticateUser, router)
 }

@@ -19,6 +19,16 @@ module.exports = (sequelize, DataTypes) => {
       this.hasMany(models.Alarm,{
         foreignKey:"user_id",
       });
+      this.hasMany(models.Settlement,{
+        foreignKey:"sender_id",
+        sourceKey:"id",
+        onDelete: 'CASCADE'
+      })
+      this.hasMany(models.Settlement,{
+        foreignKey:"receiver_id",
+        sourceKey:"id",
+        onDelete: 'CASCADE'
+      })
     }
   };
   User.init({

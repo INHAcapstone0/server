@@ -14,8 +14,8 @@ module.exports = {
         comment:"정산 대상 스케줄 ID",
         onDelete:'CASCADE',
         references: {
-          model: 'participants',
-          key: 'schedule_id'
+          model: 'schedules',
+          key: 'id'
         },
         onDelete: 'CASCADE'
       },
@@ -25,8 +25,8 @@ module.exports = {
         comment:"정산액 입금자",
         onDelete:'CASCADE',
         references: {
-          model: 'participants',
-          key: 'participant_id'
+          model: 'users',
+          key: 'id'
         },
         onDelete: 'CASCADE'
       },
@@ -36,8 +36,8 @@ module.exports = {
         comment:"정산액 수급자",
         onDelete:'CASCADE',
         references: {
-          model: 'participants',
-          key: 'participant_id'
+          model: 'users',
+          key: 'id'
         },
         onDelete: 'CASCADE'
       },

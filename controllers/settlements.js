@@ -1,8 +1,8 @@
 const db = require('../models')
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const {Settlement, Schedule, User, Alarm} = db;
-const Op = db.Sequelize.Op
+const {Settlement, Schedule, User, Alarm, Participant, Sequelize} = db;
+const Op = Sequelize.Op
 const { toDate, isValidDate } = require('../utils/modules')
 const {sendUnicastMessage}= require('../firebase')
 
@@ -140,6 +140,27 @@ exports.getSettlement = async (req, res) => {
 
   res.status(StatusCodes.OK).json(settlement)
 };
+
+exports.getSettlementsOfSchedule=async(req, res)=>{
+  let {id} = req.params
+
+  const settlements = await Schedule.findOne({
+    where:{id},
+    include:[{
+      model:Settlement,
+      include:[{
+        model:User,
+        as:"sender",
+        attributes:['name','img_url']
+      },{
+        model:User,
+        as:"receiver",
+        attributes:['name','img_url']
+      }],
+    }]
+  })
+  res.status(StatusCodes.OK).json(settlements)
+}
 
 exports.updateSettlement = async (req, res) => {
   const { id } = req.params;
