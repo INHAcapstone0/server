@@ -5,7 +5,7 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const { Participant, Receipt} = db;
 const { Op } = db.Sequelize;
 
-exports.start = async (schedule_id) => {
+exports.startSettle = async (schedule_id) => {
   let data=[]
 
   await Participant.findAll({
@@ -19,7 +19,6 @@ exports.start = async (schedule_id) => {
     })
     return result
   })
-
   
   await Receipt.findAll({
     where : {schedule_id}
@@ -128,7 +127,6 @@ exports.start = async (schedule_id) => {
     }
   }
   
-
   return result
 }
 

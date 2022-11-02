@@ -1,8 +1,9 @@
 const scheduler = require('node-schedule')
 const db = require('../models')
-const { Schedule, Participant, User, Alarm } = db;
+const { Schedule, Participant, User, Alarm , Settlement} = db;
 const Op = db.Sequelize.Op
 const { sendMulticastMessage } = require('../firebase')
+const {startSettle} = require('../utils/settle')
 
 const scheduleCreate = async (schedule) => {
 
@@ -39,7 +40,8 @@ const scheduleCreate = async (schedule) => {
         start_alarm_list.push({
           user_id: user.id,
           alarm_type: '일정 시작',
-          message: `${schedule.name} 일정이 시작되었습니다!`
+          message: `${schedule.name} 일정이 시작되었습니다!`,
+          data:schedule.id
         })
       })
       try {
@@ -86,7 +88,8 @@ const scheduleCreate = async (schedule) => {
         end_alarm_list.push({
           user_id: user.id,
           alarm_type: '일정 종료',
-          message: `${schedule.name} 일정이 종료되었습니다.`
+          message: `${schedule.name} 일정이 종료되었습니다.`,
+          data:schedule.id
         })
       })
       try {
@@ -107,6 +110,23 @@ const scheduleCreate = async (schedule) => {
       }
 
       await Alarm.bulkCreate(end_alarm_list)
+
+      let settleList = []
+
+      await startSettle(schedule.id)
+        .then(settleData => {
+          settleData.forEach(s => {
+            settleList.push({
+              schedule_id: id,
+              sender_id: s.sender,
+              receiver_id: s.receiver,
+              amount: s.amount
+            })
+          })
+        })
+
+      await Settlement.bulkCreate(settleList)
+
       console.log(`${schedule.name} end at ${new Date()}`);
       delete global['scheduleEnd_' + schedule.id]
     }.bind(null, schedule))

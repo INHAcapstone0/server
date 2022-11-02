@@ -34,6 +34,10 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       comment: "알람 내용 수량"
     },
+    data:{
+      type: DataTypes.STRING,
+      comment: "알람 추가 데이터"
+    }
     // checked: {
     //   type: DataTypes.BOOLEAN,
     //   allowNull:false,

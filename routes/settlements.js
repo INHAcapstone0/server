@@ -27,7 +27,7 @@ module.exports = (app) => {
 
 	router.delete('/:id', accessableToSettlementRequest, deleteSettlement)
 
-	router.get('/bySchedule/:id', getSettlementsOfSchedule)
+	router.get('/custom/mine', getSettlementsOfSchedule)
 
 	app.use('/settlements', authenticateUser, router)
 }

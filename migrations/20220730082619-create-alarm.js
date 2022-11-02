@@ -34,6 +34,10 @@ module.exports = {
       //   defaultValue: false,
       //   comment: "알람 체크 여부",
       // },
+      data:{
+        type: Sequelize.STRING,
+        comment: "알람 추가 데이터"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

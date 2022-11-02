@@ -4,7 +4,8 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const {Settlement, Schedule, User, Alarm, Participant, Sequelize} = db;
 const Op = Sequelize.Op
 const { toDate, isValidDate } = require('../utils/modules')
-const {sendUnicastMessage}= require('../firebase')
+const {sendUnicastMessage}= require('../firebase');
+const settlements = require('../routes/settlements');
 
 exports.createSettlement = async (req, res) => {
   const {schedule_id, sender_id, receiver_id, amount}=req.body
@@ -142,23 +143,42 @@ exports.getSettlement = async (req, res) => {
 };
 
 exports.getSettlementsOfSchedule=async(req, res)=>{
-  let {id} = req.params
-
-  const settlements = await Schedule.findOne({
-    where:{id},
+  let {id} = req.user
+  console.log(id)
+  const settlements = await Schedule.findAll({
     include:[{
+      model:Participant,
+      where: {
+        participant_id:id
+      },
+      attributes:[]
+    },{
       model:Settlement,
-      include:[{
-        model:User,
-        as:"sender",
-        attributes:['name','img_url']
-      },{
-        model:User,
-        as:"receiver",
-        attributes:['name','img_url']
-      }],
+      where:{
+        [Op.or]:[{
+          sender_id:id
+        },{
+          receiver_id:id
+        }]
+      }
     }]
   })
+  // const settlements = await Schedule.findAll({
+  //   where:{id},
+  //   include:[{
+  //     model:Settlement,
+  //     include:[{
+  //       model:User,
+  //       as:"sender",
+  //       attributes:['name','img_url']
+  //     },{
+  //       model:User,
+  //       as:"receiver",
+  //       attributes:['name','img_url']
+  //     }],
+  //   }]c
+  // })
+
   res.status(StatusCodes.OK).json(settlements)
 }
 

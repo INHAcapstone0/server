@@ -67,7 +67,8 @@ exports.createSchedule = async (req, res) => {
     alarm_list.push({
       user_id:participant, 
       alarm_type:'초대', 
-      message:`${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`
+      message:`${user.name}님이 "${name}" 일정에 당신을 초대했습니다.`,
+      data:schedule.id
     })
   })
 
