@@ -17,7 +17,7 @@ module.exports = (app) => {
 
 	router.get('/:id', getAlarm)
 
-	router.patch('/:id', accessableToAlarmRequest, updateAlarm)
+	// router.patch('/:id', accessableToAlarmRequest, updateAlarm)
 
 	router.put('/restore/:id', restoreAlarm)
 

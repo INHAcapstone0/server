@@ -1,7 +1,8 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
-const { BadRequestError, NotFoundError } = require('../errors')
-const Item = db.Receipt;
+const { BadRequestError, NotFoundError } = require('../errors');
+const { database } = require('firebase-admin');
+const {Item} = db;
 const Op = db.Sequelize.Op;
 
 exports.createItem = async (req, res) => {
@@ -18,8 +19,8 @@ exports.createItem = async (req, res) => {
   }
 
   if(price){
-    if(price<0 || price>100){
-      throw new BadRequestError('단가를 0과 100 사이의 값으로 지정해주세요.')
+    if(price<0 || price>2000000){
+      throw new BadRequestError('단가를 0과 2000000 사이의 값으로 지정해주세요.')
     }
   }
   
@@ -28,6 +29,35 @@ exports.createItem = async (req, res) => {
   });
 
   res.status(StatusCodes.CREATED).json(item)
+}
+
+exports.createItems=async(req, res)=>{
+  const data = req.body
+
+  if(!Array.isArray(data)){
+    throw new BadRequestError('영수증 하위 항목을 배열로 보내세요.')
+  }
+
+  data.forEach(d=>{
+    if (!d.receipt_id) {
+      throw new BadRequestError('영수증 id를 필수로 입력해야 합니다.')
+    }
+  
+    if(d.quantity){
+      if(d.quantity<0 || d.quantity>100){
+        throw new BadRequestError('수량을 0과 100 사이의 값으로 지정해주세요.')
+      }
+    }
+  
+    if(d.price){
+      if(d.price<0 || d.price>100){
+        throw new BadRequestError('단가를 0과 100 사이의 값으로 지정해주세요.')
+      }
+    }
+  })
+
+  const items = Item.bulkCreate(data)
+  res.status(StatusCodes.CREATED).json(items)
 }
 
 exports.getAllItems = async (req, res) => {

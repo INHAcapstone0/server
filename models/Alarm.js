@@ -34,12 +34,12 @@ module.exports = (sequelize, DataTypes) => {
       allowNull:false,
       comment: "알람 내용 수량"
     },
-    checked: {
-      type: DataTypes.BOOLEAN,
-      allowNull:false,
-      defaultValue: false,
-      comment: "알람 체크 여부",
-    }
+    // checked: {
+    //   type: DataTypes.BOOLEAN,
+    //   allowNull:false,
+    //   defaultValue: false,
+    //   comment: "알람 체크 여부",
+    // }
   },
     {
       sequelize,

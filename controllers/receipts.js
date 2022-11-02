@@ -2,14 +2,14 @@ const { toDate, isValidDate, toFullDate } = require('../utils/modules');
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors');
-const { Receipt, Participant, User, Alarm } = db;
+const { Receipt, Participant, User, Alarm,Item } = db;
 const Op = db.Sequelize.Op;
 const { sendMulticastMessage } = require('../firebase')
 const fs = require('fs')
 const FormData = require("form-data");
 const path = require('path')
 const axios = require('axios')
-const { deleteS3 } = require('../middleware/s3')
+const { deleteS3 } = require('../middleware/s3');
 
 exports.createReceipt = async (req, res) => {
   let {
@@ -21,7 +21,8 @@ exports.createReceipt = async (req, res) => {
     place,
     address,
     tel,
-    category
+    category,
+    items
   } = req.body;
 
   if (!schedule_id || !poster_id) {
@@ -29,9 +30,9 @@ exports.createReceipt = async (req, res) => {
   }
 
   if (payDate) {
-    payDate = toFullDate(payDate);
+    payDate = toDate(payDate);
     if (!isValidDate(payDate)) {
-      throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+      throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmm]으로 입력하세요.')
     }
   }
 
@@ -53,6 +54,31 @@ exports.createReceipt = async (req, res) => {
   const receipt = await Receipt.create({
     schedule_id, poster_id, payDate, total_price, memo, place, address, category, tel
   });
+
+  if(items){
+    if(!Array.isArray(items)){
+      throw new BadRequestError('영수증 하위 항목을 배열로 보내세요.')
+    }else{
+      items.forEach(item=>{
+        item.receipt_id = receipt.id
+    
+        if(!item.name){
+          throw new BadRequestError('하위 항목의 이름을 지정해주세요.')
+        }
+        if(item.quantity){
+          if(Number.isInteger(item.quantity)&&(item.quantity<0 || item.quantity>100)){
+            throw new BadRequestError('수량을 0과 100 사이의 값으로 지정해주세요.')
+          }
+        }
+        if(item.price){
+          if(Number.isInteger(item.price)&&(item.price<0 || item.price>2000000)){
+            throw new BadRequestError('단가를 0과 2000000 사이의 값으로 지정해주세요.')
+          }
+        }
+      })
+      await Item.bulkCreate(items)
+    }
+  }
 
   const participants = await Participant.findAll({
     where: { schedule_id }
@@ -90,7 +116,7 @@ exports.createReceipt = async (req, res) => {
     }
   })
 
-  if (token_list.legnth != 0) {
+  if (token_list.legnth) {
     await sendMulticastMessage({
       notification: {
         "title": '영수증 업로드',
@@ -165,7 +191,7 @@ exports.updateReceipt = async (req, res) => {
   }
 
   if (!isValidDate(payDate)) {
-    throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmmss]으로 입력하세요.')
+    throw new BadRequestError('구매 일자를 유효한 타입 [YYYYMMDDhhmm]으로 입력하세요.')
   }
 
   const result = await Receipt.update({

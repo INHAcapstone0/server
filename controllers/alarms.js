@@ -55,25 +55,25 @@ exports.getAlarm = async (req, res) => {
   res.status(StatusCodes.OK).json(alarm)
 };
 
-exports.updateAlarm = async (req, res) => {
-  const { id } = req.params;
+// exports.updateAlarm = async (req, res) => {
+//   const { id } = req.params;
 
-  if (!id ) {
-    throw new BadRequestError('알람 id를 필수로 입력해야 합니다.')
-  }
+//   if (!id ) {
+//     throw new BadRequestError('알람 id를 필수로 입력해야 합니다.')
+//   }
 
-  const result = await Alarm.update({
-    checked:true
-  }, {
-    where: { id }
-  })
+//   const result = await Alarm.update({
+//     checked:true
+//   }, {
+//     where: { id }
+//   })
 
-  if (result == 1) {
-    res.status(StatusCodes.OK).json({ msg: `알람이 성공적으로 업데이트되었습니다.` })
-  } else {
-    throw new NotFoundError('업데이트할 알람 존재하지 않습니다.')
-  }
-};
+//   if (result == 1) {
+//     res.status(StatusCodes.OK).json({ msg: `알람이 성공적으로 업데이트되었습니다.` })
+//   } else {
+//     throw new NotFoundError('업데이트할 알람 존재하지 않습니다.')
+//   }
+// };
 
 exports.restoreAlarm = async (req, res) => {
   const { id } = req.params;

@@ -28,12 +28,12 @@ module.exports = {
         allowNull:false,
         comment: "알람 내용 수량"
       },
-      checked: {
-        type: Sequelize.BOOLEAN,
-        allowNull:false,
-        defaultValue: false,
-        comment: "알람 체크 여부",
-      },
+      // checked: {
+      //   type: Sequelize.BOOLEAN,
+      //   allowNull:false,
+      //   defaultValue: false,
+      //   comment: "알람 체크 여부",
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
