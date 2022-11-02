@@ -1,4 +1,5 @@
 const { StatusCodes } = require("http-status-codes")
+const axios = require('axios')
 
 exports.kakoAPI  =async(req, res)=>{
   let {query} = req.query
@@ -12,6 +13,5 @@ exports.kakoAPI  =async(req, res)=>{
       sort: 'accuracy'
     }
   })
-
-  res.status(StatusCodes.OK).json(result)
+  res.status(StatusCodes.OK).json(result.data)
 }
