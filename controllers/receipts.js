@@ -271,7 +271,7 @@ exports.deleteReceipt = async (req, res) => {
   }
 };
 
-exports.test = async (req, res) => {
+exports.receiptImageParce = async (req, res) => {
   try {
     const filePath = path.join(__dirname + "/../" + req.file.path)
     const api_url = process.env.PROCESS_SERVER_URI
@@ -318,6 +318,8 @@ exports.test = async (req, res) => {
     }
 
     fs.writeFileSync(__dirname+`/../data/${Date.now().toString()}_${ocr_result.store.name}.json`, JSON.stringify(clovaCVData))
+
+    console.log(__dirname+`/../data/${Date.now().toString()}_${ocr_result.store.name}.json`)
     if (storeInfo.tel) {
       ocr_result.store.tel = storeInfo.tel[0].formatted.value
     }
@@ -388,12 +390,14 @@ exports.test = async (req, res) => {
         params: {
           query: modifiedAddress.data.errata
         }
-      }).catch(err=>{
+      })
+      .catch(err=>{
         console.log("카카오api 오류")
         throw new Error("카카오api 오류")
       })
+
+      console.log(result.data)
     }
-    
     //2. x,y, keyword()
     // 주소검색결과 없으면 카카오맵API에 등록되지 않은 것으로 간주하고 넘겨버리기
     if(!result.data.documents[0].address){
@@ -417,7 +421,7 @@ exports.test = async (req, res) => {
         sort: 'accuracy'
       }
     })
-
+    console.log(result.data)
     if (result.data.documents.length != 0) { // keyword 검색 결과가 존재하지 않으면 넘기기
       result.data.documents.forEach(r => {
         if (r.phone.replace(/\-/g, '') == ocr_result.store.tel) {
@@ -439,8 +443,8 @@ exports.test = async (req, res) => {
 
       ocr_result.store.name = target_store?.place_name || ocr_result.store.name
       ocr_result.store.addresses = target_store?.road_address_name || target_store?.address_name
+      ocr_result.store.tel = target_store?.phone || ocr_result.store.tel
     }
-    console.log(result)
 
     fs.unlinkSync(__dirname + "/../" + req.file.path)
     return res.status(StatusCodes.OK).json({
@@ -453,4 +457,13 @@ exports.test = async (req, res) => {
     fs.unlinkSync(__dirname + "/../" + req.file.path)
     throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
   }
+}
+
+exports.test = async(req, res)=>{
+  if(req.file){
+    console.log('파일 발견')
+    console.log(req.file.path)
+  }
+
+  res.send('ok')
 }

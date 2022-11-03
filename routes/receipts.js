@@ -6,6 +6,7 @@ const {
 	restoreReceipt,
 	deleteReceipt,
 	uploadReceiptImage,
+	receiptImageParce,
 	test
 } = require('../controllers/receipts');
 var router = require('express').Router();
@@ -35,7 +36,8 @@ module.exports = (app) => {
 	router.delete('/:id',
 		accessableToReceiptRequest, deleteReceipt)
 
-	router.post('/test', upload.single('file'), test)
+	router.post('/parce', upload.single('file'), receiptImageParce)
 
+	router.post('/test', upload.single('file'), test)
 	app.use('/receipts', authenticateUser, router)
 }

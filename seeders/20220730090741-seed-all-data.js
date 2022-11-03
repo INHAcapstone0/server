@@ -631,6 +631,51 @@ module.exports = {
       "updatedAt": "2022-01-02T16:11:10.000Z",
       "deletedAt": null
     },
+    {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "음식점",
+      "img_url": "",
+      "total_price": 70000,
+      "place ": "쥬벤쿠바",
+      "address": "서울특별시 관악구 관악로14나길 10 1층",
+      "tel": "0507-1468-3234",
+      "memo": "안녕쿠마 못가고 먹은 저녁...",
+      "payDate": "2022-01-02T19:01:10.000Z",
+      "createdAt": "2022-01-03T19:11:10.000Z",
+      "updatedAt": "2022-01-03T19:11:10.000Z",
+      "deletedAt": null
+  },
+  {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "대형마트",
+      "img_url": "",
+      "total_price": 1000,
+      "place ": "다이소 인하대점",
+      "address": "인천 미추홀구 인하로 71",
+      "tel": "032-866-6016",
+      "memo": "당근칼 샀음",
+      "payDate": "2022-01-03T16:01:10.000Z",
+      "createdAt": "2022-01-04T16:11:10.000Z",
+      "updatedAt": "2022-01-04T16:11:10.000Z",
+      "deletedAt": null
+  },
+  {
+      "schedule_id": "04282e63-8cdd-4ce2-becb-abc19e12f376",
+      "poster_id": "4008b5cb-c626-4a3a-9490-08572249ccf4",
+      "category": "음식점",
+      "img_url": "",
+      "total_price": 15900,
+      "place ": "KFC 인하대점",
+      "address": "인천 미추홀구 인하로77번길 8",
+      "tel": "032-861-9416",
+      "memo": "치킨치킨치킨치킨",
+      "payDate": "2022-01-04T16:01:10.000Z",
+      "createdAt": "2022-01-05T16:11:10.000Z",
+      "updatedAt": "2022-01-05T16:11:10.000Z",
+      "deletedAt": null
+  }
     ]
 
     //참여자 정보에 test0 전부 넣을것
