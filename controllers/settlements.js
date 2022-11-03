@@ -144,7 +144,7 @@ exports.getSettlement = async (req, res) => {
 
 exports.getSettlementsOfSchedule=async(req, res)=>{
   let {id} = req.user
-  console.log(id)
+  
   const settlements = await Schedule.findAll({
     include:[{
       model:Participant,
@@ -160,25 +160,21 @@ exports.getSettlementsOfSchedule=async(req, res)=>{
         },{
           receiver_id:id
         }]
-      }
+      },
+      attributes:{
+        exclude:['sender_id','receiver_id']
+      },
+      include: [{
+        model: User,
+        as: "sender",
+        attributes: ['id','name', 'img_url']
+      }, {
+        model: User,
+        as: "receiver",
+        attributes: ['id','name', 'img_url']
+      }],
     }]
   })
-  // const settlements = await Schedule.findAll({
-  //   where:{id},
-  //   include:[{
-  //     model:Settlement,
-  //     include:[{
-  //       model:User,
-  //       as:"sender",
-  //       attributes:['name','img_url']
-  //     },{
-  //       model:User,
-  //       as:"receiver",
-  //       attributes:['name','img_url']
-  //     }],
-  //   }]c
-  // })
-
   res.status(StatusCodes.OK).json(settlements)
 }
 
