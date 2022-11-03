@@ -1,11 +1,12 @@
 const {
-	kakoAPI
+	kakoAPI,
+	test
 }=require('../controllers/extra');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
 	router.get('/kakao', kakoAPI)
-
-	app.use("/extra",authenticateUser, router);
+	router.get('/test', test)
+	app.use("/extra", router);
 }
