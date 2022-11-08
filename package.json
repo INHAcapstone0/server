@@ -43,7 +43,9 @@
     "mysql2": "^2.3.3",
     "node-schedule": "^2.1.0",
     "nodemailer": "^6.7.8",
+    "qs": "^6.11.0",
     "redis": "^4.3.1",
+    "request": "^2.88.2",
     "sequelize": "^6.21.3",
     "util": "^0.12.4",
     "uuid": "^8.3.2"
@@ -51,7 +53,9 @@
   "devDependencies": {
     "nodemon": "^2.0.19"
   },
-  "nodemonConfig":{
-    "ignore": ["data/"]
+  "nodemonConfig": {
+    "ignore": [
+      "data/"
+    ]
   }
 }

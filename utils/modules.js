@@ -30,14 +30,21 @@ module.exports = {
     password = await bcrypt.hash(password, salt)
     return password;
   },
-  toYYYYMMDDhhmmss: (d)=> {
+  nowYYYYMMDDhhmmss: ()=> {
     function pad(n) { return n<10 ? "0"+n : n }
-    d=new Date()
-    return d.getFullYear()+"-"+
-    pad(d.getMonth()+1)+"-"+
-    pad(d.getDate())+" "+
-    pad(d.getHours())+":"+
-    pad(d.getMinutes())+":"+
+    let d=new Date()
+    return d.getFullYear()+""+
+    pad(d.getMonth()+1)+""+
+    pad(d.getDate())+""+
+    pad(d.getHours())+""+
+    pad(d.getMinutes())+""+
     pad(d.getSeconds())
-}
+  },
+  generateRandom9Code: ()=> {
+    let str = ''
+    for (let i = 0; i < 9; i++) {
+      str += Math.floor(Math.random() * 10)
+    }
+    return str
+  }
 }

@@ -87,6 +87,10 @@ module.exports = (sequelize, DataTypes) => {
       type:'VARCHAR(1000)',
       comment:"유저 디바이스 토큰"
     },
+    user_seq_no:{
+      type: DataTypes.STRING,
+      comment:"유저고유식별번호"
+    },
   },
   {
     sequelize,
