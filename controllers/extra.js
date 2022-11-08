@@ -76,10 +76,12 @@ exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
       console.log('failed')
     }
 
-    redisClient.set(client_info, JSON.stringify({
+    await redisClient.set(client_info, JSON.stringify({
       access_token:requestResultJSON.access_token,
       refresh_token:requestResultJSON.refresh_token,
-    }, 'EX', 200))
+    }))
+
+    await redisClient.expire(client_info, 60*60) // 1시간뒤에 만료시키기
     
     await User.update({
       user_seq_no:requestResultJSON.user_seq_no
