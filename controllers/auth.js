@@ -37,7 +37,7 @@ const login = async (req, res) => {
     if (!tempPwCompare) { // 임시 비밀번호와도 다르면
       throw new NotFoundError('비밀번호가 틀렸습니다.')
     }
-  } else {
+  } else { // 원래 비밀번호로 접속 시 기존 임시 비밀번호 삭제
     await User.update({ temp_password: null },
       { where: { id: user.id } }
     )
@@ -297,13 +297,6 @@ const issueTempPassword = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: "입력하신 이메일로 임시 비밀번호를 전송하였습니다." });
 }
 
-const test = async (req, res) => {
-  console.log(req.body)
-  console.log(req.query)
-  console.log('called')
-  res.send('ok')
-}
-
 module.exports = {
-  login, register, checkName, checkEmail, refresh, authMail, logout, issueTempPassword, test
+  login, register, checkName, checkEmail, refresh, authMail, logout, issueTempPassword
 }

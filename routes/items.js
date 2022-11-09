@@ -5,12 +5,15 @@ const {
 	deleteItem,
 	getAllItems,
 	getItem,
+	createItems
 } = require('../controllers/items');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
 
 module.exports = (app) => {
 	router.post('/', createItem)
+
+	router.post('/many', createItems)
 
 	router.get('/', getAllItems)
 

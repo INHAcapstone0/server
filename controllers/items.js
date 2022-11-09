@@ -9,7 +9,7 @@ exports.createItem = async (req, res) => {
   const {receipt_id, quantity, price, name}=req.body
 
   if (!receipt_id || !name) {
-    throw new BadRequestError('물픔 id와 name을 필수로 입력해야 합니다.')
+    throw new BadRequestError('영수증 id와 물품 이름을 필수로 입력해야 합니다.')
   }
 
   if(quantity){
@@ -40,7 +40,7 @@ exports.createItems=async(req, res)=>{
 
   data.forEach(d=>{
     if (!d.receipt_id || !d.name) {
-      throw new BadRequestError('물픔 id와 이름을 필수로 입력해야 합니다.')
+      throw new BadRequestError('영수증 id와 물품 이름을 필수로 입력해야 합니다.')
     }
   
     if(d.quantity){
