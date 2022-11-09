@@ -17,6 +17,14 @@ app.use(cors({
   credentials: true 
 })) // 모든 CORS request 허용
 
+app.use((req, res, next)=>{ //로깅용 공통 미들웨어 추후에 추가
+  const ip = req.headers['x-forwarded-for'] ||  req.connection.remoteAddress;
+  console.log(`접속 ip : ${ip}`)
+  console.log(`접속 url : http://${req.headers.host}${req.url}`)
+  //http://${req.headers.host}
+  next();
+})
+
 // routes 내의 모든 라우터 미들웨어 등록
 fs.readdirSync(__dirname + "/routes")
   .forEach(data => {
@@ -32,7 +40,7 @@ const start = async () => {
     const db = require('./models')
     await db.sequelize.sync() //sequelize sync
 
-    app.listen(PORT, () => console.log(`Server is running on http://localhost:${PORT}`))
+    app.listen(PORT,'0.0.0.0', () => console.log(`Server is running on http://localhost:${PORT}`))
     scheduler.loadInitialScheduler()
   } catch (err) {
     console.log(err)
