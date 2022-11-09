@@ -91,7 +91,7 @@ exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
       }
     })
     
-    res.json({ data: requestResultJSON })
+    res.render('index',{})
     // 나중에 돌아가기 버튼 추가해서 바꿀 것
   }); 
 }
