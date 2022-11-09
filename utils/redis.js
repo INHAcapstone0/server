@@ -1,7 +1,7 @@
 const redis = require('redis');
 
 const redisClient = redis.createClient({
-  legecyMode: true
+  legacyMode: true
 });
 
 const connect= async()=>{
