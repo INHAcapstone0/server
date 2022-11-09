@@ -10,6 +10,9 @@ const scheduler=require('./utils/node-scheduler')
 const cors = require('cors')
 const helmet = require('helmet')
 const ejs = require('ejs')
+const morgan = require('morgan')
+const logger = require('./winston');
+const combined = ':remote-addr - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"' 
 
 app.set('view engine', 'ejs');
 app.set('views', './views');
@@ -21,6 +24,8 @@ app.use(cors({
   credentials: true 
 })) // 모든 CORS request 허용
 
+app.use(morgan(combined, {stream : logger.stream}));
+
 app.use((req, res, next)=>{ //로깅용 공통 미들웨어 추후에 추가
   const ip = req.headers['x-forwarded-for'] ||  req.connection.remoteAddress;
   console.log(`접속 ip : ${ip}`)
@@ -28,6 +33,7 @@ app.use((req, res, next)=>{ //로깅용 공통 미들웨어 추후에 추가
   //http://${req.headers.host}
   next();
 })
+
 
 // routes 내의 모든 라우터 미들웨어 등록
 fs.readdirSync(__dirname + "/routes")
