@@ -6,10 +6,10 @@ const {Item} = db;
 const Op = db.Sequelize.Op;
 
 exports.createItem = async (req, res) => {
-  const {receipt_id, quantity, price}=req.body
+  const {receipt_id, quantity, price, name}=req.body
 
-  if (!receipt_id) {
-    throw new BadRequestError('영수증 id를 필수로 입력해야 합니다.')
+  if (!receipt_id || !name) {
+    throw new BadRequestError('물픔 id와 name을 필수로 입력해야 합니다.')
   }
 
   if(quantity){
@@ -25,7 +25,7 @@ exports.createItem = async (req, res) => {
   }
   
   const item = await Item.create({
-    receipt_id, quantity, price
+    receipt_id, quantity, price, name
   });
 
   res.status(StatusCodes.CREATED).json(item)
@@ -35,12 +35,12 @@ exports.createItems=async(req, res)=>{
   const data = req.body
 
   if(!Array.isArray(data)){
-    throw new BadRequestError('영수증 하위 항목을 배열로 보내세요.')
+    throw new BadRequestError('물픔 하위 항목을 배열로 보내세요.')
   }
 
   data.forEach(d=>{
-    if (!d.receipt_id) {
-      throw new BadRequestError('영수증 id를 필수로 입력해야 합니다.')
+    if (!d.receipt_id || !d.name) {
+      throw new BadRequestError('물픔 id와 이름을 필수로 입력해야 합니다.')
     }
   
     if(d.quantity){
