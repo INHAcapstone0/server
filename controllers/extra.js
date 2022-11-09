@@ -37,7 +37,7 @@ exports.kakoAPI  =async(req, res)=>{
 
 exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
   let {state, code,client_info} = req.query
-
+  
   console.log(client_info+'님의 요청')
   if(state!=OPENBANK_STATE_RANDSTR){
     throw new UnauthenticatedError('CSRF 보안 위협이 감지되었습니다. 다시 시도해주세요.')
@@ -45,11 +45,11 @@ exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
 
   if(!client_info){
     throw new UnauthenticatedError('유저정보가 존재하지 않습니다. 다시 시도해주세요.')
-  }else{
-    let user = await User.findByPk(client_info)
-    if(!user){
-      throw new BadRequestError('유저정보가 존재하지 않습니다. 다시 시도해주세요.')
-    }
+  }
+  let user = await User.findByPk(client_info)
+
+  if(!user){
+    throw new BadRequestError('유저정보가 존재하지 않습니다. 다시 시도해주세요.')
   }
 
   let option = {
@@ -76,12 +76,12 @@ exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
       console.log('failed')
     }
 
-    await redisClient.set(client_info, JSON.stringify({
+    await redisClient.set(requestResultJSON.user_seq_no, JSON.stringify({
       access_token:requestResultJSON.access_token,
       refresh_token:requestResultJSON.refresh_token,
     }))
 
-    await redisClient.expire(client_info, 60*60) // 1시간뒤에 만료시키기
+    await redisClient.expire(requestResultJSON.user_seq_no, 60*60) // 1시간뒤에 만료시키기
     
     await User.update({
       user_seq_no:requestResultJSON.user_seq_no
@@ -129,7 +129,13 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
 exports.getToken=async(req, res)=>{
   let {id}=req.user
 
-  let user_tokens = await redisClient.get(id)
+  let user = await User.findByPk(id)
+
+  if(!user.user_seq_no){
+    throw new BadRequestError('유저고유등록번호(user_seq_no)가 존재하지 않습니다. 다시 인증을 해주세요.')
+  }
+
+  let user_tokens = await redisClient.get(user.user_seq_no)
     .then(r=>{
       return JSON.parse(r)
     })
