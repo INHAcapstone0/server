@@ -36,6 +36,10 @@ exports.settlementCheckRequest=async(req, res)=>{
     throw new BadRequestError('정산액 입금자와 요청자의 id가 일치하지 않습니다.')
   }
 
+  await Settlement.update(
+    { is_paid: '확인중' },
+    { where: id })
+
   const sender = await User.findByPk(settlement.sender_id)
   const receiver = await User.findByPk(settlement.receiver_id)
 
@@ -77,7 +81,7 @@ exports.settlementCheck=async(req, res)=>{
 
   // is_paid -> true
   await Settlement.update(
-    { is_paid: true },
+    { is_paid: '정산 완료' },
     { where: id })
     .then(async()=>{
       // sender_id에게 fcm push 전송
