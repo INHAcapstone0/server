@@ -274,8 +274,19 @@ exports.deleteReceipt = async (req, res) => {
 exports.receiptImageParce = async (req, res) => {
   try {
     const filePath = path.join(__dirname + "/../" + req.file.path)
+
+    const filePathArr = filePath.split('.')
+    const fileExtension = filePathArr[filePathArr.length-1]
+
+    const availableExtentions=['jpeg','jpg','gif','png']
+
+    if(!availableExtentions.includes(fileExtension)){
+      throw new BadRequestError('파일 확장자를 jpeg, jpg, gif, png로 보내주세요.')
+    }
+
     const api_url = process.env.PROCESS_SERVER_URI
 
+    
     let form = new FormData();
 
     // 임시 저장된 파일을 읽어서 FormData에 file, message 항목 append
@@ -284,7 +295,7 @@ exports.receiptImageParce = async (req, res) => {
       fs.createReadStream(filePath)
     );
 
-    //2. CLOVA 전송
+    //2. flask로 이미지 전송
     const targetParceData = await axios
       .post(api_url, form, {
         headers: {
@@ -292,7 +303,15 @@ exports.receiptImageParce = async (req, res) => {
           // 'X-OCR-SECRET': process.env.X_OCR_SECRET,
         },
       })
+      .then(r=>{
+        console.log('이미지 프로세싱 서버로 전송 완료')
+        return r
+      })
 
+    console.log(targetParceData.data)
+    if(targetParceData.data.images[0].inferResult=='ERROR'){ // 영수증 인식 가능한 이미지를 보내지 않았을 때 
+      throw new BadRequestError('인식 가능한 영수증 이미지를 보내주세요.')
+    }
     let ocr_result = {
       items: []
     }
@@ -330,7 +349,15 @@ exports.receiptImageParce = async (req, res) => {
       subResults[0].items.forEach(r => {
         let name = r.name?.text || '정보 없음'
         let count =  parseInt(r.count?.formatted?.value || r.count?.text || '1')
-        let price =  parseInt(r.price?.price?.formatted?.value || r.price?.price?.text || '0')
+        // let price =  parseInt(r.price?.price?.formatted?.value || r.price?.price?.text || '0')
+        let price = 0
+        let unitPrice = r.price?.unitPrice?.formatted?.value || r.price?.unitPrice?.text
+        if(!unitPrice){ // 단가 정보가 없으면 수동으로 price를 count로 나누기
+          price = Math.floor(parseInt(r.price?.price?.formatted?.value || r.price?.price?.text || '0')/count)
+        }else{ // 단가정보 존재하면 그대로 
+          price = parseInt(unitPrice)
+        }
+
         count=isNaN(count)?1:count
         price=isNaN(price)?1:price
   
@@ -453,9 +480,9 @@ exports.receiptImageParce = async (req, res) => {
 
     //3. file 삭제
   } catch (error) {
-    console.log(error)
+    console.trace(error)
     fs.unlinkSync(__dirname + "/../" + req.file.path)
-    throw new Error('서버 내부 오류 발생, 다시 시도해주세요.')
+    throw error
   }
 }
 

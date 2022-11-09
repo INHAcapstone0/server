@@ -36,7 +36,7 @@ module.exports = (app) => {
 	router.delete('/:id',
 		accessableToReceiptRequest, deleteReceipt)
 
-	router.post('/parce', upload.single('file'), receiptImageParce)
+	router.post('/parse', upload.single('file'), receiptImageParce)
 
 	router.post('/test', upload.single('file'), test)
 	app.use('/receipts', authenticateUser, router)
