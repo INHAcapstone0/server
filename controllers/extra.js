@@ -225,3 +225,13 @@ exports.deleteAccount = async(req, res)=>{
 
   res.status(StatusCodes.OK).json(result.data)
 }
+
+
+exports.test1 = async(req, res)=>{
+  console.log('waefafe')
+  res.render('index',{})
+}
+
+exports.test2 = async(req, res)=>{
+  res.redirect(`http://${req.headers.host}/extra/test1`)
+}

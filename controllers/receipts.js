@@ -308,7 +308,6 @@ exports.receiptImageParce = async (req, res) => {
         return r
       })
 
-    console.log(targetParceData.data)
     if(targetParceData.data.images[0].inferResult=='ERROR'){ // 영수증 인식 가능한 이미지를 보내지 않았을 때 
       throw new BadRequestError('인식 가능한 영수증 이미지를 보내주세요.')
     }

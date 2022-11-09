@@ -181,7 +181,7 @@ const authMail = async (req, res) => {
 
   var regExp = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
-  if (email.match(regExp) == null) {
+  if (!email || email.match(regExp) == null) {
     throw new BadRequestError('이메일 형식이 올바르지 않습니다.')
   }
 

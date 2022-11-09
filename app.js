@@ -9,6 +9,10 @@ const errorHandlerMiddleware = require('./middleware/error-handler')
 const scheduler=require('./utils/node-scheduler')
 const cors = require('cors')
 const helmet = require('helmet')
+const ejs = require('ejs')
+
+app.set('view engine', 'ejs');
+app.set('views', './views');
 
 app.use(helmet()) //보안 관련 HTTP 헤더를 설정
 app.use(express.json()) // json parser

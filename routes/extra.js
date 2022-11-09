@@ -6,7 +6,9 @@ const {
 	myTranList,
 	refreshToken,
 	deleteAccount,
-	myInfo
+	myInfo,
+	test2,
+	test1
 }=require('../controllers/extra');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -22,5 +24,7 @@ module.exports = (app) => {
 	router.get('/account/transaction_list/fin_num', myTranList)
 	router.post('/account/cancel',deleteAccount)
 
+	router.get('/test1', test1)
+	router.get('/test2', test2)
 	app.use("/extra",router);
 }
