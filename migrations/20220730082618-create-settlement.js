@@ -47,10 +47,10 @@ module.exports = {
         comment:"정산 금액"
       },
       is_paid: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.ENUM('정산 미완료', '확인중', '정산 완료'),
         allowNull:false,
-        defaultValue:false,
-        comment:"정산 여부"
+        defaultValue:'정산 미완료',
+        comment:"정산 상태"
       },
       due_date:{
         type:Sequelize.DATE,
