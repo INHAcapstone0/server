@@ -25,11 +25,11 @@ exports.kakoAPI  =async(req, res)=>{
 
 // exports.firstAuthorize = async (req, res) => { // 사용자 최초 인증 시
 
-//   let redirect_uri = `https://testapi.openbanking.or.kr/oauth/2.0/authorize?`+
-//   `response_type=code&client_id=${OPENBANK_CLIENT_ID}&`+
-//   `scope=login inquiry transfer&auth_type=0&redirect_uri=${OPENBANK_CALLBACK_URL_1}&`+
-//   `state=${OPENBANK_STATE_RANDSTR}`
-//   `&client_info=${req.user.id}`
+  // let redirect_uri = `https://testapi.openbanking.or.kr/oauth/2.0/authorize?`+
+  // `response_type=code&client_id=${OPENBANK_CLIENT_ID}&`+
+  // `scope=login inquiry transfer&auth_type=0&redirect_uri=${OPENBANK_CALLBACK_URL_1}&`+
+  // `state=${OPENBANK_STATE_RANDSTR}`
+  // `&client_info=${req.user.id}`
 
 //   console.log(`Redirect to ${redirect_uri}`)
 //   res.redirect(redirect_uri)
@@ -139,6 +139,24 @@ exports.getToken=async(req, res)=>{
   }
 
   res.status(StatusCodes.OK).json(user_tokens)
+}
+
+exports.myInfo=async(req, res)=>{
+  let token = req.header('bank-authorization')
+  let user = await User.findByPk(req.user.id)
+
+  if(!user.user_seq_no){
+    throw new NotFoundError('유저고유식별번호가 존재하지 않습니다.')
+  }
+
+  const result = await axios
+    .get(`https://testapi.openbanking.or.kr/v2.0/user/me?user_seq_no=${user.user_seq_no}`
+      , {
+        headers: {
+          'Authorization': token
+        },
+      })
+      res.status(StatusCodes.OK).json(result.data)
 }
 
 exports.myAccount = async (req, res) => {
