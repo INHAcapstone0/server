@@ -136,15 +136,12 @@ exports.getToken=async(req, res)=>{
   }
 
   let user_tokens = await redisClient.get(user.user_seq_no)
-    .then(r=>{
-      return JSON.parse(r)
-    })
   
   if (!user_tokens){
     throw new NotFoundError('오픈뱅킹 액세스 토큰이 존재하지 않거나 만료되었습니다.')
   }
 
-  res.status(StatusCodes.OK).json(user_tokens)
+  res.status(StatusCodes.OK).json(JSON.parse(user_tokens))
 }
 
 exports.myInfo=async(req, res)=>{
