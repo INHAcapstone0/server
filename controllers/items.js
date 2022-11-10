@@ -50,8 +50,8 @@ exports.createItems=async(req, res)=>{
     }
   
     if(d.price){
-      if(d.price<0 || d.price>100){
-        throw new BadRequestError('단가를 0과 100 사이의 값으로 지정해주세요.')
+      if(d.price<0 || d.price>2000000){
+        throw new BadRequestError('단가를 0과 2000000 사이의 값으로 지정해주세요.')
       }
     }
   })
