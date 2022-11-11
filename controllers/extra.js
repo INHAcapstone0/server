@@ -1,7 +1,7 @@
 const { StatusCodes } = require("http-status-codes")
 const axios = require('axios')
 const {OPENBANK_CLIENT_ID,OPENBANK_CALLBACK_URL_1,OPENBANK_CLIENT_USE_CODE,OPENBANK_STATE_RANDSTR,OPENBANK_CLIENT_SECRET} = process.env
-const { BadRequestError, NotFoundError, UnauthenticatedError } = require('../errors')
+const { BadRequestError, NotFoundError, UnauthenticatedError, ServiceUnavaliableError } = require('../errors')
 const request = require('request')
 const db = require('../models');
 const {User} = db;
@@ -121,7 +121,12 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
   request(option, async (err, response, body)=>{
     var requestResultJSON = JSON.parse(body);
     console.log(requestResultJSON)
-    res.json({ data: requestResultJSON })
+
+    if(requestResultJSON.rsp_code=="O0014"){
+      throw new ServiceUnavaliableError(requestResultJSON.rsp_message)
+    }else{
+      res.json({ data: requestResultJSON })
+    }
   })
 }
 
