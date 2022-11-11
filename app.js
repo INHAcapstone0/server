@@ -24,9 +24,7 @@ app.use(cors({
   credentials: true 
 })) // 모든 CORS request 허용
 
-app.use(morgan((tokens, req, res) =>{
-  return `:${req.headers['x-forwarded-for'] ||  req.connection.remoteAddress} - :remote-user ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"`
-}, {stream : logger.stream}));
+app.use(morgan(combined, {stream : logger.stream}));
 
 app.use((req, res, next)=>{ //로깅용 공통 미들웨어 추후에 추가
   const ip = req.headers['x-forwarded-for'] ||  req.connection.remoteAddress;
