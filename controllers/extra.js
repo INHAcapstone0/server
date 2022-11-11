@@ -7,6 +7,7 @@ const db = require('../models');
 const {User} = db;
 const {nowYYYYMMDDhhmmss, generateRandom9Code}=require('../utils/modules');
 const redisClient=require('../utils/redis');
+const { promisify } = require('util');
 
 exports.kakoAPI  =async(req, res)=>{
   let {query} = req.query
