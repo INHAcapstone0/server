@@ -259,7 +259,7 @@ exports.deleteAccount = async(req, res)=>{
     }
   })
   console.log(result.data)
-  if(result.data.rsp_code){ // 액세스토큰 만료 시
+  if(result.data.rsp_message){ // 액세스토큰 만료 시
     return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
   }
   res.status(StatusCodes.OK).json(result.data)
