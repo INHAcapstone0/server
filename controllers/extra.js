@@ -167,7 +167,8 @@ exports.myInfo=async(req, res)=>{
           'Authorization': token
         },
       })
-
+  
+  console.log(result.data)
   if(result.data.rsp_code){ // 액세스토큰 만료 시
     return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
   }
