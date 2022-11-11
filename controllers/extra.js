@@ -126,9 +126,9 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     var requestResultJSON = JSON.parse(body);
     console.log(requestResultJSON)
 
-    if(requestResultJSON.rsp_code!="A0000"){
+    if(requestResultJSON.rsp_code=="O0014"){
       return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: requestResultJSON.rsp_message })
-    }else{
+    } else {
       return res.json({ data: requestResultJSON })
     }
   })
