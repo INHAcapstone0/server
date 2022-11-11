@@ -123,7 +123,7 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     console.log(requestResultJSON)
 
     if(requestResultJSON.rsp_code=="O0014"){
-      throw new ServiceUnavaliableError(requestResultJSON.rsp_message)
+      throw new BadRequestError(requestResultJSON.rsp_message)
     }else{
       res.json({ data: requestResultJSON })
     }
