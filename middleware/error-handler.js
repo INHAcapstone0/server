@@ -1,9 +1,9 @@
 const { CustomAPIError } = require('../errors')
 const { StatusCodes } = require('http-status-codes')
-const logger = require('../winston');
 
 const errorHandlerMiddleware = (err, req, res, next) => {
   console.log(err);
+  console.log('에러헨들러 동작')
   if (err instanceof CustomAPIError) {
     return res.status(err.statusCode).json({ msg: err.message })
   }
