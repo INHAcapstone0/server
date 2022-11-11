@@ -118,7 +118,7 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     }
   }
   // resultChild 호출해서 얻은 토큰 정보를 사이트에 입력
-  request(option, async (err, response, body)=>{
+  await request(option, async (err, response, body)=>{
     var requestResultJSON = JSON.parse(body);
     console.log(requestResultJSON)
 
