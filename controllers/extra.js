@@ -142,12 +142,11 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
       }))
   
       await redisClient.expire(user.user_seq_no, 60*60) // 1시간뒤에 만료시키기
-      
+
       return res.json({ data: requestResultJSON })
     }
   })
 }
-
 
 exports.getToken=async(req, res)=>{
   let {id}=req.user
@@ -252,7 +251,7 @@ exports.deleteAccount = async(req, res)=>{
   const result = await axios
   .post(`https://testapi.openbanking.or.kr/v2.0/account/cancel`,{
     bank_tran_id,
-    scope:'login inquiry transfer',
+    scope:'inquiry',
     fintech_use_num
   },{
     headers:{
