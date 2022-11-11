@@ -142,10 +142,11 @@ exports.getToken=async(req, res)=>{
   if(!user.user_seq_no){
     throw new BadRequestError('유저고유등록번호(user_seq_no)가 존재하지 않습니다. 다시 인증을 해주세요.')
   }
-  console.log(user.user_seq_no)
-  let user_tokens = await redisClient.get(user.user_seq_no)
-  console.log(user_tokens)
 
+  const getAsync = promisify(redisClient.get).bind(redisClient)
+  let user_tokens = await getAsync(user.user_seq_no)
+
+  console.log(user_tokens)
   if (!user_tokens){
     throw new NotFoundError('오픈뱅킹 액세스 토큰이 존재하지 않거나 만료되었습니다.')
   }
