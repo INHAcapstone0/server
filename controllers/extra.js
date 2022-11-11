@@ -167,7 +167,12 @@ exports.myInfo=async(req, res)=>{
           'Authorization': token
         },
       })
-      res.status(StatusCodes.OK).json(result.data)
+
+  if(result.data.rsp_code){ // 액세스토큰 만료 시
+    return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
+  }
+
+  res.status(StatusCodes.OK).json(result.data)
 }
 
 exports.myAccount = async (req, res) => {
@@ -209,7 +214,10 @@ exports.myTranList = async(req, res)=>{
         'Authorization': token
       },
     })
-  
+  if(result.data.rsp_code){ // 액세스토큰 만료 시
+    return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
+  }
+
   res.status(StatusCodes.OK).json(result.data)
 }
 
@@ -233,7 +241,9 @@ exports.deleteAccount = async(req, res)=>{
       'Authorization': token
     }
   })
-
+  if(result.data.rsp_code){ // 액세스토큰 만료 시
+    return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
+  }
   res.status(StatusCodes.OK).json(result.data)
 }
 
