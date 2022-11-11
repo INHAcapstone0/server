@@ -18,7 +18,7 @@ module.exports = (app) => {
 	// router.get('/authorize',firstAuthorize)
 	router.get('/send', receiveCodeAndSend)
 	router.get('/token', authenticateUser,getToken)
-	router.get('/refresh', refreshToken)
+	router.get('/refresh', authenticateUser, refreshToken)
 	router.get('/user/me', authenticateUser, myInfo)
 	router.get('/account/list',authenticateUser, myAccount)
 	router.get('/account/transaction_list/fin_num', myTranList)

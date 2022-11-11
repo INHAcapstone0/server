@@ -105,6 +105,12 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     throw new UnauthenticatedError('갱신 토큰 또는 액세스 토큰이 존재하지 않습니다.')
   }
 
+  let user = await User.findByPk(req.user.id)
+
+  if(!user){
+    throw new BadRequestError('유저정보가 존재하지 않습니다. 다시 시도해주세요.')
+  }
+
   let option = {
     method : "POST",
     url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
@@ -129,6 +135,14 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     if(requestResultJSON.rsp_code=="O0014"){
       return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: requestResultJSON.rsp_message })
     } else {
+
+      await redisClient.set(user.user_seq_no, JSON.stringify({
+        access_token:requestResultJSON.access_token,
+        refresh_token:requestResultJSON.refresh_token,
+      }))
+  
+      await redisClient.expire(user.user_seq_no, 60*60) // 1시간뒤에 만료시키기
+      
       return res.json({ data: requestResultJSON })
     }
   })
