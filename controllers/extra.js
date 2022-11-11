@@ -98,16 +98,18 @@ exports.receiveCodeAndSend = async(req, res)=>{ // Callback URI
 
 exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸림
   let refresh_token=req.headers.refresh
-  
-  if(!refresh_token){
-    throw new UnauthenticatedError('갱신 토큰이 존재하지 않습니다.')
+  let token = req.header('bank-authorization')
+
+  if(!refresh_token || ! token ){
+    throw new UnauthenticatedError('갱신 토큰 또는 액세스 토큰이 존재하지 않습니다.')
   }
 
   let option = {
     method : "POST",
     url : "https://testapi.openbanking.or.kr/oauth/2.0/token",
     header: {
-      'Content-Type': 'application/x-www-form-urlencoded'
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Authorization': token
     },
     form: {
       refresh_token,
