@@ -118,14 +118,14 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     }
   }
   // resultChild 호출해서 얻은 토큰 정보를 사이트에 입력
-  await request(option, async (err, response, body)=>{
+  request(option, async (err, response, body)=>{
     var requestResultJSON = JSON.parse(body);
     console.log(requestResultJSON)
 
     if(requestResultJSON.rsp_code=="O0014"){
-      throw new BadRequestError(requestResultJSON.rsp_message)
+      return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: requestResultJSON.rsp_message })
     }else{
-      res.json({ data: requestResultJSON })
+      return res.json({ data: requestResultJSON })
     }
   })
 }
