@@ -125,7 +125,7 @@ exports.refreshToken = async (req, res) => { // 토큰 refresh, 시간 좀 걸�
     var requestResultJSON = JSON.parse(body);
     console.log(requestResultJSON)
 
-    if(requestResultJSON.rsp_code=="O0014"){
+    if(requestResultJSON.rsp_code!="A0000"){
       return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: requestResultJSON.rsp_message })
     }else{
       return res.json({ data: requestResultJSON })
@@ -169,7 +169,7 @@ exports.myInfo=async(req, res)=>{
       })
   
   console.log(result.data)
-  if(result.data.rsp_code){ // 액세스토큰 만료 시
+  if(result.data.rsp_code!='A0000'){ // 액세스토큰 만료 시
     return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
   }
 
@@ -215,9 +215,9 @@ exports.myTranList = async(req, res)=>{
         'Authorization': token
       },
     })
-  if(result.data.rsp_code){ // 액세스토큰 만료 시
-    return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
-  }
+    if(result.data.rsp_code!='A0000'){ // 액세스토큰 만료 시
+      return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ msg: result.data.rsp_message })
+    }
 
   res.status(StatusCodes.OK).json(result.data)
 }
