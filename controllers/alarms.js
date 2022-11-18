@@ -4,6 +4,7 @@ const { BadRequestError, NotFoundError } = require('../errors')
 const Alarm = db.Alarm;
 const Op = db.Sequelize.Op;
 const {toYYYYMMDDhhmmss} = require('../utils/modules')
+const {sendMulticastMessage}= require('../firebase')
 
 exports.createAlarm = async (req, res) => {
   const {user_id, alarm_type, message}=req.body
@@ -112,6 +113,24 @@ exports.deleteAlarm = async (req, res) => {
   }
 };
 
+exports.test=async(req, res)=>{
+  let {id} = req.body
+
+  let user = await User.findByPk(id)
+
+  await sendMulticastMessage({
+    notification: {
+      "title": "테스트메세지",
+      "body": `테스트메세지 본문`
+    },
+    data: {
+      type: '초대'
+    },
+    tokens: [user.device_token],
+  })
+
+  res.send('OK')
+ }
 
 
 

@@ -5,6 +5,7 @@ const {
 	deleteAlarm,
 	getAlarm,
 	getAllAlarms,
+	test
 } = require('../controllers/alarms');
 var router = require('express').Router();
 const authenticateUser=require('../middleware/authentication')
@@ -22,6 +23,8 @@ module.exports = (app) => {
 	router.put('/restore/:id', restoreAlarm)
 
 	router.delete('/:id', deleteAlarm)
+
+	router.post('/test',test )
 
 	app.use('/alarms', authenticateUser, router)
 }
