@@ -118,6 +118,7 @@ exports.test=async(req, res)=>{
 
   let user = await User.findByPk(id)
 
+  console.log(user.device_token)
   await sendUnicastMessage({
     notification: {
       "title": "테스트메세지",
