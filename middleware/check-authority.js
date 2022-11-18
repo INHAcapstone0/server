@@ -41,10 +41,9 @@ const accessableToReceiptRequest = async (req, res, next) => {
         attributes: ['owner_id']
       }]
     })
-
-    console.log(receipt.Schedule.owner_id, receipt.poster_id)
+    
     // 요청자가 영수증 게시자이거나 영수증이 속한 스케줄 소유자가 아니라면
-    if (!(req.user.id == receipt.Schedule.owner_id || req.user.id == receipt.poster_id)) {
+    if (!(req.user.id == receipt.Schedule.dataValues.owner_id || req.user.id == receipt.poster_id)) {
       throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
     }
   }

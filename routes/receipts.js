@@ -19,7 +19,7 @@ const { accessableToReceiptRequest } = require('../middleware/check-authority') 
 module.exports = (app) => {
 	router.post('/', createReceipt)
 
-	router.get('/', getAllReceipts)
+	router.get('/',accessableToReceiptRequest,getAllReceipts)
 
 	router.get('/:id',
 		accessableToReceiptRequest, getReceipt)
