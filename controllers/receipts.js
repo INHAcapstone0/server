@@ -87,12 +87,16 @@ exports.createReceipt = async (req, res) => {
   let alarm_list = []
   let participant_ids = []
   for (i of participants.map(participant => participant.participant_id)) {
-    participant_ids.push(i)
-    alarm_list.push({
-      user_id: i,
-      alarm_type: '영수증 업로드',
-      message: `${poster.User.name}님이 새 영수증을 업로드하였습니다.`
-    })
+
+    // 만약 포스팅한 사용자 자신이라면 스킵함
+    if(i!=req.user.id){
+      participant_ids.push(i)
+      alarm_list.push({
+        user_id: i,
+        alarm_type: '영수증 업로드',
+        message: `${poster.User.name}님이 새 영수증을 업로드하였습니다.`
+      })
+    }
   }
 
   if (alarm_list.length != 0) {

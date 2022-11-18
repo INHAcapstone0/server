@@ -98,7 +98,7 @@ exports.createSchedule = async (req, res) => {
     }
   })
 
-  if (token_list.legnth) {
+  if (token_list.legnth!=0) {
     await sendMulticastMessage({
       notification: {
         "title": "새 일정 초대",
