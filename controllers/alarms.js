@@ -1,7 +1,7 @@
 const db = require('../models');
 const { StatusCodes } = require('http-status-codes')
 const { BadRequestError, NotFoundError } = require('../errors')
-const Alarm = db.Alarm;
+const {Alarm, User} = db;
 const Op = db.Sequelize.Op;
 const {toYYYYMMDDhhmmss} = require('../utils/modules')
 const {sendMulticastMessage}= require('../firebase')
