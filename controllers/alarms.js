@@ -128,7 +128,7 @@ exports.test = async (req, res) => {
       type: '초대'
     },
     token: user.device_token,
-    priority: "high", timeToLive: 60 * 60 * 24
+    priority: "high"
   })
 
   res.send('OK')
