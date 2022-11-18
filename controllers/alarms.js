@@ -113,8 +113,8 @@ exports.deleteAlarm = async (req, res) => {
   }
 };
 
-exports.test=async(req, res)=>{
-  let {id} = req.body
+exports.test = async (req, res) => {
+  let { id } = req.body
 
   let user = await User.findByPk(id)
 
@@ -128,10 +128,12 @@ exports.test=async(req, res)=>{
       type: '초대'
     },
     token: user.device_token,
+  }, {
+    priority: "high", timeToLive: 60 * 60 * 24
   })
 
   res.send('OK')
- }
+}
 
 
 
