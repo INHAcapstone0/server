@@ -34,16 +34,18 @@ const accessableToReceiptRequest = async (req, res, next) => {
 
   // param의 id로 Receipt 조회
   if (id) {
-    const receipt = await Receipt.findOne({
-      where: { id },
-      include: [{
-        model: Schedule,
-        attributes: ['owner_id']
-      }]
-    })
+    const receipt = await Receipt.findByPk(id)
     
+    const participant = await Participant.findOne({
+      where:{
+        schedule_id:receipt.schedule_id,
+        participant_id:req.user.id
+      }
+    })
+    console.log(participant)
     // 요청자가 영수증 게시자이거나 영수증이 속한 스케줄 소유자가 아니라면
-    if (!(req.user.id == receipt.Schedule.dataValues.owner_id || req.user.id == receipt.poster_id)) {
+    // if (!(req.user.id == receipt.Schedule.dataValues.owner_id || req.user.id == receipt.poster_id)) {
+    if(!participant){
       throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
     }
   }
