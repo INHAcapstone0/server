@@ -120,7 +120,7 @@ exports.createReceipt = async (req, res) => {
     }
   })
 
-  if (token_list.legnth) {
+  if (token_list.length!=0) {
     await sendMulticastMessage({
       notification: {
         "title": '영수증 업로드',
