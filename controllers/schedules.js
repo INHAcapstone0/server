@@ -262,27 +262,29 @@ exports.updateSchedule = async (req, res) => {
     throw new BadRequestError('일정 종료시간을 일정 시작시간 이후의 날짜로 입력하세요.')
   }
 
-  const beforeUpdateSchedule= await Schedule.findByPk(id)
+  // const beforeUpdateSchedule= await Schedule.findByPk(id)
 
-  const afterUpdateSchedule=await Schedule.findOne({
-    where:{
-      id:{[Op.ne]:id},
-      name:name || beforeUpdateSchedule.name,
-      owner_id:beforeUpdateSchedule.owner_id
-    }
-  })
+  // const afterUpdateSchedule=await Schedule.findOne({
+  //   where:{
+  //     id:{[Op.ne]:id},
+  //     name:name || beforeUpdateSchedule.name,
+  //     owner_id:beforeUpdateSchedule.owner_id
+  //   }
+  // })
   
-  if(!afterUpdateSchedule){
-    throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
-  }
+  // if(!afterUpdateSchedule){
+  //   throw new BadRequestError('해당 소유자가 이미 생성한 같은 이름의 스케줄이 존재합니다.')
+  // }
 
   const result= await Schedule.update(updateCond, {
     where: {id}
   })
 
+
   if(result==1){
     //scheduler 수정
-    scheduler.createOrFixScheduler(afterUpdateSchedule)
+    const schedule = await Schedule.findByPk(id)
+    scheduler.createOrFixScheduler(schedule)
     res.status(StatusCodes.OK).json({msg:"스케줄이 수정되었습니다."})
   }else{
     throw new NotFoundError(`스케줄 id가 ${id}인 스케줄을 찾을 수 없습니다.`)
