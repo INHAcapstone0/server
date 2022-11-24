@@ -233,7 +233,7 @@ exports.getMyApprovedSchedule = async(req, res)=>{
 //update 시 기간 및 name validation 나중에 추가
 exports.updateSchedule = async (req, res) => {
   const { id } = req.params;
-  const { name, startAt, endAt } = req.body;
+  let { name, startAt, endAt } = req.body;
 
   let updateCond={}
   if(!id){
