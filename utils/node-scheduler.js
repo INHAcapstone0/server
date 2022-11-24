@@ -32,6 +32,7 @@ const scheduleCreate = async (schedule) => {
           attributes: []
         }]
       })
+      //이부분 봐야할듯
 
       users.forEach(user => {
         if (user.device_token) {
@@ -117,7 +118,7 @@ const scheduleCreate = async (schedule) => {
         .then(settleData => {
           settleData.forEach(s => {
             settleList.push({
-              schedule_id: id,
+              schedule_id: schedule.id,
               sender_id: s.sender,
               receiver_id: s.receiver,
               amount: s.amount
