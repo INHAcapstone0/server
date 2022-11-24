@@ -188,9 +188,12 @@ exports.uploadUserImage=async(req, res)=>{
 
   const user = await User.findByPk(id)
 
-  // 기존에 저장된 영수증 이미지 삭제
-  if (user.img_url){
-    deleteS3(user.img_url)
+  // 기존에 저장된 영수증 이미지 삭제, 디폴트 이미지 url이면 s3에서 이미지정보 삭제하지 않음
+  if (user.img_url) {
+    if (user.img_url != `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png` &&
+      user.img_url != 'https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage2.png') {
+      deleteS3(user.img_url)
+    }
   }
 
   const result = await User.update({img_url}, {
