@@ -30,5 +30,6 @@ module.exports = (app) => {
 
 	router.post('/mail/password', issueTempPassword)
 
+	router.get('/test', test)
 	app.use("/auth", router);
 }

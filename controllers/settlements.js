@@ -5,7 +5,6 @@ const {Settlement, Schedule, User, Alarm, Participant, Sequelize} = db;
 const Op = Sequelize.Op
 const { toDate, isValidDate } = require('../utils/modules')
 const {sendUnicastMessage}= require('../firebase');
-const settlements = require('../routes/settlements');
 
 exports.createSettlement = async (req, res) => {
   const {schedule_id, sender_id, receiver_id, amount}=req.body
