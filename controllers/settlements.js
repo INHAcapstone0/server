@@ -148,6 +148,8 @@ exports.getSettlement = async (req, res) => {
 exports.getSettlementsOfSchedule=async(req, res)=>{
   let {id} = req.user
   
+  let result = [] 
+
   const settlements = await Schedule.findAll({
     include:[{
       model:Participant,
@@ -178,6 +180,11 @@ exports.getSettlementsOfSchedule=async(req, res)=>{
       }],
     }]
   })
+
+  settlements.forEach(s=>{
+    
+  })
+
   res.status(StatusCodes.OK).json(settlements)
 }
 
