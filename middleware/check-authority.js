@@ -155,7 +155,7 @@ const accessableToSettlementRequest = async (req, res, next) => {
     where: { id }
   })
   // 요청자의 id와 조회할 리소스id가 일치하지 않는다면
-  if (req.user.id != settlement.receiver_id &&req.user.id != settlement.receiver_id) {
+  if (req.user.id != settlement.receiver_id &&req.user.id != settlement.sender_id) {
     throw new UnauthenticatedError('해당 데이터에 대한 요청의 권한이 없습니다.')
   }
   return next()
