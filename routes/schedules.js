@@ -25,7 +25,7 @@ module.exports = (app) => {
 
 	//params:schedule_id
 	//body:schedule_name,owner_id, startAt, endAt
-	router.patch('/:id', accessableToScheduleRequest, updateSchedule)
+	router.patch('/:id', updateSchedule)
 
 	router.put('/restore/:id', accessableToScheduleRequest, restoreSchedule);
 
