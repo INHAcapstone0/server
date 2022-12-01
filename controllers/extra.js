@@ -173,7 +173,7 @@ exports.myInfo=async(req, res)=>{
   let user = await User.findByPk(req.user.id)
 
   console.log('bank-token')
-  console.log('token')
+  console.log(token)
   if(!user.user_seq_no){
     throw new NotFoundError('유저고유식별번호가 존재하지 않습니다.')
   }
