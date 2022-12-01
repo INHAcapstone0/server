@@ -139,7 +139,7 @@ module.exports = {
     }
 
 
-    await queryInterface.bulkInsert('users', sampleUsers, {});
+    // await queryInterface.bulkInsert('users', sampleUsers, {});
 
     let password = await bcrypt.hash(`taylor#1213`, salt)
     let password2 = await bcrypt.hash(`wjdtjrdn12#`, salt)
@@ -163,17 +163,17 @@ module.exports = {
         updatedAt: new Date(),
       },
 
-      {
-        id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
-        email: "root@test.com",
-        name: "정석우",
-        img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
-        password: password2,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      }
+      // {
+      //   id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
+      //   email: "root@test.com",
+      //   name: "정석우",
+      //   img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
+      //   password: password2,
+      //   createdAt: new Date(),
+      //   updatedAt: new Date(),
+      // }
     ]
-    await queryInterface.bulkInsert('users', customUsers, {});
+    // await queryInterface.bulkInsert('users', customUsers, {});
 
     let customSchedules = [{
       "name": "folklore1",
@@ -763,7 +763,7 @@ module.exports = {
         updatedAt: new Date(),
       })
     }
-    await queryInterface.bulkInsert('schedules', sampleSchedules, {});
+    // await queryInterface.bulkInsert('schedules', sampleSchedules, {});
 
     for (let i = 0; i < 5; i++) {
       let participantObj = {
@@ -784,7 +784,7 @@ module.exports = {
       updatedAt: new Date(),
     })
 
-    await queryInterface.bulkInsert('participants', sampleParticipants, {});
+    // await queryInterface.bulkInsert('participants', sampleParticipants, {});
 
     for (let i = 0; i < 10; i++) {
       let receiptObj = {
@@ -798,7 +798,7 @@ module.exports = {
       }
       sampleReceipts.push(receiptObj)
     }
-    await queryInterface.bulkInsert('receipts', sampleReceipts, {});
+    // await queryInterface.bulkInsert('receipts', sampleReceipts, {});
 
     for (let i = 0; i < 20; i++) {
       let itemObj = {
@@ -811,7 +811,7 @@ module.exports = {
       }
       sampleItems.push(itemObj)
     }
-    await queryInterface.bulkInsert('items', sampleItems, {});
+    // await queryInterface.bulkInsert('items', sampleItems, {});
 
     for (let i = 1; i < 5; i++) {
       let settlementObj = {
@@ -835,7 +835,7 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     })
-    await queryInterface.bulkInsert('settlements', sampleSettlements, {});
+    // await queryInterface.bulkInsert('settlements', sampleSettlements, {});
 
 
     // for (let i = 0; i < 10; i++) {
@@ -904,7 +904,7 @@ module.exports = {
       },
     ]
     
-    await queryInterface.bulkInsert('alarms', alarms, {});
+    // await queryInterface.bulkInsert('alarms', alarms, {});
   },
 
   async down(queryInterface, Sequelize) {
