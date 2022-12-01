@@ -166,7 +166,7 @@ module.exports = {
       {
         id: 'e9bf2a30-1eab-4783-9e85-c1c07c49fda7',
         email: "root@test.com",
-        name: "관리자",
+        name: "정석우",
         img_url: `https://capstone-storage-server.s3.ap-northeast-2.amazonaws.com/defaultUserImage.png`,
         password: password2,
         createdAt: new Date(),
