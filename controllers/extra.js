@@ -214,6 +214,7 @@ exports.myTranList = async(req, res)=>{
   //from_date, to_date : yyyymmdd
   let {fintech_use_num, from_date,to_date}=req.query
   let token = req.header('bank-authorization')
+  console.log('Bank-token: ',token)
 
   console.log(`bank_tran_id=${OPENBANK_CLIENT_USE_CODE}U${generateRandom9Code()}`)
   const result = await axios
@@ -242,6 +243,7 @@ exports.deleteAccount = async(req, res)=>{
   let {fintech_use_num}=req.body
   let token = req.header('bank-authorization')
 
+  console.log('Bank-token: ',token)
   if(!fintech_use_num || !token){
     throw new BadRequestError('잘못된 요청입니다. 핀테크넘버와 토큰을 모두 전송해야합니다.')
   }
